@@ -19,7 +19,8 @@ return new class extends Migration
             $table->text('description');
             $table->string('unit', 30)->comment('This will be from another API');
             $table->integer('price');
-            $table->integer('quanitity');
+            $table->integer('minimum_qty')->nullable();
+            $table->integer('current_quanitity');
             $table->timestamps();
         });
     }

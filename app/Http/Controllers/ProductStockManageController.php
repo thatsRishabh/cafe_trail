@@ -3,37 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ProductStockManage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use App\Models\ProductInfo;
-use App\Models\Unit;
+use App\Enums\ServerStatus;
+use Illuminate\Validation\Rules\Enum;
 
-
-class ProductInfoController extends Controller
+class ProductStockManageController extends Controller
 {
-    public function searchProductInfo(Request $request)
+    public function searchProductStockManage(Request $request)
     {
-    try {
-
-            $query = DB::table('product_infos')
-            ->join('units', 'product_infos.unit_id', '=', 'units.id')
-            ->select('product_infos.*', 'units.name as units_name')
-            ->orderBy('product_infos.id', 'desc');
-          // in above we have to specify that it has to sort according to ID of which table, product_infos or Unit
+        try {
+            $query = ProductStockManage::select('*')
+                    ->orderBy('id', 'desc');
 
             if(!empty($request->id))
             {
-                $query->where('product_infos.id',  $request->id);
-                // in above we are specifying that it has to match from Product_infos id
+                $query->where('id', $request->id);
             }
-            if(!empty($request->name))
+            if(!empty($request->name_id))
             {
-                $query->where('product_infos.name', $request->name);
+                $query->where('name_id', $request->name_id);
             }
-            if(!empty($request->description))
+            if(!empty($request->stock_operation))
             {
-                $query->where('description', 'LIKE', '%'.$request->description.'%');
+                $query->where('stock_operation', $request->stock_operation);
+            }
+            if(!empty($request->product))
+            {
+                $query->where('product', 'LIKE', '%'.$request->product.'%');
             }
 
 
@@ -64,33 +63,30 @@ class ProductInfoController extends Controller
             Log::error($e);
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
-     }
+    }
+
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name'                       => 'required',
-            'description'                => 'required',
-            'unit_id'                    => 'required|numeric',
-            'minimum_qty'                      => 'required|numeric',
-            'current_quanitity'                  => 'required',
-            'price'                      => 'required|numeric',
-            
+            'stock_operation'                => 'required',
+            'name_id'                   => 'nullable|numeric',
+            'old_stock'                => 'nullable|numeric',
+            'new_stock'                => 'nullable|numeric',
+            'change_stock'                      => 'required|numeric',
            
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
-    
         DB::beginTransaction();
         try {
-            $info = new ProductInfo;
-            $info->name = $request->name;
-            $info->description = $request->description;
-            $info->unit_id = $request->unit_id;
-            $info->current_quanitity = $request->current_quanitity;
-            $info->minimum_qty = $request->minimum_qty;
-            $info->price = $request->price;
+            $info = new ProductStockManage;
+            $info->name_id = $request->name_id;
+            $info->old_stock = $request->old_stock;
+            $info->change_stock = $request->change_stock;
+            $info->new_stock = $request->new_stock;
+            $info->stock_operation = $request->stock_operation;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -104,28 +100,26 @@ class ProductInfoController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'name'                       => 'required',
-            'description'                => 'required',
-            'unit_id'                    => 'required|numeric',
-            'minimum_qty'                => 'required|numeric',
-            'current_quanitity'           => 'required',
-            'price'                      => 'required|numeric',
+            'stock_operation'                => 'required',
+            'name_id'                   => 'nullable|numeric',
+            'old_stock'                => 'nullable|numeric',
+            'new_stock'                => 'nullable|numeric',
+            'change_stock'                      => 'required|numeric',
            
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
-    
+
         DB::beginTransaction();
         try {
-            $info = ProductInfo::find($id);
-            $info->name = $request->name;
-            $info->description = $request->description;
-            $info->unit_id = $request->unit_id;
-            $info->current_quanitity = $request->current_quanitity;
-            $info->minimum_qty = $request->minimum_qty;
-            $info->price = $request->price;
+            $info = ProductStockManage::find($id);
+            $info->name_id = $request->name_id;
+            $info->old_stock = $request->old_stock;
+            $info->change_stock = $request->change_stock;
+            $info->new_stock = $request->new_stock;
+            $info->stock_operation = $request->stock_operation;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -140,7 +134,7 @@ class ProductInfoController extends Controller
     {
         try {
             
-            $info = ProductInfo::find($id);
+            $info = ProductStockManage::find($id);
             if($info)
             {
                 // return response(prepareResult(false, $info, trans('translate.fetched_records')), config('httpcodes.success'));
@@ -157,7 +151,7 @@ class ProductInfoController extends Controller
     {
         try {
             
-            $info = ProductInfo::find($id);
+            $info = ProductStockManage::find($id);
             if($info)
             {
                 $result=$info->delete();
@@ -170,18 +164,4 @@ class ProductInfoController extends Controller
         }
     }
 
-    // public function joinData()
-    // {
-    //     $info = DB::table('product_infos')
-    //     ->join('units', 'product_infos.unit_id', '=', 'units.id')
-    //     // ->join('orders', 'users.id', '=', 'orders.user_id')
-    //     // ->select('units.*','units.id as units_id', 'units.name as units_name ') 
-    //     ->select('product_infos.*','units.id as units_id', 'units.name as units_name ') 
-    //     ->orderBy('id', 'desc')
-    //     ->get();
-
-    //     return  $info;
-    //     // print_r($info->all());
-    // }
-    
 }

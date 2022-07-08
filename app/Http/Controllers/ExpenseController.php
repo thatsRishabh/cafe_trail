@@ -24,6 +24,18 @@ class ExpenseController extends Controller
             {
                 $query->where('items', $request->items);
             }
+            if(!empty($request->description))
+            {
+                $query->where('description', $request->description);
+            }
+            if(!empty($request->rate))
+            {
+                $query->where('rate', $request->rate);
+            }
+            if(!empty($request->quantity))
+            {
+                $query->where('quantity', $request->quantity);
+            }
             if(!empty($request->product))
             {
                 $query->where('product', 'LIKE', '%'.$request->product.'%');

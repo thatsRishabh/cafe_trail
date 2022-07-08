@@ -63,6 +63,10 @@ Route::resource('product-menu', App\Http\Controllers\ProductMenuController::clas
 Route::post('product-infos', [App\Http\Controllers\ProductInfoController::class, 'searchProductInfo']); 
 Route::resource('product-info', App\Http\Controllers\ProductInfoController::class)->only(['store','destroy','show', 'update']);
 
+// ProductStockManage
+Route::post('product-stock-manages', [App\Http\Controllers\ProductStockManageController::class, 'searchProductStockManage']); 
+Route::resource('product-stock-manage', App\Http\Controllers\ProductStockManageController::class)->only(['store','destroy','show', 'update']);
+
 // Unit
 Route::post('units', [App\Http\Controllers\UnitController::class, 'searchUnit']); 
 Route::resource('unit', App\Http\Controllers\UnitController::class)->only(['store','destroy','show', 'update']);
