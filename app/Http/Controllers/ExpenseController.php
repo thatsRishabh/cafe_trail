@@ -70,15 +70,16 @@ class ExpenseController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
-
+    
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'items'                    => 'nullable',
             'description'                => 'nullable',
             'product_id'                   => 'nullable|numeric',
-            'totalExpense'                => 'required|numeric',
+            // 'totalExpense'                => 'required|numeric',
             'quantity'                      => 'required|numeric',
+            'unit_id'                      => 'required|numeric',
             'rate'                    => 'required|numeric',
            
         ]);
@@ -92,6 +93,7 @@ class ExpenseController extends Controller
             $info->items = $request->items;
             $info->description = $request->description;
             $info->product_id = $request->product_id;
+            $info->unit_id = $request->unit_id;
             $info->quantity = $request->quantity;
             $info->rate = $request->rate;
             $info->totalExpense = $request->totalExpense;
@@ -113,6 +115,7 @@ class ExpenseController extends Controller
             'product_id'                   => 'nullable|numeric',
             'totalExpense'                => 'required|numeric',
             'quantity'                      => 'required|numeric',
+            'unit_id'                      => 'required|numeric',
             'rate'                    => 'required|numeric',
            
         ]);
@@ -127,6 +130,7 @@ class ExpenseController extends Controller
             $info->items = $request->items;
             $info->description = $request->description;
             $info->product_id = $request->product_id;
+            $info->unit_id = $request->unit_id;
             $info->quantity = $request->quantity;
             $info->rate = $request->rate;
             $info->totalExpense = $request->totalExpense;

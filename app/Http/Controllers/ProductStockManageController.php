@@ -15,20 +15,24 @@ class ProductStockManageController extends Controller
     public function searchProductStockManage(Request $request)
     {
         try {
-            $query = ProductStockManage::select('*')
-                    ->orderBy('id', 'desc');
+
+            $query = DB::table('product_stock_manages')
+            ->join('units', 'product_stock_manages.unit_id', '=', 'units.id')
+            ->join('product_infos', 'product_stock_manages.product_id', '=', 'product_infos.id')
+            ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' )
+            ->orderBy('product_stock_manages.id', 'desc');
 
             if(!empty($request->id))
             {
-                $query->where('id', $request->id);
+                $query->where('product_stock_manages.id', $request->id);
             }
-            if(!empty($request->name_id))
+            if(!empty($request->product_id))
             {
-                $query->where('name_id', $request->name_id);
+                $query->where('product_stock_manages.product_id', $request->product_id);
             }
             if(!empty($request->stock_operation))
             {
-                $query->where('stock_operation', $request->stock_operation);
+                $query->where('product_stock_manages.stock_operation', $request->stock_operation);
             }
             if(!empty($request->product))
             {
@@ -64,15 +68,17 @@ class ProductStockManageController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
-
+    
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'stock_operation'                => 'required',
-            'name_id'                   => 'nullable|numeric',
+            // 'stock_operation'                => [new Enum(ServerStatus::class)],
+            'product_id'                   => 'required|numeric',
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
             'change_stock'                      => 'required|numeric',
+            'unit_id'                      => 'required|numeric',
            
         ]);
 
@@ -82,10 +88,16 @@ class ProductStockManageController extends Controller
         DB::beginTransaction();
         try {
             $info = new ProductStockManage;
-            $info->name_id = $request->name_id;
+            $info->product_id = $request->product_id;
+            $info->unit_id = $request->unit_id;
             $info->old_stock = $request->old_stock;
             $info->change_stock = $request->change_stock;
-            $info->new_stock = $request->new_stock;
+            // $info->new_stock = $request->new_stock;
+
+            $info->new_stock = strtolower($request->stock_operation) == "in" 
+            ? $request->old_stock + $request->change_stock 
+            : $request->old_stock - $request->change_stock;
+
             $info->stock_operation = $request->stock_operation;
             $info->save();
             DB::commit();
@@ -101,10 +113,11 @@ class ProductStockManageController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'stock_operation'                => 'required',
-            'name_id'                   => 'nullable|numeric',
+            'product_id'                   => 'required|numeric',
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
             'change_stock'                      => 'required|numeric',
+            'unit_id'                      => 'required|numeric',
            
         ]);
 
@@ -115,7 +128,8 @@ class ProductStockManageController extends Controller
         DB::beginTransaction();
         try {
             $info = ProductStockManage::find($id);
-            $info->name_id = $request->name_id;
+            $info->product_id = $request->product_id;
+            $info->unit_id = $request->unit_id;
             $info->old_stock = $request->old_stock;
             $info->change_stock = $request->change_stock;
             $info->new_stock = $request->new_stock;

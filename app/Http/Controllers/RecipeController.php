@@ -68,6 +68,7 @@ class RecipeController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'title'                    => 'required',
+            'recipe_status'                    => 'required|numeric',
             'description'                => 'required',
             // 'name'                      => 'required',
             // 'quantity'                   => 'nullable|numeric',
@@ -84,6 +85,7 @@ class RecipeController extends Controller
             $info = new Recipe;
             $info->title = $request->title;
             $info->description = $request->description;
+            $info->recipe_status = $request->recipe_status;
             $info->save();
            
            foreach ($request->recipe_methods as $key => $recipe) {
@@ -111,6 +113,7 @@ class RecipeController extends Controller
     //     $validation = Validator::make($request->all(), [
     //         'title'                    => 'required',
     //         'description'                => 'required',
+    //          'recipe_status'                    => 'required|numeric',
     //         // 'name'                      => 'required',
     //         // 'quantity'                   => 'nullable|numeric',
     //         // 'unit_id'                => 'nullable|numeric',
@@ -127,6 +130,7 @@ class RecipeController extends Controller
     //         $info = Recipe::find($id);
     //         $info->title = $request->title;
     //         $info->description = $request->description;
+    //            $info->recipe_status = $request->recipe_status;
     //         $info->save();
            
     //        foreach ($request->recipe_methods as $key => $recipe) {
