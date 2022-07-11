@@ -28,19 +28,10 @@ class ExpenseController extends Controller
             {
                 $query->where('description', $request->description);
             }
-            if(!empty($request->rate))
+            if(!empty($request->expense_date))
             {
-                $query->where('rate', $request->rate);
+                $query->where('expense_date', $request->expense_date);
             }
-            if(!empty($request->quantity))
-            {
-                $query->where('quantity', $request->quantity);
-            }
-            if(!empty($request->product))
-            {
-                $query->where('product', 'LIKE', '%'.$request->product.'%');
-            }
-
 
             if(!empty($request->per_page_record))
             {
@@ -76,11 +67,8 @@ class ExpenseController extends Controller
         $validation = Validator::make($request->all(), [
             'items'                    => 'nullable',
             'description'                => 'nullable',
-            'product_id'                   => 'nullable|numeric',
-            // 'totalExpense'                => 'required|numeric',
-            'quantity'                      => 'required|numeric',
-            'unit_id'                      => 'required|numeric',
-            'rate'                    => 'required|numeric',
+            'totalExpense'                => 'required|numeric',
+            'expense_date'                    => 'required',
            
         ]);
 
@@ -92,10 +80,7 @@ class ExpenseController extends Controller
             $info = new Expense;
             $info->items = $request->items;
             $info->description = $request->description;
-            $info->product_id = $request->product_id;
-            $info->unit_id = $request->unit_id;
-            $info->quantity = $request->quantity;
-            $info->rate = $request->rate;
+            $info->expense_date = $request->expense_date;
             $info->totalExpense = $request->totalExpense;
             $info->save();
             DB::commit();
@@ -112,11 +97,8 @@ class ExpenseController extends Controller
         $validation = Validator::make($request->all(), [
             'items'                    => 'nullable',
             'description'                => 'nullable',
-            'product_id'                   => 'nullable|numeric',
             'totalExpense'                => 'required|numeric',
-            'quantity'                      => 'required|numeric',
-            'unit_id'                      => 'required|numeric',
-            'rate'                    => 'required|numeric',
+            'expense_date'                    => 'required',
            
         ]);
 
@@ -129,10 +111,7 @@ class ExpenseController extends Controller
             $info = Expense::find($id);
             $info->items = $request->items;
             $info->description = $request->description;
-            $info->product_id = $request->product_id;
-            $info->unit_id = $request->unit_id;
-            $info->quantity = $request->quantity;
-            $info->rate = $request->rate;
+            $info->expense_date = $request->expense_date;
             $info->totalExpense = $request->totalExpense;
             $info->save();
             DB::commit();

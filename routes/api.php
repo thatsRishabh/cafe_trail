@@ -96,3 +96,7 @@ Route::resource('subcategory', App\Http\Controllers\SubcategoryController::class
 // recipe
 Route::post('recipes', [App\Http\Controllers\RecipeController::class, 'searchRecipe']); 
 Route::resource('recipe', App\Http\Controllers\RecipeController::class)->only(['store','destroy','show', 'update']);
+
+// Order
+Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
+Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);

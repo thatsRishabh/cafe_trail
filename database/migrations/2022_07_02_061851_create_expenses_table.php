@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->string('items', 100)->nullable();
-            $table->integer('product_id')->nullable()->comment('Join here has to be made');
-            $table->integer('quantity')->nullable();
-            $table->integer('rate')->nullable();
+            // $table->integer('product_id')->nullable()->comment('Join here has to be made');
+            // $table->integer('quantity')->nullable();
+            // $table->integer('rate')->nullable();
             $table->integer('totalExpense')->nullable();
+            $table->date('expense_date')->comment('This will be in yyyy-mm-dd')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
         });
