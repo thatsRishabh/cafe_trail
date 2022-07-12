@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductStockManage;
+use App\Models\ProductInfo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +20,7 @@ class ProductStockManageController extends Controller
             $query = DB::table('product_stock_manages')
             ->join('units', 'product_stock_manages.unit_id', '=', 'units.id')
             ->join('product_infos', 'product_stock_manages.product_id', '=', 'product_infos.id')
-            ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' )
+            ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' ,'product_infos.current_quanitity as product_infos_old_quantity',)
             ->orderBy('product_stock_manages.id', 'desc');
 
             if(!empty($request->id))
@@ -75,8 +76,8 @@ class ProductStockManageController extends Controller
             'stock_operation'                => 'required',
             // 'stock_operation'                => [new Enum(ServerStatus::class)],
             'product_id'                   => 'required|numeric',
-            'old_stock'                => 'nullable|numeric',
-            'new_stock'                => 'nullable|numeric',
+            // 'old_stock'                => 'nullable|numeric',
+            // 'new_stock'                => 'nullable|numeric',
             'change_stock'                      => 'required|numeric',
             'unit_id'                      => 'required|numeric',
            
@@ -87,6 +88,8 @@ class ProductStockManageController extends Controller
         }
         DB::beginTransaction();
         try {
+            $old= DB::table('product_infos')->where('product_infos.id', $request->product_id)->get('current_quanitity');
+
             $info = new ProductStockManage;
             $info->product_id = $request->product_id;
             $info->unit_id = $request->unit_id;
@@ -94,9 +97,13 @@ class ProductStockManageController extends Controller
             $info->change_stock = $request->change_stock;
             // $info->new_stock = $request->new_stock;
 
+            // $info->new_stock = strtolower($request->stock_operation) == "in" 
+            // ? $request->old_stock + $request->change_stock 
+            // : $request->old_stock - $request->change_stock;
+
             $info->new_stock = strtolower($request->stock_operation) == "in" 
-            ? $request->old_stock + $request->change_stock 
-            : $request->old_stock - $request->change_stock;
+            ? $old + $request->change_stock 
+            : $old - $request->change_stock;
 
             $info->stock_operation = $request->stock_operation;
             $info->save();
@@ -109,6 +116,17 @@ class ProductStockManageController extends Controller
         }
     }
 
+    public function temp(Request $request)
+    {
+       
+        $new = 10;
+        $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+        // $old= DB::table('product_infos')->where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+
+        return $old;
+        return $old + $new;
+        // $line_cost =(int)$price * (int)$quantity['key'];
+    }
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [

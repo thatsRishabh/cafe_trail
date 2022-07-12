@@ -130,7 +130,7 @@ class RecipeController extends Controller
     //         $info = Recipe::find($id);
     //         $info->title = $request->title;
     //         $info->description = $request->description;
-    //            $info->recipe_status = $request->recipe_status;
+    //         $info->recipe_status = $request->recipe_status;
     //         $info->save();
            
     //        foreach ($request->recipe_methods as $key => $recipe) {

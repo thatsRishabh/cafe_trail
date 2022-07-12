@@ -65,11 +65,11 @@ class OrderController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'table_number'                    => 'required|numeric',
-            'cartTotalQuantity'                => 'required|numeric',
+            // 'cartTotalQuantity'                => 'required|numeric',
             'order_status'                   => 'nullable|numeric',
-            'cartTotalAmount'                => 'required|numeric',
+            // 'cartTotalAmount'                => 'required|numeric',
             'taxes'                      => 'nullable|numeric',
-            'netAmount'                      => 'nullable|numeric',
+            // 'netAmount'                      => 'nullable|numeric',
            
         ]);
 
@@ -82,10 +82,6 @@ class OrderController extends Controller
             $info->table_number = $request->table_number;
             $info->instructions = $request->instructions;
             $info->order_status = $request->order_status;
-            $info->cartTotalQuantity = $request->cartTotalQuantity;
-            // $info->cartTotalAmount = $request->cartTotalAmount;
-            // $info->taxes = $request->taxes;
-            // $info->netAmount = $request->netAmount;
             $info->save();
 
             foreach ($request->order_contains as $key => $order) {
@@ -96,18 +92,20 @@ class OrderController extends Controller
                 $addorder->name = $order['name'];
                 $addorder->quantity = $order['quantity'];
                 $addorder->price = $order['price'];
-                // $addorder->netPrice = $order['netPrice'];
                 $addorder->netPrice = $order['quantity'] * $order['price'] ;
                 $addorder->save();
                 
             }
  
-            // $total= $products= DB::table('cart')->join('products','cart.product_id','=','products.id')->where('cart.user_id',$userId)->sum('products.price');
-            
+                // database sum querry
+            $quantitySum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('quantity');
+            $amountSum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('netPrice');
+
             $info = Order::find( $info->id);
-            $info->cartTotalAmount = $request->cartTotalAmount;
+            $info->cartTotalQuantity = $quantitySum;
+            $info->cartTotalAmount = $amountSum;
             $info->taxes = $request->taxes;
-            $info->netAmount = $request->cartTotalAmount + $request->taxes;
+            $info->netAmount = $amountSum + $request->taxes;
             $info->save();
 
              DB::commit();
@@ -119,7 +117,7 @@ class OrderController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
-
+    
     // public function update(Request $request, $id)
     // {
     //     $validation = Validator::make($request->all(), [

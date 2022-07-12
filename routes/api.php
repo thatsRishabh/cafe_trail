@@ -66,6 +66,7 @@ Route::resource('product-info', App\Http\Controllers\ProductInfoController::clas
 // ProductStockManage
 Route::post('product-stock-manages', [App\Http\Controllers\ProductStockManageController::class, 'searchProductStockManage']); 
 Route::resource('product-stock-manage', App\Http\Controllers\ProductStockManageController::class)->only(['store','destroy','show', 'update']);
+// Route::post('temp', [App\Http\Controllers\ProductStockManageController::class, 'temp']); 
 
 // Unit
 Route::post('units', [App\Http\Controllers\UnitController::class, 'searchUnit']); 
@@ -100,3 +101,4 @@ Route::resource('recipe', App\Http\Controllers\RecipeController::class)->only(['
 // Order
 Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
 Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
+
