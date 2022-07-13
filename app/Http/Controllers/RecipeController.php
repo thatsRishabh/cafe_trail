@@ -108,52 +108,50 @@ class RecipeController extends Controller
         }
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $validation = Validator::make($request->all(), [
-    //         'title'                    => 'required',
-    //         'description'                => 'required',
-    //          'recipe_status'                    => 'required|numeric',
-    //         // 'name'                      => 'required',
-    //         // 'quantity'                   => 'nullable|numeric',
-    //         // 'unit_id'                => 'nullable|numeric',
+    public function update(Request $request, $id)
+    {
+        $validation = Validator::make($request->all(), [
+            'title'                    => 'required',
+            'description'                => 'required',
+             'recipe_status'                    => 'required|numeric',
+            // 'name'                      => 'required',
+            // 'quantity'                   => 'nullable|numeric',
+            // 'unit_id'                => 'nullable|numeric',
            
-    //     ]);
+        ]);
 
-    //     if ($validation->fails()) {
-    //         return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
-    //     }
+        if ($validation->fails()) {
+            return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+        }
 
-    //     DB::beginTransaction();
-    //     try {
+        DB::beginTransaction();
+        try {
 
-    //         $info = Recipe::find($id);
-    //         $info->title = $request->title;
-    //         $info->description = $request->description;
-    //         $info->recipe_status = $request->recipe_status;
-    //         $info->save();
+            $info = Recipe::find($id);
+            $info->title = $request->title;
+            $info->description = $request->description;
+            $info->recipe_status = $request->recipe_status;
+            $info->save();
            
-    //        foreach ($request->recipe_methods as $key => $recipe) {
-    //         //    $addRecipe = new RecipeContains;
-    //            $addRecipe=RecipeContains::find($request->id);
-    //         //    $addRecipe = Recipe::find($id);
-    //            $addRecipe->recipe_id =  $info->id;
-    //            $addRecipe->name = $recipe['name'];
-    //            $addRecipe->quantity = $recipe['quantity'];
-    //            $addRecipe->unit_id = $recipe['unit_id'];
-    //            $addRecipe->save();
+           foreach ($request->recipe_methods as $key => $recipe) {
+           
+               $addRecipe=RecipeContains::find($recipe['id']);
+               $addRecipe->name = $recipe['name'];
+               $addRecipe->quantity = $recipe['quantity'];
+               $addRecipe->unit_id = $recipe['unit_id'];
+               $addRecipe->save();
                
-    //        }
+           }
 
-    //         DB::commit();
-    //         $info['recipe_contains'] = $info->recipeMethods;
-    //         return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
-    //     } catch (\Throwable $e) {
-    //         Log::error($e);
-    //         DB::rollback();
-    //         return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
-    //     }
-    // }
+            DB::commit();
+            $info['recipe_contains'] = $info->recipeMethods;
+            return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            DB::rollback();
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+        }
+    }
 
     public function show($id)
     {

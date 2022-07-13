@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderContain;
+use App\Models\ProductMenu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -85,14 +86,22 @@ class OrderController extends Controller
             $info->save();
 
             foreach ($request->order_contains as $key => $order) {
+
+                // search query for data from another table
+                $productMenuItem = ProductMenu::find( $order['product_menu_id']);
+
                 $addorder = new OrderContain;
                 $addorder->order_id =  $info->id;
                 $addorder->product_menu_id = $order['product_menu_id'];
                 $addorder->category_id = $order['category_id'];
-                $addorder->name = $order['name'];
+
+                // below data is from another table
+                $addorder->name = $productMenuItem->product;
                 $addorder->quantity = $order['quantity'];
-                $addorder->price = $order['price'];
-                $addorder->netPrice = $order['quantity'] * $order['price'] ;
+
+                 // below data is from another table
+                $addorder->price = $productMenuItem->price;
+                $addorder->netPrice = $order['quantity'] * $productMenuItem->price ;
                 $addorder->save();
                 
             }
@@ -118,41 +127,64 @@ class OrderController extends Controller
         }
     }
     
-    // public function update(Request $request, $id)
-    // {
-    //     $validation = Validator::make($request->all(), [
-    //         'table_number'                    => 'required|numeric',
-    //         'cartTotalQuantity'                => 'required|numeric',
-    //         'order_status'                   => 'nullable|numeric',
-    //         'cartTotalAmount'                => 'required|numeric',
-    //         'taxes'                      => 'nullable|numeric',
-    //         'netAmount'                      => 'required|numeric',
+    public function update(Request $request, $id)
+    {
+        $validation = Validator::make($request->all(), [
+            'table_number'                    => 'required|numeric',
+            // 'cartTotalQuantity'                => 'required|numeric',
+            'order_status'                   => 'nullable|numeric',
+            // 'cartTotalAmount'                => 'required|numeric',
+            'taxes'                      => 'nullable|numeric',
+            // 'netAmount'                      => 'nullable|numeric',
            
-    //     ]);
+        ]);
 
-    //     if ($validation->fails()) {
-    //         return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
-    //     }
+        if ($validation->fails()) {
+            return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+        }
 
-    //     DB::beginTransaction();
-    //     try {
-    //         $info = Order::find($id);
-    //         $info->table_number = $request->table_number;
-    //         $info->instructions = $request->instructions;
-    //         $info->order_status = $request->order_status;
-    //         $info->cartTotalQuantity = $request->cartTotalQuantity;
-    //         $info->cartTotalAmount = $request->cartTotalAmount;
-    //         $info->taxes = $request->taxes;
-    //         $info->netAmount = $request->netAmount;
-    //         $info->save();
-    //         DB::commit();
-    //         return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
-    //     } catch (\Throwable $e) {
-    //         Log::error($e);
-    //         DB::rollback();
-    //         return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
-    //     }
-    // }
+        DB::beginTransaction();
+        try {
+            $info = Order::find($id);
+            $info->table_number = $request->table_number;
+            $info->instructions = $request->instructions;
+            $info->order_status = $request->order_status;
+            $info->save();
+
+            foreach ($request->order_contains as $key => $order) {
+                
+                // $addorder = new OrderContain;
+                $addorder=OrderContain::find($order['id']);
+                // $addorder->order_id =  $info->id;
+                $addorder->product_menu_id = $order['product_menu_id'];
+                $addorder->category_id = $order['category_id'];
+                $addorder->name = $order['name'];
+                $addorder->quantity = $order['quantity'];
+                $addorder->price = $order['price'];
+                $addorder->netPrice = $order['quantity'] * $order['price'] ;
+                $addorder->save();
+                
+            }
+ 
+                // database sum querry
+            $quantitySum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('quantity');
+            $amountSum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('netPrice');
+
+            $info = Order::find( $info->id);
+            $info->cartTotalQuantity = $quantitySum;
+            $info->cartTotalAmount = $amountSum;
+            $info->taxes = $request->taxes;
+            $info->netAmount = $amountSum + $request->taxes;
+            $info->save();
+            DB::commit();
+            $info['order_contains'] = $info->orderContains;
+            return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            DB::rollback();
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+        }
+    }
 
     public function show($id)
     {

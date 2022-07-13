@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductStockManage;
+use App\Models\ProductMenu;
 use App\Models\ProductInfo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -88,25 +89,31 @@ class ProductStockManageController extends Controller
         }
         DB::beginTransaction();
         try {
-            $old= DB::table('product_infos')->where('product_infos.id', $request->product_id)->get('current_quanitity');
+            // getting old stock value
+            $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+           
 
             $info = new ProductStockManage;
             $info->product_id = $request->product_id;
             $info->unit_id = $request->unit_id;
-            $info->old_stock = $request->old_stock;
+
+            // storing old stock from product infos stock table
+            $info->old_stock = $old->current_quanitity;
             $info->change_stock = $request->change_stock;
-            // $info->new_stock = $request->new_stock;
 
-            // $info->new_stock = strtolower($request->stock_operation) == "in" 
-            // ? $request->old_stock + $request->change_stock 
-            // : $request->old_stock - $request->change_stock;
-
+            // stock in/out calculation
             $info->new_stock = strtolower($request->stock_operation) == "in" 
-            ? $old + $request->change_stock 
-            : $old - $request->change_stock;
+            ? $old->current_quanitity + $request->change_stock 
+            : $old->current_quanitity - $request->change_stock;
 
             $info->stock_operation = $request->stock_operation;
             $info->save();
+
+            // updating the productinfo table as well
+            $updateStock = ProductInfo::find( $request->product_id);
+            $updateStock->current_quanitity = $info->new_stock;
+            $updateStock->save();
+
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
@@ -118,14 +125,18 @@ class ProductStockManageController extends Controller
 
     public function temp(Request $request)
     {
-       
-        $new = 10;
-        $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
-        // $old= DB::table('product_infos')->where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+        // $old = ProductMenu::where('product_menus.id', $order['product_menu_id'])->get();
+        // $updateStock = ProductInfo::find( $request->product_id);
+            // $updateStock->current_quanitity = $quantitySum;
+            $old = ProductMenu::find( $request->product_id);
+       return $old->product;
+        // $new = 10;
+        // $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+        // // $old= DB::table('product_infos')->where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
 
-        return $old;
-        return $old + $new;
-        // $line_cost =(int)$price * (int)$quantity['key'];
+        // // return $old;
+        // return $old->current_quanitity + $new;
+        // // $line_cost =(int)$price * (int)$quantity['key'];
     }
     public function update(Request $request, $id)
     {

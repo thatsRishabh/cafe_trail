@@ -22,37 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/checkconnection', [UserInfo::class, 'checkConnection']);
-// Route::post('/adddata', [UserInfo::class, 'addData']);
-// Route::post('/displaydata/{id?}', [UserInfo::class, 'displayData']);
-// Route::post('/display-testkit-data/', [UserInfo::class, 'testKits']);
-// // Route::post('/store-testkit-data/', [UserInfo::class, 'store']);
-// Route::post('/store-testkit-data/', [App\Http\Controllers\UserInfo::class, 'store']);
-// Route::apiResource('test-kit', App\Http\Controllers\UserInfo::class)->only(['store','destroy','show', 'update']);
-// Route::post('/show-testkit/{id?}', [UserInfo::class, 'show']);
-
-// Route::post('/add-resturant-data', [MobileController::class, 'addData']);
-// Route::post('/display-resturant-data/{id?}', [MobileController::class, 'displayData']);
-
-// Route::post('/add-product-menu', [WebController::class, 'addFood']);
-// Route::post('/display-product-menu/{id?}', [WebController::class, 'displayFood']);
-// Route::put('/update-product-menu', [WebController::class, 'updateFood']);
-// Route::delete('/delete-product-menu/{id}', [WebController::class, 'deleteFood']);
-
-// Route::post('/add-food', [WebController::class, 'addRecipe']);
-// Route::post('/display-food/{id?}', [WebController::class, 'displayRecipe']);
-// Route::put('/update-food', [WebController::class, 'updateRecipe']);
-// Route::delete('/delete-food/{id}', [WebController::class, 'deleteRecipe']);
-
-
-// Route::post('/add-unit', [WebController::class, 'addUnit']);
-// Route::post('/display-unit/{id?}', [WebController::class, 'displayUnit']);
-// Route::put('/update-unit', [WebController::class, 'updateUnit']);
-// Route::delete('/delete-unit/{id}', [WebController::class, 'deleteUnit']);
-
-// Route::post('/add-category', [WebController::class, 'addCategory']);
-// Route::post('/display-category/{id?}', [WebController::class, 'displayCategory']);
-// Route::put('/update-category', [WebController::class, 'updateCategory']);
-// Route::delete('/delete-category/{id}', [WebController::class, 'deleteCategory']);
+Route::post('temp', [App\Http\Controllers\UserInfo::class, 'temp']); 
 
 
 // product-menu
@@ -66,7 +36,7 @@ Route::resource('product-info', App\Http\Controllers\ProductInfoController::clas
 // ProductStockManage
 Route::post('product-stock-manages', [App\Http\Controllers\ProductStockManageController::class, 'searchProductStockManage']); 
 Route::resource('product-stock-manage', App\Http\Controllers\ProductStockManageController::class)->only(['store','destroy','show', 'update']);
-// Route::post('temp', [App\Http\Controllers\ProductStockManageController::class, 'temp']); 
+
 
 // Unit
 Route::post('units', [App\Http\Controllers\UnitController::class, 'searchUnit']); 
