@@ -31,6 +31,10 @@ class OrderController extends Controller
             {
                 $query->where('order_status', $request->order_status);
             }
+            if(!empty($request->created_at))
+            {
+                $query->where('created_at', $request->created_at);
+            }
            
 
             if(!empty($request->per_page_record))
@@ -81,7 +85,7 @@ class OrderController extends Controller
         try {
             $info = new Order;
             $info->table_number = $request->table_number;
-            $info->instructions = $request->instructions;
+            // $info->instructions = $request->instructions;
             $info->order_status = $request->order_status;
             $info->save();
 
@@ -94,6 +98,7 @@ class OrderController extends Controller
                 $addorder->order_id =  $info->id;
                 $addorder->product_menu_id = $order['product_menu_id'];
                 $addorder->category_id = $order['category_id'];
+                $addorder->instructions = $order['instructions'] ?? "";
 
                 // below data is from another table
                 $addorder->name = $productMenuItem->product;
@@ -147,21 +152,22 @@ class OrderController extends Controller
         try {
             $info = Order::find($id);
             $info->table_number = $request->table_number;
-            $info->instructions = $request->instructions;
+            // $info->instructions = $request->instructions;
             $info->order_status = $request->order_status;
             $info->save();
 
             foreach ($request->order_contains as $key => $order) {
-                
+                $productMenuItem = ProductMenu::find( $order['product_menu_id']);
                 // $addorder = new OrderContain;
                 $addorder=OrderContain::find($order['id']);
                 // $addorder->order_id =  $info->id;
+                $addorder->instructions = $order['instructions'];
                 $addorder->product_menu_id = $order['product_menu_id'];
                 $addorder->category_id = $order['category_id'];
-                $addorder->name = $order['name'];
+                $addorder->name = $productMenuItem->product;
                 $addorder->quantity = $order['quantity'];
-                $addorder->price = $order['price'];
-                $addorder->netPrice = $order['quantity'] * $order['price'] ;
+                $addorder->price = $productMenuItem->price;
+                $addorder->netPrice = $order['quantity'] * $productMenuItem->price ;
                 $addorder->save();
                 
             }

@@ -50,6 +50,11 @@ Route::resource('category', App\Http\Controllers\CategoryController::class)->onl
 Route::post('employees', [App\Http\Controllers\EmployeeController::class, 'searchEmployee']); 
 Route::resource('employee', App\Http\Controllers\EmployeeController::class)->only(['store','destroy','show', 'update']);
 
+
+// EmployeeAttendence
+Route::post('employee-attendences', [App\Http\Controllers\EmployeeAttendenceController::class, 'searchEmployeeAttendence']); 
+Route::resource('employee-attendence', App\Http\Controllers\EmployeeAttendenceController::class)->only(['store','destroy','show', 'update']);
+
 // customer
 Route::post('customers', [App\Http\Controllers\CustomerController::class, 'searchCustomer']); 
 Route::resource('customer', App\Http\Controllers\CustomerController::class)->only(['store','destroy','show', 'update']);

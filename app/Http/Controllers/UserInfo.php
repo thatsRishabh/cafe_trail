@@ -11,6 +11,8 @@ use App\Models\UnitData;
 use App\Models\ProductStockManage;
 use App\Models\ProductMenu;
 use App\Models\ProductInfo;
+use App\Models\EmployeeAttendence;
+use App\Models\AttendenceList;
 
 class UserInfo extends Controller
 {
@@ -74,8 +76,8 @@ class UserInfo extends Controller
         // $old = ProductMenu::where('product_menus.id', $order['product_menu_id'])->get();
         // $updateStock = ProductInfo::find( $request->product_id);
             // $updateStock->current_quanitity = $quantitySum;
-            $old = ProductMenu::find( $request->product_id);
-       return $old->product;
+    //         $old = ProductMenu::find( $request->product_id);
+    //    return $old->product;
         // $new = 10;
         // $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
         // // $old= DB::table('product_infos')->where('product_infos.id', $request->product_id)->get('current_quanitity')->first();

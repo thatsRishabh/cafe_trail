@@ -3,41 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Recipe;
-use App\Models\RecipeContains;
+use App\Models\EmployeeAttendence;
+use App\Models\AttendenceList;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-
-class RecipeController extends Controller
+class EmployeeAttendenceController extends Controller
 {
-
-    public function searchRecipe(Request $request)
+    public function searchEmployeeAttendence(Request $request)
     {
         try {
-            $query = Recipe::select('*')
-                    ->with('recipeMethods')
+            $query = EmployeeAttendence::select('*')
+                    ->with('attendenceMethod')
                     ->orderBy('id', 'desc');
-
-        //   $query = RecipeContains::select('*')
-        //         ->with('recipes')
-        //         ->orderBy('id', 'desc');
-        //        in above we can retrive parrent data via child
 
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
             }
-            if(!empty($request->title))
+            if(!empty($request->date))
             {
-                $query->where('title', $request->title);
+                $query->where('date', $request->date);
             }
-            if(!empty($request->recipe_status))
-            {
-                $query->where('recipe_status', $request->recipe_status);
-            }
-
+       
 
             if(!empty($request->per_page_record))
             {
@@ -71,39 +60,30 @@ class RecipeController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'title'                    => 'required',
-            'recipe_status'                    => 'required|numeric',
-            'description'                => 'required',
-            // 'name'                      => 'required',
-            // 'quantity'                   => 'nullable|numeric',
-            // 'unit_id'                => 'nullable|numeric',
+            'date'                    => 'required',
            
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
-
         DB::beginTransaction();
         try {
-            $info = new Recipe;
-            $info->title = $request->title;
-            $info->description = $request->description;
-            $info->recipe_status = $request->recipe_status;
+          
+            $info = new EmployeeAttendence;
+            $info->date = $request->date;
             $info->save();
            
-           foreach ($request->recipe_methods as $key => $recipe) {
-               $addRecipe = new RecipeContains;
-               $addRecipe->recipe_id =  $info->id;
-               $addRecipe->name = $recipe['name'];
-               $addRecipe->quantity = $recipe['quantity'];
-               $addRecipe->unit_id = $recipe['unit_id'];
-               $addRecipe->save();
-               
+           foreach ($request->employee_attendence as $key => $attendence) {
+               $addAttendence = new AttendenceList;
+               $addAttendence->attendence_id =  $info->id;
+               $addAttendence->employee_id = $attendence['employee_id'];
+               $addAttendence->attendence = $attendence['attendence'];
+               $addAttendence->save();     
            }
 
             DB::commit();
-            $info['recipe_contains'] = $info->recipeMethods;
+            $info['attendence_lists'] = $info->attendenceMethod;
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
@@ -115,13 +95,8 @@ class RecipeController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'title'                    => 'required',
-            'description'                => 'required',
-             'recipe_status'                    => 'required|numeric',
-            // 'name'                      => 'required',
-            // 'quantity'                   => 'nullable|numeric',
-            // 'unit_id'                => 'nullable|numeric',
-           
+            'date'                    => 'required',
+              
         ]);
 
         if ($validation->fails()) {
@@ -131,24 +106,22 @@ class RecipeController extends Controller
         DB::beginTransaction();
         try {
 
-            $info = Recipe::find($id);
-            $info->title = $request->title;
-            $info->description = $request->description;
-            $info->recipe_status = $request->recipe_status;
+             $info = EmployeeAttendence::find($id);
+            $info->date = $request->date;
             $info->save();
-           
-           foreach ($request->recipe_methods as $key => $recipe) {
-           
-               $addRecipe=RecipeContains::find($recipe['id']);
-               $addRecipe->name = $recipe['name'];
-               $addRecipe->quantity = $recipe['quantity'];
-               $addRecipe->unit_id = $recipe['unit_id'];
-               $addRecipe->save();
-               
+
+            $deletOld = AttendenceList::where('attendence_id', $id)->delete();
+            foreach ($request->employee_attendence as $key => $attendence) {
+               $addAttendence = new AttendenceList;
+               $addAttendence->attendence_id =  $id;
+               $addAttendence->employee_id = $attendence['employee_id'];
+               $addAttendence->attendence = $attendence['attendence'];
+               $addAttendence->save();      
            }
 
+
             DB::commit();
-            $info['recipe_contains'] = $info->recipeMethods;
+            $info['attendence_lists'] = $info->attendenceMethod;
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
@@ -161,7 +134,7 @@ class RecipeController extends Controller
     {
         try {
             
-            $info = Recipe::with('recipeMethods')->find($id);
+            $info = EmployeeAttendence::find($id);
             if($info)
             {
                 // return response(prepareResult(false, $info, trans('translate.fetched_records')), config('httpcodes.success'));
@@ -178,7 +151,7 @@ class RecipeController extends Controller
     {
         try {
             
-            $info = Recipe::find($id);
+            $info = EmployeeAttendence::find($id);
             if($info)
             {
                 $result=$info->delete();
@@ -190,5 +163,4 @@ class RecipeController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
         }
     }
-
 }

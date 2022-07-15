@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('table_number')->nullable();
             $table->text('instructions')->nullable();
-            $table->boolean('order_status')->comment('0 means pending(by default), 1 means Approved')->default('0')->nullable();
+            $table->boolean('order_status')->comment('1 means pending(by default), 2 means Approved')->nullable();
             $table->integer('cartTotalQuantity')->nullable();
             $table->integer('cartTotalAmount')->nullable();
             $table->integer('taxes')->nullable();
