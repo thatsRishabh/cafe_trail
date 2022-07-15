@@ -156,11 +156,14 @@ class OrderController extends Controller
             $info->order_status = $request->order_status;
             $info->save();
 
+           $deletOld = OrderContain::where('order_id', $id)->delete();
+           
             foreach ($request->order_contains as $key => $order) {
                 $productMenuItem = ProductMenu::find( $order['product_menu_id']);
-                // $addorder = new OrderContain;
-                $addorder=OrderContain::find($order['id']);
-                // $addorder->order_id =  $info->id;
+
+                $addorder = new OrderContain;
+                // $addorder=OrderContain::find($order['id']);
+                $addorder->order_id =  $id;
                 $addorder->instructions = $order['instructions'];
                 $addorder->product_menu_id = $order['product_menu_id'];
                 $addorder->category_id = $order['category_id'];
