@@ -137,9 +137,12 @@ class RecipeController extends Controller
             $info->recipe_status = $request->recipe_status;
             $info->save();
            
+            
+        $deletOld = RecipeContains::where('recipe_id', $id)->delete();
            foreach ($request->recipe_methods as $key => $recipe) {
-           
-               $addRecipe=RecipeContains::find($recipe['id']);
+            // $addRecipe=RecipeContains::find($recipe['id']);
+               $addRecipe= new RecipeContains;
+                $addRecipe->recipe_id = $id;
                $addRecipe->name = $recipe['name'];
                $addRecipe->quantity = $recipe['quantity'];
                $addRecipe->unit_id = $recipe['unit_id'];
