@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('product_infos', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->text('description');
-            $table->string('unit', 30)->comment('This will be from another API');
-            $table->integer('price');
+            $table->string('name', 50)->nullable();
+            $table->text('description')->nullable();
+            $table->string('unit', 30)->comment('This will be from another API')->nullable();
+            $table->integer('price')->nullable();
             $table->integer('minimum_qty')->nullable();
-            $table->integer('current_quanitity');
+            $table->integer('current_quanitity')->nullable();
             $table->timestamps();
         });
     }

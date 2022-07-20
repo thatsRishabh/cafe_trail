@@ -15,6 +15,8 @@ class CategoryController extends Controller
     {
         try {
             $query = Category::select('*')
+                    ->whereNull('parent_id')
+                    ->with('subCategory')
             ->orderBy('id', 'desc');
             if(!empty($request->id))
             {
@@ -58,18 +60,29 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'category'                    => 'required',
+            'name'                    => 'required',
            
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
-
+        
         DB::beginTransaction();
         try {
             $info = new Category;
-            $info->category = $request->category;
+
+            if(!empty($request->image))
+            {
+              $file=$request->image;
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            $info->image=$request->image->move('assets',$filename);
+            }
+
+            $info->name = $request->name;
+            // $info->image = $request->image;
+            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            $info->is_parent = $request->is_parent;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -83,7 +96,7 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'category'                    => 'required',
+            'name'                    => 'required',
            
         ]);
 
@@ -94,7 +107,7 @@ class CategoryController extends Controller
         DB::beginTransaction();
         try {
             $info = Category::find($id);
-            $info->category = $request->category;
+            $info->name = $request->name;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);

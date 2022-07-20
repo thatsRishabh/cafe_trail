@@ -14,6 +14,8 @@ class ProductMenuController extends Controller
     {
         try {
             $query = ProductMenu::select('*')
+                    ->whereNull('parent_id')
+                    ->with('halfPrice:parent_id,price')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
@@ -62,28 +64,46 @@ class ProductMenuController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'product'                    => 'required',
-            'description'                => 'required',
+            // {($request->parent_id) ? $request->parent_id :null}
+            
+            'product'                    => ($request->parent_id) ? ' ': 'required',
+            'description'                => ($request->parent_id) ? ' ': 'required',
             'category_id'                   => 'nullable|numeric',
             'subcategory_id'                => 'nullable|numeric',
-            'price'                      => 'required|numeric',
+            // 'price'                      => 'required|numeric',
            
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
-        }
+        } 
 
         DB::beginTransaction();
         try {
             $info = new ProductMenu;
+
+            if(!empty($request->image))
+            {
+              $file=$request->image;
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            $info->image=$request->image->move('assets',$filename);
+            }
+            // $file=$request->image;
+            // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
+
+            // $info->image=$request->file->move('assets',$filename);
             $info->product = $request->product;
             $info->description = $request->description;
+            // $info->image = $request->image;
             $info->category_id = $request->category_id;
             $info->subcategory_id = $request->subcategory_id;
             $info->price = $request->price;
+            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            $info->is_parent = $request->is_parent;
             $info->save();
+
             DB::commit();
+            // $info['product_menus'] = $info->halfPrice;
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
@@ -114,6 +134,8 @@ class ProductMenuController extends Controller
             $info->description = $request->description;
             $info->category_id = $request->category_id;
             $info->subcategory_id = $request->subcategory_id;
+            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            $info->is_parent = $request->is_parent;
             $info->price = $request->price;
             $info->save();
             DB::commit();

@@ -84,6 +84,53 @@ class UserInfo extends Controller
 
         // // return $old;
         // return $old->current_quanitity + $new;
-        // // $line_cost =(int)$price * (int)$quantity['key'];
+
+         // $today = getdate();
+
+        // return $today['mon'];
+    }
+
+    public function temp1(Request $request)
+
+    {
+        // $attendence = AttendenceList::whereIn('employee_id', $request->employee_id)->whereDate('created_at', date('Y-m-d'));
+        // $attendence = AttendenceList::whereIn('employee_id', $request->employee_id)->whereBetween('created_at', date('Y-m-d'));
+
+        // $attendence =AttendenceList::where('employee_id', $request->employee_id)->whereBetween('created_at', [$request->from_date.' 00:00:00', $request->end_date.' 23:59:59'])->get();
+        // $attendence =AttendenceList::where('employee_id', $request->employee_id)->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date)->get();
+        // return $attendence;
+
+        //  $attendence =AttendenceList::join('employee_attendences', 'attendence_lists.employee_id', '=', 'employee_attendences.id')
+        //  ->join('product_infos', 'product_stock_manages.product_id', '=', 'product_infos.id')
+        //  ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' ,'product_infos.current_quanitity as product_infos_old_quantity',)
+        //  ->orderBy('product_stock_manages.id', 'desc');
+
+        //  $attendence = DB::table('attendence_lists')
+        //  ->join('employee_attendences', 'attendence_lists.attendence_id', '=', 'employee_attendences.id')
+        //  ->select('attendence_lists.*', 'employee_attendences.date as attendenceDate')
+        //  ->where('employee_id', $request->employee_id)
+        //  ->orderBy('attendence_lists.id', 'desc')->get();
+
+        //    $attendence = AttendenceList::join('employee_attendences', 'attendence_lists.attendence_id', '=', 'employee_attendences.id')
+        //  ->select('attendence_lists.*', 'employee_attendences.date as attendenceDate')
+        //  ->where('employee_id', $request->employee_id)
+        //  ->orderBy('attendence_lists.id', 'desc')->get();
+        //  return $attendence->id;
+
+         $journals = AttendenceList::where('employee_id', $request->employee_id);
+            if(!empty($request->from_date) && !empty($request->end_date))
+            {
+                $journals->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
+            }
+            elseif(!empty($request->from_date) && empty($request->end_date))
+            {
+                $journals->whereDate('created_at', '>=', $request->from_date);
+            }
+            elseif(empty($request->from_date) && !empty($request->end_date))
+            {
+                $journals->whereDate('created_at', '<=', $request->end_date);
+            }
+            $result= $journals->get();
+            return $result;
     }
 }

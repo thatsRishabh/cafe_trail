@@ -15,7 +15,7 @@ class EmployeeAttendenceController extends Controller
     {
         try {
             $query = EmployeeAttendence::select('*')
-                    ->with('attendenceMethod')
+                    ->with('attendenceMethod:attendence_id,employee_id,attendence')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
@@ -26,8 +26,11 @@ class EmployeeAttendenceController extends Controller
             {
                 $query->where('date', $request->date);
             }
-       
-
+            if(!empty($request->employee_id))
+            {
+                $query->where('employee_id', $request->employee_id);
+            }
+            
             if(!empty($request->per_page_record))
             {
                 $perPage = $request->per_page_record;
@@ -162,5 +165,23 @@ class EmployeeAttendenceController extends Controller
             Log::error($e);
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
         }
+    }
+
+    public function dateWiseSearch(Request $request) {
+        $info = AttendenceList::where('employee_id', $request->employee_id);
+        if(!empty($request->from_date) && !empty($request->end_date))
+        {
+            $info->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
+        }
+        elseif(!empty($request->from_date) && empty($request->end_date))
+        {
+            $info->whereDate('created_at', '>=', $request->from_date);
+        }
+        elseif(empty($request->from_date) && !empty($request->end_date))
+        {
+            $info->whereDate('created_at', '<=', $request->end_date);
+        }
+        $result= $info->get();
+        return $result;
     }
 }

@@ -17,7 +17,7 @@ class RecipeController extends Controller
     {
         try {
             $query = Recipe::select('*')
-                    ->with('recipeMethods')
+                    ->with('recipeMethods:recipe_id,name,quantity,unit_id')
                     ->orderBy('id', 'desc');
 
         //   $query = RecipeContains::select('*')

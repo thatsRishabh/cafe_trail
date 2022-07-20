@@ -14,4 +14,9 @@ class EmployeeAttendence extends Model
     {
         return $this->hasMany(AttendenceList::class, 'attendence_id', 'id');
     }
+
+    public function Activity()
+    {
+        return $this->belongsTo(AttendenceList::class,'id' ,'attendence_id');
+    }
 }

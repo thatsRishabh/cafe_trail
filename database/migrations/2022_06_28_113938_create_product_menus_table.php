@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('product_menus', function (Blueprint $table) {
             $table->id();
-            $table->string('product', 50);
-            $table->string('category', 50);
-            $table->string('subcategory', 50);
-            $table->text('description');
-            $table->integer('price') ->comment('This will be used to subtract from Expense');
+            $table->string('product', 50)->nullable();
+            $table->string('category', 50)->nullable();
+            $table->string('subcategory', 50)->nullable();
+            $table->text('description')->nullable();
+            $table->integer('price') ->comment('This will be used to subtract from Expense')->nullable();
             $table->timestamps();
         });
     }
