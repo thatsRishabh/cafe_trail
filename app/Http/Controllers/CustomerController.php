@@ -80,6 +80,7 @@ class CustomerController extends Controller
         try {
             $info = new Customer;
             $info->name = $request->name;
+            $info->account_balance = $request->account_balance;
             $info->address = $request->address;
             $info->gender = $request->gender;
             $info->email = $request->email;
@@ -113,6 +114,7 @@ class CustomerController extends Controller
         try {
             $info = Customer::find($id);
             $info->name = $request->name;
+            $info->account_balance = $request->account_balance;
             $info->address = $request->address;
             $info->gender = $request->gender;
             $info->email = $request->email;

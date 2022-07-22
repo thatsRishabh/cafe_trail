@@ -15,6 +15,7 @@ class OrderContain extends Model
         'category_id',
         'product_menu_id',
         'price',
+        'order_duration',
         'netPrice',
     ];
     // working perfectly even after commenting above code

@@ -11,6 +11,11 @@ class Category extends Model
 
     public function subCategory()
     {
-         return $this->hasOne(self::class,'parent_id','id');
+         return $this->hasMany(self::class,'parent_id','id');
     }
+
+    // public function recipeMethods()
+    // {
+    //     return $this->hasMany(RecipeContains::class, 'recipe_id', 'id');
+    // }
 }

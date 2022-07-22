@@ -3,36 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ProductMenu;
+use App\Models\CustomerAccountManage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Customer;
 
-class ProductMenuController extends Controller
+class CustomerAccountManageController extends Controller
 {
-    public function searchProductMenu(Request $request)
+    public function searchCustomerAccount(Request $request)
     {
         try {
-            $query = ProductMenu::select('*')
-                    ->whereNull('parent_id')
-                    ->with('halfPrice:parent_id,price,name,description')
+            $query = CustomerAccountManage::select('*')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
             }
-            if(!empty($request->price))
+            if(!empty($request->transaction_type))
             {
-                $query->where('price', $request->price);
+                $query->where('transaction_type', $request->transaction_type);
             }
-            if(!empty($request->category_id))
+            if(!empty($request->account_status))
             {
-                $query->where('category_id', $request->category_id);
-            }
-            if(!empty($request->product))
-            {
-                $query->where('product', 'LIKE', '%'.$request->product.'%');
+                $query->where('account_status', $request->account_status);
             }
 
 
@@ -68,13 +63,10 @@ class ProductMenuController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            // {($request->parent_id) ? $request->parent_id :null}
-            
-            // 'name'                    => ($request->parent_id) ? ' ': 'required',
-            'description'                => ($request->parent_id) ? ' ': 'required',
-            'category_id'                   => 'nullable|numeric',
-            'subcategory_id'                => 'nullable|numeric',
-            // 'price'                      => 'required|numeric',
+        
+            'change_in_balance'                   => 'nullable|numeric',
+            'transaction_type'                    => 'required',
+            'customer_id'                         => 'required|numeric',
            
         ]);
 
@@ -84,28 +76,32 @@ class ProductMenuController extends Controller
 
         DB::beginTransaction();
         try {
-            $info = new ProductMenu;
 
-            if(!empty($request->image))
-            {
-              $file=$request->image;
-            $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=$request->image->move('assets',$filename);
-            }
-            // $file=$request->image;
-            // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
+            $old = Customer::where('customers.id', $request->customer_id)->get('account_balance')->first();
 
-            // $info->image=$request->file->move('assets',$filename);
-            $info->name = $request->name;
-            $info->order_duration = $request->order_duration;
-            $info->description = $request->description;
-            $info->image_url = $request->image_url;
-            $info->category_id = $request->category_id;
-            $info->subcategory_id = $request->subcategory_id;
-            $info->price = $request->price;
-            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
-            $info->is_parent = $request->is_parent;
+            
+            $info = new CustomerAccountManage;
+            $info->customer_id = $request->customer_id;
+            // $info->unit_id = $request->unit_id;
+
+            // storing old stock from product infos stock table
+            $info->previous_balance = $old->account_balance;
+            $info->change_in_balance = $request->change_in_balance;
+
+            // stock in/out calculation
+            $info->new_balance = strtolower($request->transaction_type) == "credit" 
+            ? $old->account_balance + $request->change_in_balance 
+            : $old->account_balance - $request->change_in_balance;
+           
+            $info->transaction_type = $request->transaction_type;
+            $info->mode_of_transaction = $request->mode_of_transaction;
+            $info->account_status = $request->account_status;
             $info->save();
+
+            // updating the productinfo table as well
+            $updateBalance = Customer::find( $request->customer_id);
+            $updateBalance->account_balance = $info->new_balance;
+            $updateBalance->save();
 
             DB::commit();
             // $info['product_menus'] = $info->halfPrice;
@@ -121,11 +117,9 @@ class ProductMenuController extends Controller
     {
         $validation = Validator::make($request->all(), [
       
-             'name'                         =>'required',
-            'description'                    => 'required',
-           'category_id'                   => 'nullable|numeric',
-           'subcategory_id'                => 'nullable|numeric',
-           // 'price'                      => 'required|numeric',
+            'change_in_balance'                   => 'nullable|numeric',
+            'transaction_type'                    => 'required',
+            'customer_id'                         => 'required|numeric',
            
         ]);
 
@@ -135,25 +129,31 @@ class ProductMenuController extends Controller
 
         DB::beginTransaction();
         try {
-            $info = ProductMenu::find($id);
-            
+            $old = Customer::where('customers.id', $request->customer_id)->get('account_balance')->first();
 
-            // if(!empty($request->image))
-            // {
-            //   $file=$request->image;
-            // $filename=time().'.'.$file->getClientOriginalExtension();
-            // $info->image=$request->image->move('assets',$filename);
-            // }
+            
+            $info = CustomerAccountManage::find($id);
+            $info->customer_id = $request->customer_id;
+            // $info->unit_id = $request->unit_id;
+
+            // storing old stock from product infos stock table
+            $info->previous_balance = $old->account_balance;
+            $info->change_in_balance = $request->change_in_balance;
+
+            // stock in/out calculation
+            $info->new_balance = strtolower($request->transaction_type) == "credit" 
+            ? $old->account_balance + $request->change_in_balance 
+            : $old->account_balance - $request->change_in_balance;
            
-            $info->name = $request->name;
-            $info->order_duration = $request->order_duration;
-            $info->description = $request->description;
-            $info->image_url = $request->image_url;
-            $info->category_id = $request->category_id;
-            $info->subcategory_id = $request->subcategory_id;
-            $info->price = $request->price;
-            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
-            $info->is_parent = $request->is_parent;
+            $info->transaction_type = $request->transaction_type;
+            $info->mode_of_transaction = $request->mode_of_transaction;
+            $info->account_status = $request->account_status;
+            $info->save();
+
+            // updating the productinfo table as well
+            $updateBalance = Customer::find( $request->customer_id);
+            $updateBalance->account_balance = $info->new_balance;
+            $updateBalance->save();
 
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -168,7 +168,7 @@ class ProductMenuController extends Controller
     {
         try {
             
-            $info = ProductMenu::find($id);
+            $info = CustomerAccountManage::find($id);
             if($info)
             {
                 // return response(prepareResult(false, $info, trans('translate.fetched_records')), config('httpcodes.success'));
@@ -185,7 +185,7 @@ class ProductMenuController extends Controller
     {
         try {
             
-            $info = ProductMenu::find($id);
+            $info = CustomerAccountManage::find($id);
             if($info)
             {
                 $result=$info->delete();

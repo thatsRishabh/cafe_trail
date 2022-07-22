@@ -79,3 +79,6 @@ Route::resource('recipe', App\Http\Controllers\RecipeController::class)->only(['
 Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
 Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
 
+// CustomerAccountManage
+Route::post('customer-account-manages', [App\Http\Controllers\CustomerAccountManageController::class, 'searchCustomerAccount']); 
+Route::resource('customer-account-manage', App\Http\Controllers\CustomerAccountManageController::class)->only(['store','destroy','show', 'update']);

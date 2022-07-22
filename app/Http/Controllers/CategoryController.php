@@ -17,7 +17,7 @@ class CategoryController extends Controller
             $query = Category::select('*')
                     ->whereNull('parent_id')
                     ->with('subCategory')
-            ->orderBy('id', 'desc');
+            ->orderBy('name', 'asc');
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
@@ -80,7 +80,7 @@ class CategoryController extends Controller
             }
 
             $info->name = $request->name;
-            // $info->image = $request->image;
+            $info->image_url = $request->image_url;
             $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
             $info->is_parent = $request->is_parent;
             $info->save();
@@ -95,6 +95,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+       
         $validation = Validator::make($request->all(), [
             'name'                    => 'required',
            
@@ -107,7 +108,18 @@ class CategoryController extends Controller
         DB::beginTransaction();
         try {
             $info = Category::find($id);
+
+            if(!empty($request->image))
+            {
+              $file=$request->image;
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            $info->image=$request->image->move('assets',$filename);
+            }
+
             $info->name = $request->name;
+            $info->image_url = $request->image_url;
+            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            $info->is_parent = $request->is_parent;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
