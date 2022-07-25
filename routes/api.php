@@ -46,6 +46,7 @@ Route::resource('unit', App\Http\Controllers\UnitController::class)->only(['stor
 // Category
 Route::post('categorys', [App\Http\Controllers\CategoryController::class, 'searchCategory']); 
 Route::resource('category', App\Http\Controllers\CategoryController::class)->only(['store','destroy','show', 'update']);
+Route::post('subcategorys', [App\Http\Controllers\CategoryController::class, 'searchSubcategory']); 
 
 // Employee
 Route::post('employees', [App\Http\Controllers\EmployeeController::class, 'searchEmployee']); 
@@ -66,10 +67,6 @@ Route::resource('customer', App\Http\Controllers\CustomerController::class)->onl
 // expense
 Route::post('expenses', [App\Http\Controllers\ExpenseController::class, 'searchExpense']); 
 Route::resource('expense', App\Http\Controllers\ExpenseController::class)->only(['store','destroy','show', 'update']);
-
-// subcategory
-Route::post('subcategorys', [App\Http\Controllers\SubcategoryController::class, 'searchSubcategory']); 
-Route::resource('subcategory', App\Http\Controllers\SubcategoryController::class)->only(['store','destroy','show', 'update']);
 
 // recipe
 Route::post('recipes', [App\Http\Controllers\RecipeController::class, 'searchRecipe']); 

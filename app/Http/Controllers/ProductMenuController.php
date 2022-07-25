@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductMenu;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;  
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,7 +15,7 @@ class ProductMenuController extends Controller
         try {
             $query = ProductMenu::select('*')
                     ->whereNull('parent_id')
-                    ->with('halfPrice:parent_id,price,name,description')
+                    ->with('halfPrice:parent_id,price,name,description,order_duration,category_id')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
@@ -120,12 +120,11 @@ class ProductMenuController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-      
-             'name'                         =>'required',
-            'description'                    => 'required',
-           'category_id'                   => 'nullable|numeric',
-           'subcategory_id'                => 'nullable|numeric',
-           // 'price'                      => 'required|numeric',
+             'name'                    => 'required',
+             'description'                => 'required',
+             'category_id'                   => 'nullable|numeric',
+             'subcategory_id'                => 'nullable|numeric',
+             // 'price'                      => 'required|numeric',
            
         ]);
 
@@ -135,16 +134,18 @@ class ProductMenuController extends Controller
 
         DB::beginTransaction();
         try {
-            $info = ProductMenu::find($id);
             
+            $info = ProductMenu::find($id);
+            if(!empty($request->image))
+            {
+              $file=$request->image;
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            $info->image=$request->image->move('assets',$filename);
+            }
+            // $file=$request->image;
+            // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
 
-            // if(!empty($request->image))
-            // {
-            //   $file=$request->image;
-            // $filename=time().'.'.$file->getClientOriginalExtension();
-            // $info->image=$request->image->move('assets',$filename);
-            // }
-           
+            // $info->image=$request->file->move('assets',$filename);
             $info->name = $request->name;
             $info->order_duration = $request->order_duration;
             $info->description = $request->description;
@@ -154,7 +155,7 @@ class ProductMenuController extends Controller
             $info->price = $request->price;
             $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
             $info->is_parent = $request->is_parent;
-
+            $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {

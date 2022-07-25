@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('recipes', function (Blueprint $table) {
-            $table->boolean('recipe_status')->comment('1 means inactive, 2 means active')->nullable();
+        Schema::table('recipe_contains', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_info_stock_id')->nullable()->after('id');
+            $table->foreign('product_info_stock_id')->references('id')->on('product_infos')->onDelete('cascade');
         });
     }
 
@@ -25,7 +26,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('recipes', function (Blueprint $table) {
+        Schema::table('recipe_contains', function (Blueprint $table) {
             //
         });
     }

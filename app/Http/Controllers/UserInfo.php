@@ -7,7 +7,7 @@ use App\Models\UserData;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use App\Models\UnitData;
+use App\Models\Unit;
 use App\Models\ProductStockManage;
 use App\Models\ProductMenu;
 use App\Models\ProductInfo;
@@ -90,9 +90,9 @@ class UserInfo extends Controller
         // return $today['mon'];
     }
 
-    public function temp1(Request $request)
+    // public function temp1(Request $request)
 
-    {
+    // {
         // $attendence = AttendenceList::whereIn('employee_id', $request->employee_id)->whereDate('created_at', date('Y-m-d'));
         // $attendence = AttendenceList::whereIn('employee_id', $request->employee_id)->whereBetween('created_at', date('Y-m-d'));
 
@@ -117,20 +117,68 @@ class UserInfo extends Controller
         //  ->orderBy('attendence_lists.id', 'desc')->get();
         //  return $attendence->id;
 
-         $journals = AttendenceList::where('employee_id', $request->employee_id);
-            if(!empty($request->from_date) && !empty($request->end_date))
-            {
-                $journals->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
-            }
-            elseif(!empty($request->from_date) && empty($request->end_date))
-            {
-                $journals->whereDate('created_at', '>=', $request->from_date);
-            }
-            elseif(empty($request->from_date) && !empty($request->end_date))
-            {
-                $journals->whereDate('created_at', '<=', $request->end_date);
-            }
-            $result= $journals->get();
-            return $result;
+        //  $journals = AttendenceList::where('employee_id', $request->employee_id);
+        //     if(!empty($request->from_date) && !empty($request->end_date))
+        //     {
+        //         $journals->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
+        //     }
+        //     elseif(!empty($request->from_date) && empty($request->end_date))
+        //     {
+        //         $journals->whereDate('created_at', '>=', $request->from_date);
+        //     }
+        //     elseif(empty($request->from_date) && !empty($request->end_date))
+        //     {
+        //         $journals->whereDate('created_at', '<=', $request->end_date);
+        //     }
+        //     $result= $journals->get();
+        //     return $result;
+    // }
+
+        //     function getOVHours($time1, $time2, $ovtime1, $ovtime2)
+        // {
+        //     $converted_time1 = new DateTime($time1);
+        //     $converted_time2 = new DateTime($time2);
+        //     if($converted_time2 < $converted_time1)
+        //     {
+        //         $converted_time2 = $converted_time2->modify('+1 day');
+        //     }
+
+        //     $converted_ovtime1 = new DateTime($ovtime1);
+        //     $converted_ovtime2 = new DateTime($ovtime2);
+
+        //     if($converted_ovtime2 < $converted_ovtime1)
+        //     {
+
+        //         $converted_ovtime2 = $converted_ovtime2->modify('+1 day');
+        //     }
+
+        //     if(($converted_ovtime1 >= $converted_time1) && ($converted_ovtime2 <= $converted_time2))
+        //     {
+        //         $hours = getHours($ovtime1,$ovtime2,0);
+        //         return $hours.'between';
+        //     }
+        //     elseif (($converted_ovtime1 <= $converted_time1) && ($converted_ovtime2 >= $converted_time2)) 
+        //     {
+        //         $hours = getHours($time1,$time2,0);
+        //         return $hours.'beyond';
+        //     }
+        //     elseif (($converted_ovtime1 <= $converted_time1) && ($converted_ovtime2 <= $converted_time2)) 
+        //     {
+        //         $hours = getHours($time1,$ovtime2,0);
+        //         return $hours.'before';
+        //     }
+        //     elseif (($converted_ovtime1 >= $converted_time1) && ($converted_ovtime2 >= $converted_time2)) 
+        //     {
+        //         $hours = getHours($ovtime1,$time2,1);
+        //         return $hours.'after';
+        //     }
+        //     return $hours;
+        // }
+
+        public function temp1(Request $request)
+    {
+       $data= unitConversion($request->unit_id, $request->change_stock);
+        return $data;
+       
     }
 }

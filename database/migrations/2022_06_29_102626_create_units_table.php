@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('abbreiation');
-            $table->integer('minvalue');
+            $table->string('abbreiation')->nullable();
+            $table->integer('minvalue')->nullable();
             $table->timestamps();
         });
     }

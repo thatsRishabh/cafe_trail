@@ -8,7 +8,7 @@ use App\Models\RecipeContains;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\ProductInfo;
 
 class RecipeController extends Controller
 {
@@ -17,6 +17,8 @@ class RecipeController extends Controller
     {
         try {
             $query = Recipe::select('*')
+            ->join('product_menus', 'recipes.product_menu_id', '=', 'product_menus.id')
+            ->select('recipes.*','product_menus.name as product_menu_name' )
                     ->with('recipeMethods:recipe_id,name,quantity,unit_id')
                     ->orderBy('id', 'desc');
 
@@ -71,7 +73,7 @@ class RecipeController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'title'                    => 'required',
+            // 'name'                    => 'required',
             'recipe_status'                    => 'required|numeric',
             'description'                => 'required',
             // 'name'                      => 'required',
@@ -87,7 +89,8 @@ class RecipeController extends Controller
         DB::beginTransaction();
         try {
             $info = new Recipe;
-            $info->title = $request->title;
+            $info->name = $request->name;
+            $info->product_menu_id = $request->product_menu_id;
             $info->description = $request->description;
             $info->recipe_status = $request->recipe_status;
             $info->save();
@@ -96,10 +99,18 @@ class RecipeController extends Controller
                $addRecipe = new RecipeContains;
                $addRecipe->recipe_id =  $info->id;
                $addRecipe->name = $recipe['name'];
+               $addRecipe->product_info_stock_id = $recipe['product_info_stock_id'];
                $addRecipe->quantity = $recipe['quantity'];
                $addRecipe->unit_id = $recipe['unit_id'];
                $addRecipe->save();
                
+             // getting old stock value
+            $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
+             // updating the productinfo table as well
+             $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
+             $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
+             $updateStock->save();
+
            }
 
             DB::commit();
@@ -115,7 +126,7 @@ class RecipeController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'title'                    => 'required',
+            // 'name'                    => 'required',
             'description'                => 'required',
              'recipe_status'                    => 'required|numeric',
             // 'name'                      => 'required',
@@ -132,7 +143,8 @@ class RecipeController extends Controller
         try {
 
             $info = Recipe::find($id);
-            $info->title = $request->title;
+            $info->name = $request->name;
+            $info->product_menu_id = $request->product_menu_id;
             $info->description = $request->description;
             $info->recipe_status = $request->recipe_status;
             $info->save();
@@ -140,14 +152,24 @@ class RecipeController extends Controller
             
         $deletOld = RecipeContains::where('recipe_id', $id)->delete();
            foreach ($request->recipe_methods as $key => $recipe) {
+            $product_info_name = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('name')->first();
+
             // $addRecipe=RecipeContains::find($recipe['id']);
                $addRecipe= new RecipeContains;
                 $addRecipe->recipe_id = $id;
-               $addRecipe->name = $recipe['name'];
+               $addRecipe->name = $product_info_name->name;
+               $addRecipe->product_info_stock_id = $recipe['product_info_stock_id'];
                $addRecipe->quantity = $recipe['quantity'];
                $addRecipe->unit_id = $recipe['unit_id'];
                $addRecipe->save();
                
+                // getting old stock value
+            $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
+            // updating the productinfo table as well
+            $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
+            $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
+            $updateStock->save();
+           
            }
 
             DB::commit();

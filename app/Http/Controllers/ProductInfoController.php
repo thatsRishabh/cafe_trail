@@ -18,7 +18,7 @@ class ProductInfoController extends Controller
 
             $query = DB::table('product_infos')
             ->join('units', 'product_infos.unit_id', '=', 'units.id')
-            ->select('product_infos.*', 'units.name as units_name')
+            ->select('product_infos.*', 'units.name as units_name', 'units.minvalue as units_minvalue')
             ->orderBy('product_infos.id', 'desc');
           // in above we have to specify that it has to sort according to ID of which table, product_infos or Unit
 
@@ -88,7 +88,7 @@ class ProductInfoController extends Controller
             $info->name = $request->name;
             $info->description = $request->description;
             $info->unit_id = $request->unit_id;
-            $info->current_quanitity = $request->current_quanitity;
+            $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
             $info->minimum_qty = $request->minimum_qty;
             $info->price = $request->price;
             $info->save();
@@ -123,7 +123,7 @@ class ProductInfoController extends Controller
             $info->name = $request->name;
             $info->description = $request->description;
             $info->unit_id = $request->unit_id;
-            $info->current_quanitity = $request->current_quanitity;
+            $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
             $info->minimum_qty = $request->minimum_qty;
             $info->price = $request->price;
             $info->save();

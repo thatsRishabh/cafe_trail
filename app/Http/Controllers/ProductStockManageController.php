@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ProductStockManage;
 use App\Models\ProductMenu;
+use App\Models\Unit;
 use App\Models\ProductInfo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -41,6 +42,19 @@ class ProductStockManageController extends Controller
                 $query->where('product', 'LIKE', '%'.$request->product.'%');
             }
 
+             // date wise filter from here
+             if(!empty($request->from_date) && !empty($request->end_date))
+            {
+                $query->where('product_id', $request->product_id)->whereDate('product_stock_manages.created_at', '>=', $request->from_date)->whereDate('product_stock_manages.created_at', '<=', $request->end_date);
+            }
+            elseif(!empty($request->from_date) && empty($request->end_date))
+            {
+                $query->where('customer_id', $request->customer_id)->whereDate('product_stock_manages.created_at', '>=', $request->from_date);
+            }
+            elseif(empty($request->from_date) && !empty($request->end_date))
+            {
+                $query->where('customer_id', $request->customer_id)->whereDate('product_stock_manages.created_at', '<=', $request->end_date);
+            }
 
             if(!empty($request->per_page_record))
             {
@@ -103,8 +117,8 @@ class ProductStockManageController extends Controller
 
             // stock in/out calculation
             $info->new_stock = strtolower($request->stock_operation) == "in" 
-            ? $old->current_quanitity + $request->change_stock 
-            : $old->current_quanitity - $request->change_stock;
+            ? $old->current_quanitity + unitConversion($request->unit_id, $request->change_stock) 
+            : $old->current_quanitity - unitConversion($request->unit_id, $request->change_stock);
 
             $info->stock_operation = $request->stock_operation;
             $info->save();

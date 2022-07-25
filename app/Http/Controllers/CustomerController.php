@@ -64,8 +64,8 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name'                    => 'required',
-            'address'                 => 'required',
+            'name'                     => 'required',
+            'address'                  => 'required',
             'gender'                   => 'required',
             'email'                    => 'required|email|unique:App\Models\Customer,email',
             'mobile'                   => 'required|numeric|digits_between:10,10',

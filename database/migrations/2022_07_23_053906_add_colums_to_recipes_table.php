@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('recipes', function (Blueprint $table) {
-            $table->boolean('recipe_status')->comment('1 means inactive, 2 means active')->nullable();
+            $table->unsignedBigInteger('product_menu_id')->nullable()->after('id');
+            $table->foreign('product_menu_id')->references('id')->on('product_menus')->onDelete('cascade');
+            $table->renameColumn('title', 'name');
         });
     }
 

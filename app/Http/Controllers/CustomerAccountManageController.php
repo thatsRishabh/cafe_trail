@@ -15,21 +15,40 @@ class CustomerAccountManageController extends Controller
     {
         try {
             $query = CustomerAccountManage::select('*')
+            ->join('customers', 'customer_account_manages.customer_id', '=', 'customers.id')
+            ->select('customer_account_manages.*','customers.name as customers_name')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
             {
-                $query->where('id', $request->id);
+                $query->where('customer_account_manages.id', $request->id);
             }
             if(!empty($request->transaction_type))
             {
                 $query->where('transaction_type', $request->transaction_type);
+            }
+            if(!empty($request->customer_id))
+            {
+                $query->where('customer_id', $request->customer_id);
             }
             if(!empty($request->account_status))
             {
                 $query->where('account_status', $request->account_status);
             }
 
+            // date wise filter from here
+             if(!empty($request->from_date) && !empty($request->end_date))
+            {
+                $query->where('customer_id', $request->customer_id)->whereDate('customer_account_manages.created_at', '>=', $request->from_date)->whereDate('customer_account_manages.created_at', '<=', $request->end_date);
+            }
+            elseif(!empty($request->from_date) && empty($request->end_date))
+            {
+                $query->where('customer_id', $request->customer_id)->whereDate('customer_account_manages.created_at', '>=', $request->from_date);
+            }
+            elseif(empty($request->from_date) && !empty($request->end_date))
+            {
+                $query->where('customer_id', $request->customer_id)->whereDate('customer_account_manages.created_at', '<=', $request->end_date);
+            }
 
             if(!empty($request->per_page_record))
             {
