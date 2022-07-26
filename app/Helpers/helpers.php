@@ -18,12 +18,12 @@ function unitConversion($unitID, $quantity) {
 	$unitName = Unit::where('id', $unitID)->get('name')->first();
 	// return $unitName->name;
    
-	if((strtolower($unitName->name) == "kg") || (strtolower($unitName->name) == "liter"))
+	if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter"))
 	    {
 	        $value = $quantity*1000;
 	        return $value;
 	    }
-	    elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "ml") || (strtolower($unitName->name) == "piece/pack")) 
+	    elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "piece/pack")) 
 	    {
 			$value = $quantity;
 	        return $value;

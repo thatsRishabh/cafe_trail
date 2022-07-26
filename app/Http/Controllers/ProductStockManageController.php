@@ -22,7 +22,7 @@ class ProductStockManageController extends Controller
             $query = DB::table('product_stock_manages')
             ->join('units', 'product_stock_manages.unit_id', '=', 'units.id')
             ->join('product_infos', 'product_stock_manages.product_id', '=', 'product_infos.id')
-            ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' ,'product_infos.current_quanitity as product_infos_old_quantity',)
+            ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' ,'product_infos.current_quanitity as product_infos_old_quantity', 'units.minvalue as units_minvalue')
             ->orderBy('product_stock_manages.id', 'desc');
 
             if(!empty($request->id))

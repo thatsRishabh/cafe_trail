@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->integer('quantity')->nullable();
             $table->integer('unit_id')->nullable();
+            $table->string('unit_name', 50)->nullable();
+            $table->integer('unit_minValue')->nullable();
             $table->timestamps();
         });
     }

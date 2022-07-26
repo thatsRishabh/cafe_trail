@@ -25,6 +25,8 @@ Route::get('/checkconnection', [UserInfo::class, 'checkConnection']);
 Route::post('temp', [App\Http\Controllers\UserInfo::class, 'temp']); 
 Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']); 
 
+// dashboard
+Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']); 
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 

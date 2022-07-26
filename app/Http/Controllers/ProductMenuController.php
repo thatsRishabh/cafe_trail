@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductMenu;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;  
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -13,22 +14,25 @@ class ProductMenuController extends Controller
     public function searchProductMenu(Request $request)
     {
         try {
-            $query = ProductMenu::select('*')
-                    ->whereNull('parent_id')
+            // $query = DB::table('product_menus')
+            $query = ProductMenu::join('categories', 'product_menus.subcategory_id', '=', 'categories.id')
+                    ->select('product_menus.*', 'categories.name as subCategories_name')
+                        // ->select('*')
+                    ->whereNull('product_menus.parent_id')
                     ->with('halfPrice:parent_id,price,name,description,order_duration,category_id')
-                    ->orderBy('id', 'desc');
+                    ->orderBy('product_menus.id', 'desc');
 
             if(!empty($request->id))
             {
-                $query->where('id', $request->id);
+                $query->where('product_menus.id', $request->id);
             }
             if(!empty($request->price))
             {
-                $query->where('price', $request->price);
+                $query->where('product_menus.price', $request->price);
             }
             if(!empty($request->category_id))
             {
-                $query->where('category_id', $request->category_id);
+                $query->where('product_menus.category_id', $request->category_id);
             }
             if(!empty($request->product))
             {
@@ -86,6 +90,8 @@ class ProductMenuController extends Controller
         try {
             $info = new ProductMenu;
 
+            $category_name = Category::where('categories.id', $request->subcategory_id)->get('name')->first();
+
             if(!empty($request->image))
             {
               $file=$request->image;
@@ -96,7 +102,7 @@ class ProductMenuController extends Controller
             // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
 
             // $info->image=$request->file->move('assets',$filename);
-            $info->name = $request->name;
+            $info->name = ($request->name) ? $request->name : $category_name->name;
             $info->order_duration = $request->order_duration;
             $info->description = $request->description;
             $info->image_url = $request->image_url;
