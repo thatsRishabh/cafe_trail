@@ -71,7 +71,7 @@ class ProductInfoController extends Controller
             'name'                       => 'required',
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
-            // 'minimum_qty'                      => 'required|numeric',
+            // 'minimum_qty'              => 'required|numeric',
             'current_quanitity'                  => 'required',
             'price'                      => 'required|numeric',
             

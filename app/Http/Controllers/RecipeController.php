@@ -32,9 +32,9 @@ class RecipeController extends Controller
             {
                 $query->where('id', $request->id);
             }
-            if(!empty($request->title))
+            if(!empty($request->name))
             {
-                $query->where('title', $request->title);
+                $query->where('name', $request->name);
             }
             if(!empty($request->recipe_status))
             {

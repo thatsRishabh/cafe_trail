@@ -13,6 +13,8 @@ use App\Models\ProductMenu;
 use App\Models\ProductInfo;
 use App\Models\EmployeeAttendence;
 use App\Models\AttendenceList;
+use App\Models\Recipe;
+use App\Models\RecipeContains;
 
 class UserInfo extends Controller
 {
@@ -177,8 +179,16 @@ class UserInfo extends Controller
 
         public function temp1(Request $request)
     {
-       $data= unitConversion($request->unit_id, $request->change_stock);
-        return $data;
-       
+        $query = RecipeContains::select('*')
+            // ->join('product_menus', 'recipes.product_menu_id', '=', 'product_menus.id')
+            // ->select('recipes.*','product_menus.name as product_menu_name' )
+            //         ->with('recipeMethods:recipe_id,name,quantity,unit_id,product_info_stock_id,unit_name,unit_minValue')
+                    ->where('recipe_id', 78)
+                    ->orderBy('id', 'desc')->get();
+                 
+                    // foreach ($query as $key => $recipe) {
+                    //     $value=$recipe->unit_id
+                    // };
+            return $query;        
     }
 }

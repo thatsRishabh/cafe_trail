@@ -159,40 +159,50 @@ class OrderController extends Controller
         try {
             $info = Order::find($id);
             $info->table_number = $request->table_number;
-            // $info->instructions = $request->instructions;
+            $info->cartTotalQuantity = $request->cartTotalQuantity;
+            $info->cartTotalAmount = $request->cartTotalAmount;
+            $info->taxes = $request->taxes;
+            $info->netAmount = $request->netAmount;
             $info->order_status = $request->order_status;
             $info->save();
 
            $deletOld = OrderContain::where('order_id', $id)->delete();
            
             foreach ($request->order_contains as $key => $order) {
-                $productMenuItem = ProductMenu::find( $order['product_menu_id']);
+               // search query for data from another table
+               $productMenuItem = ProductMenu::find( $order['product_menu_id']);
+                
+               $addorder = new OrderContain;
+               $addorder->order_id =  $info->id;
+               $addorder->product_menu_id = $order['product_menu_id'];
+               $addorder->category_id = $order['category_id'];
+               $addorder->order_duration = $order['order_duration'];
+               $addorder->instructions = $order['instructions'] ?? "";
 
-                $addorder = new OrderContain;
-                // $addorder=OrderContain::find($order['id']);
-                $addorder->order_id =  $id;
-                $addorder->instructions = $order['instructions'];
-                $addorder->product_menu_id = $order['product_menu_id'];
-                $addorder->category_id = $order['category_id'];
-                $addorder->order_duration = $order['order_duration'];
-                $addorder->name = $productMenuItem->product;
-                $addorder->quantity = $order['quantity'];
-                $addorder->price = $productMenuItem->price;
-                $addorder->netPrice = $order['quantity'] * $productMenuItem->price ;
-                $addorder->save();
+               // below data is from another table
+               // $addorder->name = $productMenuItem->name;
+               $addorder->name = $order['name'];
+               $addorder->quantity = $order['quantity'];
+
+                // below data is from another table
+               // $addorder->price = $productMenuItem->price;
+               $addorder->price = $order['price'];
+               // $addorder->netPrice = $order['quantity'] * $productMenuItem->price ;
+               $addorder->netPrice = $order['netPrice'];
+               $addorder->save();
                 
             }
  
-                // database sum querry
-            $quantitySum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('quantity');
-            $amountSum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('netPrice');
+            //     // database sum querry
+            // $quantitySum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('quantity');
+            // $amountSum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('netPrice');
 
-            $info = Order::find( $info->id);
-            $info->cartTotalQuantity = $quantitySum;
-            $info->cartTotalAmount = $amountSum;
-            $info->taxes = $request->taxes;
-            $info->netAmount = $amountSum + $request->taxes;
-            $info->save();
+            // $info = Order::find( $info->id);
+            // $info->cartTotalQuantity = $quantitySum;
+            // $info->cartTotalAmount = $amountSum;
+            // $info->taxes = $request->taxes;
+            // $info->netAmount = $amountSum + $request->taxes;
+            // $info->save();
             DB::commit();
             $info['order_contains'] = $info->orderContains;
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
