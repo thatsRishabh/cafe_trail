@@ -25,6 +25,8 @@ return new class extends Migration
             $table->integer('quantity')->nullable();
             $table->integer('price')->nullable();
             $table->integer('netPrice')->nullable();
+            $table->text('instructions')->nullable();
+            $table->integer('order_duration')->nullable();
             $table->timestamps();
         });
     }

@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('recipe_contains', function (Blueprint $table) {
             $table->id();
+            $table->integer('product_info_stock_id', 20);
             $table->unsignedBigInteger('recipe_id');
             $table->foreign('recipe_id')->references('id')->on('recipes')->onDelete('cascade');
-            $table->string('name')->nullable();
+            $table->string('name', 255)->nullable();
             $table->integer('quantity')->nullable();
             $table->integer('unit_id')->nullable();
             $table->string('unit_name', 50)->nullable();

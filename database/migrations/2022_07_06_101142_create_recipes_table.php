@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 50)->nullable();
+            $table->integer('product_menu_id', 20)->nullable();
+            $table->string('name', 50)->nullable();
             $table->text('description')->nullable();
+            $table->boolean('recipe_status')->nullable();
             $table->timestamps();
         });
     }
