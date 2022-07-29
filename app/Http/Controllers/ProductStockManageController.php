@@ -105,8 +105,6 @@ class ProductStockManageController extends Controller
         try {
             // getting old stock value
             $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
-           
-
             $info = new ProductStockManage;
             $info->product_id = $request->product_id;
             $info->unit_id = $request->unit_id;
@@ -140,12 +138,12 @@ class ProductStockManageController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'stock_operation'                => 'required',
-            'product_id'                   => 'required|numeric',
+            'stock_operation'          => 'required',
+            'product_id'               => 'required|numeric',
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
-            'change_stock'                      => 'required|numeric',
-            'unit_id'                      => 'required|numeric',
+            'change_stock'             => 'required|numeric',
+            'unit_id'                  => 'required|numeric',
            
         ]);
 
@@ -172,7 +170,6 @@ class ProductStockManageController extends Controller
              $info->new_stock = strtolower($request->stock_operation) == "in" 
              ? $old->current_quanitity + $request->change_stock 
              : $old->current_quanitity - $request->change_stock;
- 
              $info->stock_operation = $request->stock_operation;
              $info->save();
  

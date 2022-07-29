@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductMenu;
+use App\Models\Order;
+use App\Models\Employee;
 use App\Models\AttendenceList;
 use App\Models\OrderContain;
 use Illuminate\Support\Facades\DB;  
@@ -20,6 +22,7 @@ class DashboardController extends Controller
           
             $data['todaySale'] = DB::table('orders')->whereDate('orders.created_at', '=', date("Y-m-d"))->sum('netAmount');
             $data['employeePresentToday'] = AttendenceList::where('attendence',2)->whereDate('created_at', '=', date("Y-m-d"))->count();
+            $data['totalEmployee'] = Employee::count();
 
            
 
@@ -30,4 +33,79 @@ class DashboardController extends Controller
                 return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
             }
     }
+
+    public function orderList()
+    {
+        try {
+            $data = [];
+            $data['todaySale'] = DB::table('order_contains')->whereDate('order_contains.created_at', '=', date("Y-m-d"))->sum('quantity');
+            // $data['todayorderSale']= DB::table('order_contains')->where('product_menu_id', 138)->sum('quantity');
+            $data['totalPrice'] = OrderContain::where('product_menu_id', 138)->sum('netPrice');
+            $data['totalQuantity'] = OrderContain::where('product_menu_id', 138)->sum('quantity');
+            $data['query']= OrderContain::select('name');
+            
+            
+    
+            
+            // $data['query']= $data['query']->get();
+
+
+            
+                    // ->with('orderContains')
+                    // ->orderBy('id', 'desc');
+
+            // if(!empty($request->id))
+            // {
+            //     $data['query']->where('id', $request->id);
+            // }
+            // if(!empty($request->table_number))
+            // {
+            //     $data['query']->where('table_number', $request->table_number);
+            // }
+            // if(!empty($request->order_status))
+            // {
+            //     $data['query']->where('order_status', $request->order_status);
+            // }
+            // if(!empty($request->created_at))
+            // {
+            //     $query->where('created_at', $request->created_at);
+            // }
+           
+            // date wise filter from here
+            if(!empty($request->end_date))
+            {
+                $data['query']->where('order_status', $request->order_status)->whereDate('created_at', '=', $request->end_date);
+            }
+           
+            if(!empty($request->per_page_record))
+            {
+                $perPage = $request->per_page_record;
+                $page = $request->input('page', 1);
+                $total = $data['query']->count();
+                $result = $data['query']->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+                $pagination =  [
+                    'data' => $result,
+                    'total' => $total,
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'last_page' => ceil($total / $perPage)
+                ];
+                $data['query'] = $pagination;
+            }
+            else
+            // {
+                $data['query'] = $data['query']->get();
+
+            // }
+
+            return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Your data has been saved successfully']);
+        } 
+        catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+        }
+
+    }
+
 }
