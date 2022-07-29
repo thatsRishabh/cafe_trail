@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->integer('table_number')->nullable();
-            $table->text('instructions')->nullable();
             $table->boolean('order_status')->comment('1 means pending(by default), 2 means Approved')->nullable();
             $table->integer('cartTotalQuantity')->nullable();
             $table->integer('cartTotalAmount')->nullable();

@@ -186,6 +186,9 @@ class UserInfo extends Controller
                     ->where('recipe_id', 78)
                     ->orderBy('id', 'desc')->get();
                  
+
+
+                    
                     // foreach ($query as $key => $recipe) {
                     //     $value=$recipe->unit_id
                     // };

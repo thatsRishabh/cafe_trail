@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->boolean('attendence')->comment('1 means absent, 2 means present')->nullable();
+            $table->integer('attendence_id')->nullable();
             $table->timestamps();
         });
     }
