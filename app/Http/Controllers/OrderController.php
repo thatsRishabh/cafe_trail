@@ -31,12 +31,17 @@ class OrderController extends Controller
             {
                 $query->where('order_status', $request->order_status);
             }
-            if(!empty($request->created_at))
+            // if(!empty($request->created_at))
+            // {
+            //     $query->where('created_at', $request->created_at);
+            // }
+           
+            // date wise filter from here
+            if(!empty($request->end_date))
             {
-                $query->where('created_at', $request->created_at);
+                $query->where('order_status', $request->order_status)->whereDate('created_at', '=', $request->end_date);
             }
            
-
             if(!empty($request->per_page_record))
             {
                 $perPage = $request->per_page_record;
