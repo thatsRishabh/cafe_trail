@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('address');
             $table->date('joining_date')->comment('This will be in yyyy-mm-dd');
             $table->date('birth_date')->comment('This will be in yyyy-mm-dd');
-            $table->string('gender', 20);
+            $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->timestamps();
         });
     }

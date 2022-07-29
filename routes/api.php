@@ -27,6 +27,7 @@ Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']);
 
 // dashboard
 Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']); 
+Route::get('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 

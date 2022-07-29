@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_menu_id', 20)->nullable();
+            $table->unsignedBigInteger('product_menu_id')->nullable();
+            $table->foreign('product_menu_id')->references('id')->on('product_menus')->onDelete('cascade');
+            // $table->integer('product_menu_id', 20)->nullable();
             $table->string('name', 50)->nullable();
             $table->text('description')->nullable();
-            $table->boolean('recipe_status')->nullable();
+            $table->boolean('recipe_status')->comment('1 means inactive, 2 means active')->nullable();
             $table->timestamps();
         });
     }

@@ -15,12 +15,21 @@ return new class extends Migration
     {
         Schema::create('product_menus', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('category_id')->comment('This will be from category(id) table')->nullable()->change();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+
+            $table->unsignedBigInteger('subcategory_id')->comment('This will be from subcategory(id) table')->nullable()->change();
+            $table->foreign('subcategory_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('product_menus')->onDelete('cascade');
+            $table->boolean('is_parent')->comment('1 means Yes, 2 no')->nullable();
+
             $table->string('name', 50)->nullable();
-            $table->string('category_id', 50)->nullable();
+            // $table->string('category_id', 50)->nullable();
             $table->string('subcategory_id', 50)->nullable();
             $table->text('description')->nullable();
-            $table->integer('parent_id')->nullable();
-            $table->boolean('is_parent')->nullable();
+            // $table->integer('parent_id')->nullable();
+            // $table->boolean('is_parent')->nullable();
             $table->string('image')->nullable();
             $table->integer('order_duration')->nullable();
             $table->text('image_url')->nullable();

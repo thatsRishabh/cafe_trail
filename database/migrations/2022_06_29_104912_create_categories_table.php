@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->boolean('is_parent')->comment('1 means Yes, 2 no')->after('parent_id')->nullable();  
             $table->string('name');
             $table->string('image')->nullable();
-            $table->integer('parent_id')->nullable();
-            $table->boolean('is_parent')->nullable();
             $table->text('image_url')->nullable();
             $table->timestamps();
         });
