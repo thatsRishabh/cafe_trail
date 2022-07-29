@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email');
             $table->text('address');
             $table->integer('account_balance', 11)->nullable();
-            // $table->string('gender', 20);
+            $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->timestamps();
         });
     }

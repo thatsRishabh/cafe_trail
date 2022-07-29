@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('attendence_lists', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('attendence_id')->nullable();
+            $table->foreign('attendence_id')->references('id')->on('employee_attendences')->onDelete('cascade');
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->boolean('attendence')->comment('1 means absent, 2 means present')->nullable();
-            $table->integer('attendence_id')->nullable();
             $table->timestamps();
         });
     }
