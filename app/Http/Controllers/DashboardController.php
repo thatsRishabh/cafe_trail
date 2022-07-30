@@ -9,6 +9,7 @@ use App\Models\OrderContain;
 use Illuminate\Support\Facades\DB;  
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Employee;
 
 
 class DashboardController extends Controller
@@ -20,6 +21,7 @@ class DashboardController extends Controller
           
             $data['todaySale'] = DB::table('orders')->whereDate('orders.created_at', '=', date("Y-m-d"))->sum('netAmount');
             $data['employeePresentToday'] = AttendenceList::where('attendence',2)->whereDate('created_at', '=', date("Y-m-d"))->count();
+            $data['total_employee'] = Employee::count();
 
            
 

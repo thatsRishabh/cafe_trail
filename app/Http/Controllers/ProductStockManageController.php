@@ -156,6 +156,21 @@ class ProductStockManageController extends Controller
         DB::beginTransaction();
         try {
 
+            $oldStockValue =ProductStockManage::find($id);
+
+            // $calcutation= strtolower($oldStockValue->stock_operation) == "in" 
+            //  ? $oldStockValue->new_stock - $oldStockValue->change_stock  
+            //  : $oldStockValue->new_stock + $oldStockValue->change_stock;
+
+            // return $calcutation;
+
+              // restoring productinfo old stock to previous value
+              $updateStock = ProductInfo::find( $request->product_id);
+              $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
+              ? $oldStockValue->new_stock - $oldStockValue->change_stock  
+              : $oldStockValue->new_stock + $oldStockValue->change_stock;
+              $updateStock->save();
+
              // getting old stock value
              $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
            

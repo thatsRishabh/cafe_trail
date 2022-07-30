@@ -26,7 +26,6 @@ return new class extends Migration
 
             $table->string('name', 50)->nullable();
             // $table->string('category_id', 50)->nullable();
-            $table->string('subcategory_id', 50)->nullable();
             $table->text('description')->nullable();
             // $table->integer('parent_id')->nullable();
             // $table->boolean('is_parent')->nullable();
