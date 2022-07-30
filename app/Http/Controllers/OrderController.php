@@ -39,7 +39,7 @@ class OrderController extends Controller
             // date wise filter from here
             if(!empty($request->end_date))
             {
-                $query->where('order_status', $request->order_status)->whereDate('created_at', '=', $request->end_date);
+                $query->where('order_status', $request->order_status)->whereDate('updated_at', '=', $request->end_date);
             }
            
             if(!empty($request->per_page_record))
