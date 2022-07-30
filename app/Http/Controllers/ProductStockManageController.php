@@ -154,10 +154,20 @@ class ProductStockManageController extends Controller
         DB::beginTransaction();
         try {
 
+            $oldStockValue =ProductStockManage::find($id);
+            $unitData =Unit::find($oldStockValue->unit_id);
+
+            
+              // restoring productinfo old stock to previous value after kg/gram/dozen conversion
+              $updateStock = ProductInfo::find( $request->product_id);
+              $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
+              ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
+              : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
+              $updateStock->save();
+
              // getting old stock value
              $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
            
-
              $info = ProductStockManage::find($id);
              $info->product_id = $request->product_id;
              $info->unit_id = $request->unit_id;
@@ -166,13 +176,14 @@ class ProductStockManageController extends Controller
              $info->old_stock = $old->current_quanitity;
              $info->change_stock = $request->change_stock;
  
-             // stock in/out calculation
-             $info->new_stock = strtolower($request->stock_operation) == "in" 
-             ? $old->current_quanitity + $request->change_stock 
-             : $old->current_quanitity - $request->change_stock;
-             $info->stock_operation = $request->stock_operation;
-             $info->save();
- 
+              // stock in/out calculation
+            $info->new_stock = strtolower($request->stock_operation) == "in" 
+            ? $old->current_quanitity + unitConversion($request->unit_id, $request->change_stock) 
+            : $old->current_quanitity - unitConversion($request->unit_id, $request->change_stock);
+
+            $info->stock_operation = $request->stock_operation;
+            $info->save();
+
              // updating the productinfo table as well
              $updateStock = ProductInfo::find( $request->product_id);
              $updateStock->current_quanitity = $info->new_stock;

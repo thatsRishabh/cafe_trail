@@ -37,6 +37,12 @@ function unitConversion($unitID, $quantity) {
 
 }
 
+function imageBaseURL() {
+
+	        return "http://192.168.1.10:8000/";
+
+}
+
 
 	function getLast30TotalSale()
 		{

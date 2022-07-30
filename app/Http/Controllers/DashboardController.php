@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 
+
 class DashboardController extends Controller
 {
     public function dashboard()
@@ -77,10 +78,10 @@ class DashboardController extends Controller
             // }
            
             // date wise filter from here
-            if(!empty($request->end_date))
-            {
-                $data->where('order_status', $request->order_status)->whereDate('created_at', '=', $request->end_date);
-            }
+            // if(!empty($request->end_date))
+            // {
+            //     $data->where('order_status', $request->order_status)->whereDate('created_at', '=', $request->end_date);
+            // }
            
             if(!empty($request->per_page_record))
             {

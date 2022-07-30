@@ -92,12 +92,21 @@ class ProductMenuController extends Controller
 
             $category_name = Category::where('categories.id', $request->subcategory_id)->get('name')->first();
 
+            // if(!empty($request->image))
+            // {
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=$request->image->move('assets',$filename);
+            // }
+
+            
             if(!empty($request->image))
             {
               $file=$request->image;
             $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=$request->image->move('assets',$filename);
+            $info->image=imageBaseURL().$request->image->move('assets',$filename);
             }
+
             // $file=$request->image;
             // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
 
