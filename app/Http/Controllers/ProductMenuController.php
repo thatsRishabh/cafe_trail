@@ -126,7 +126,7 @@ class ProductMenuController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-             'name'                    => 'required',
+            //  'name'                    => 'required',
              'description'                => 'required',
              'category_id'                   => 'nullable|numeric',
              'subcategory_id'                => 'nullable|numeric',
