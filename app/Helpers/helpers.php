@@ -152,13 +152,12 @@ function imageBaseURL() {
 
 
 	function getDetails(){
-		foreach (DB::table('order_contains')->select('name')->distinct('name')->get() as $name ) {
-			$quantitySum = DB::table('order_contains')->groupby('name')->sum('quantity'); 
-			$priceSum = DB::table('order_contains')->groupby('name')->sum('netPrice');
+		foreach (OrderContain::select('name')->distinct('name')->get() as $name ) {
+			$quantitySum['totalQuantity'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('quantity'); 
+			$priceSum['totalPrice'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('netPrice');
 			$details[] = $name;
 			$details[] = $quantitySum;
 			$details[] = $priceSum;
-	
 
 			}
 				
@@ -166,29 +165,29 @@ function imageBaseURL() {
 		// 	$names[] = $quantity;
 			return $details;
 		}
-		function getQuantity(){
-			$quantities = DB::table('order_contains')->distinct('name')->get('name');
-			// return $quantities;
+		// function getQuantity(){
+		// 	$quantities = DB::table('order_contains')->distinct('name')->get('name');
+		// 	// return $quantities;
 				
-			$totalQuantity =[];
-			foreach ($quantities as $data) {
+		// 	$totalQuantity =[];
+		// 	foreach ($quantities as $name) {
 				
-				$revenueSum = DB::table('order_contains')->groupby('name')->sum('quantity'); 
+		// 		$quantitySum['totalQuantity'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('quantity'); 
 				
-				$totalQuantity[] = $revenueSum;
-			}
-			return $totalQuantity;
-		}
+		// 		$totalQuantity[] = $quantitySum;
+		// 	}
+		// 	return $totalQuantity;
+		// }
 
-		function getTotalPrice(){
-			$price = DB::table('order_contains')->distinct('name')->get('name');
+		// function getTotalPrice(){
+		// 	$price = DB::table('order_contains')->distinct('name')->get('name');
 		
-			$totalPrice =[];
-			foreach ($price as $data) {
+		// 	$totalPrice =[];
+		// 	foreach ($price as $name) {
 				
-				$priceSum = DB::table('order_contains')->select('netPrice')->groupby('name')->sum('netPrice'); 
+		// 		$priceSum['totalPrice'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('netPrice'); 
 				
-				$totalPrice[] = $priceSum;
-			}
-			return $totalPrice;
-		}
+		// 		$totalPrice[] = $priceSum;
+		// 	}
+		// 	return $totalPrice;
+		// }
