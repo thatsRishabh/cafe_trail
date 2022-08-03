@@ -66,9 +66,9 @@ class ExpenseController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'items'                    => 'nullable',
-            'description'                => 'nullable',
-            'totalExpense'                => 'required|numeric',
-            'expense_date'                    => 'required',
+            'description'              => 'nullable',
+            'totalExpense'             => 'required|numeric',
+            'expense_date'             => 'required',
            
         ]);
 

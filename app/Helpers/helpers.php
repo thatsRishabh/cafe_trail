@@ -7,7 +7,9 @@ use App\Models\ProductInfo;
 use App\Models\EmployeeAttendence;
 use App\Models\AttendenceList;
 use App\Models\Order;
+use App\Models\OrderContain;
 use App\Models\User;
+use Illuminate\Support\Facades\DB; 
 
 function prepareResult($error, $data, $msg)
 {
@@ -42,7 +44,6 @@ function imageBaseURL() {
 	        return "http://192.168.1.10:8000/";
 
 }
-
 
 	function getLast30TotalSale()
 		{
@@ -142,4 +143,52 @@ function imageBaseURL() {
 			}
 			
 			return $dateList;
+		}
+
+
+
+
+
+
+
+	function getDetails(){
+		foreach (DB::table('order_contains')->select('name')->distinct('name')->get() as $name ) {
+			$quantitySum = DB::table('order_contains')->groupby('name')->sum('quantity'); 
+			$priceSum = DB::table('order_contains')->groupby('name')->sum('netPrice');
+			$details[] = $name;
+			$details[] = $quantitySum;
+			$details[] = $priceSum;
+	
+
+			}
+				
+		// 	}
+		// 	$names[] = $quantity;
+			return $details;
+		}
+		function getQuantity(){
+			$quantities = DB::table('order_contains')->distinct('name')->get('name');
+			// return $quantities;
+				
+			$totalQuantity =[];
+			foreach ($quantities as $data) {
+				
+				$revenueSum = DB::table('order_contains')->groupby('name')->sum('quantity'); 
+				
+				$totalQuantity[] = $revenueSum;
+			}
+			return $totalQuantity;
+		}
+
+		function getTotalPrice(){
+			$price = DB::table('order_contains')->distinct('name')->get('name');
+		
+			$totalPrice =[];
+			foreach ($price as $data) {
+				
+				$priceSum = DB::table('order_contains')->select('netPrice')->groupby('name')->sum('netPrice'); 
+				
+				$totalPrice[] = $priceSum;
+			}
+			return $totalPrice;
 		}
