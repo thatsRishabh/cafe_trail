@@ -147,47 +147,15 @@ function imageBaseURL() {
 
 
 
-
-
-
-
-	function getDetails(){
-		foreach (OrderContain::select('name')->distinct('name')->get() as $name ) {
-			$quantitySum['totalQuantity'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('quantity'); 
-			$priceSum['totalPrice'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('netPrice');
+	function getDetails($request){
+		$start_date = $request->start_date;
+		$end_date = \Carbon\Carbon::parse($request->end_date)->addDays(1);
+		foreach (OrderContain::select('name')->whereBetween('created_at', [$start_date, $end_date])->distinct('name')->get() as $name ) {
+			$quantitySum['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
+			$priceSum['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
 			$details[] = $name;
 			$details[] = $quantitySum;
 			$details[] = $priceSum;
-
 			}
-				
-		// 	}
-		// 	$names[] = $quantity;
 			return $details;
 		}
-		// function getQuantity(){
-		// 	$quantities = DB::table('order_contains')->distinct('name')->get('name');
-		// 	// return $quantities;
-				
-		// 	$totalQuantity =[];
-		// 	foreach ($quantities as $name) {
-				
-		// 		$quantitySum['totalQuantity'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('quantity'); 
-				
-		// 		$totalQuantity[] = $quantitySum;
-		// 	}
-		// 	return $totalQuantity;
-		// }
-
-		// function getTotalPrice(){
-		// 	$price = DB::table('order_contains')->distinct('name')->get('name');
-		
-		// 	$totalPrice =[];
-		// 	foreach ($price as $name) {
-				
-		// 		$priceSum['totalPrice'] = DB::table('order_contains')->where('name', $name->name)->groupby('name')->sum('netPrice'); 
-				
-		// 		$totalPrice[] = $priceSum;
-		// 	}
-		// 	return $totalPrice;
-		// }

@@ -34,6 +34,10 @@ class ProductMenuController extends Controller
             {
                 $query->where('product_menus.category_id', $request->category_id);
             }
+            if(!empty($request->subcategory_id))
+            {
+                $query->where('product_menus.subcategory_id', $request->subcategory_id);
+            }
             if(!empty($request->product))
             {
                 $query->where('product', 'LIKE', '%'.$request->product.'%');

@@ -38,10 +38,11 @@ class DashboardController extends Controller
     public function orderList(Request $request)
     {
         try {
-        $data=getDetails();
+            
+        $data=getDetails($request);
         // $data['order_quantity'] =getQuantity();
         // $data['total_price'] =getTotalPrice();
-        return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Graph Data']);
+        return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Orders Data']);
     } 
     catch (\Throwable $e) {
         Log::error($e);
