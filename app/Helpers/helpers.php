@@ -160,16 +160,16 @@ function imageBaseURL() {
 
 	function getTotalOrder(){
 
-		foreach (DB::table('order_contains')->distinct('created_at')->explode(" ",$date->created_at)[0]->get() as $date ) {
-			// $dates = explode(" ",$date->created_at);
-			// $data = $data[0];
+		foreach (DB::table('order_contains')->select('created_at')->distinct('created_at')->get() as $date ) {
+			$dates =  explode(" ",$date->created_at);
+			$datas = $dates[0];
 			// echo $dates[0];
-			$data['date'] =$date->created_at;
-			$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->where('created_at', $date)->groupby('created_at')->sum('quantity'); 
-			$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->where('created_at', $date)->groupby('created_at')->sum('netPrice');
+			$data['date'] = $datas;
+
+			$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->groupby('created_at')->where('created_at', $date->created_at)->sum('quantity'); 
+			$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->groupby('created_at')->where('created_at', $date->created_at)->sum('netPrice');
 			$details[] = $data;
 			}
-			
 			return 	$details;
 		}
 	
