@@ -50,6 +50,26 @@ class DashboardController extends Controller
     }
         
     }
+
+    public function totalOrder(){
+        try {
+            
+            $data=getTotalOrder();
+            return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Orders Data']);
+        } 
+        catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+        }
+
+    }
+
+
+
+
+
+
+
         public function dashboardGraph()
     {
         try {

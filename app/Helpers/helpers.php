@@ -9,8 +9,7 @@ use App\Models\AttendenceList;
 use App\Models\Order;
 use App\Models\OrderContain;
 use App\Models\User;
-use Illuminate\Support\Facades\DB; 
-
+use Illuminate\Support\Facades\DB;
 function prepareResult($error, $data, $msg)
 {
 	return ['success' => $error, 'data' => $data, 'message' => $msg];
@@ -151,11 +150,26 @@ function imageBaseURL() {
 		$start_date = $request->start_date;
 		$end_date = \Carbon\Carbon::parse($request->end_date)->addDays(1);
 		foreach (OrderContain::select('name')->whereBetween('created_at', [$start_date, $end_date])->distinct('name')->get() as $name ) {
-			$quantitySum['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
-			$priceSum['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
-			$details[] = $name;
-			$details[] = $quantitySum;
-			$details[] = $priceSum;
+			$data['name'] = $name->name;
+			$data['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
+			$data['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
+			$details[] = $data;
 			}
 			return $details;
 		}
+
+	function getTotalOrder(){
+
+		foreach (DB::table('order_contains')->distinct('created_at')->explode(" ",$date->created_at)[0]->get() as $date ) {
+			// $dates = explode(" ",$date->created_at);
+			// $data = $data[0];
+			// echo $dates[0];
+			$data['date'] =$date->created_at;
+			$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->where('created_at', $date)->groupby('created_at')->sum('quantity'); 
+			$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->where('created_at', $date)->groupby('created_at')->sum('netPrice');
+			$details[] = $data;
+			}
+			
+			return 	$details;
+		}
+	

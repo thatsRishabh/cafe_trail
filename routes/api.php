@@ -29,6 +29,7 @@ Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']);
 Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
 Route::post('order-list', [App\Http\Controllers\DashboardController::class, 'orderList']); 
 Route::get('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
+Route::post('total-order', [App\Http\Controllers\DashboardController::class, 'totalOrder']);
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 
