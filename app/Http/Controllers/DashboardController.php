@@ -139,15 +139,16 @@ class DashboardController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
-        public function dashboardGraph()
+        public function dashboardGraph(Request $request)
     {
         try {
             $data = [];
-            $data['total_sale'] =getLast30TotalSale();
-            $data['total_customer'] =getLast30TotalCustomer();
-            $data['total_product'] =getLast30TotalProduct();
-            $data['total_revenue'] =getLast30TotalRevenue();
-            $data['labels'] =getLast30DaysList();
+           
+            $data['total_sale'] =getLast30TotalSale($request->day , $request->startDate, $request->endDate);
+            // // $data['total_customer'] =getLast30TotalCustomer();
+            $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
+            $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
+            $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
             return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Graph Data']);
         } 
         catch (\Throwable $e) {

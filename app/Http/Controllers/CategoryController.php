@@ -126,11 +126,18 @@ class CategoryController extends Controller
         try {
             $info = new Category;
 
+            // if(!empty($request->image))
+            // {
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=$request->image->move('assets',$filename);
+            // }
+
             if(!empty($request->image))
             {
               $file=$request->image;
             $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=$request->image->move('assets',$filename);
+            $info->image=imageBaseURL().$request->image->move('assets',$filename);
             }
 
             $info->name = $request->name;
