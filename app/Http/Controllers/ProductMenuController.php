@@ -114,7 +114,7 @@ class ProductMenuController extends Controller
             $info->name = ($request->name) ? $request->name : $category_name->name;
             $info->order_duration = $request->order_duration;
             $info->description = $request->description;
-            $info->image_url = $request->image_url;
+            // $info->image_url = $request->image_url;
             $info->category_id = $request->category_id;
             $info->subcategory_id = $request->subcategory_id;
             $info->price = $request->price;
@@ -151,20 +151,34 @@ class ProductMenuController extends Controller
         try {
             
             $info = ProductMenu::find($id);
+
+            // if(!empty($request->image))
+            // {
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=imageBaseURL().$request->image->move('assets',$filename);
+            // }
+            
             if(!empty($request->image))
             {
-              $file=$request->image;
-            $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=$request->image->move('assets',$filename);
-            }
-            // $file=$request->image;
-            // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
+                if(gettype($request->image) == "string"){
+                    $info->image = $request->image;
+                }
+                else{
+                       $file=$request->image;
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $info->image=imageBaseURL().$request->image->move('assets',$filename);
+                }
 
-            // $info->image=$request->file->move('assets',$filename);
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=imageBaseURL().$request->image->move('assets',$filename);
+            }
+
             $info->name = $request->name;
             $info->order_duration = $request->order_duration;
             $info->description = $request->description;
-            $info->image_url = $request->image_url;
+            // $info->image_url = $request->image_url;
             $info->category_id = $request->category_id;
             $info->subcategory_id = $request->subcategory_id;
             $info->price = $request->price;

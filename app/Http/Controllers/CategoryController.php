@@ -141,7 +141,7 @@ class CategoryController extends Controller
             }
 
             $info->name = $request->name;
-            $info->image_url = $request->image_url;
+            // $info->image_url = $request->image_url;
             $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
             $info->is_parent = $request->is_parent;
             $info->save();
@@ -156,9 +156,11 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-       
+        // $temp= gettype($request->image) == "string" ? 1 : 2;
+        // return $temp;
+        
         $validation = Validator::make($request->all(), [
-            'name'                    => 'required|unique',
+            // 'name'                    => 'required|unique:categories,name',
            
         ]);
 
@@ -172,13 +174,22 @@ class CategoryController extends Controller
 
             if(!empty($request->image))
             {
-              $file=$request->image;
-            $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=$request->image->move('assets',$filename);
+                if(gettype($request->image) == "string"){
+                    $info->image = $request->image;
+                }
+                else{
+                       $file=$request->image;
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $info->image=imageBaseURL().$request->image->move('assets',$filename);
+                }
+
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=imageBaseURL().$request->image->move('assets',$filename);
             }
 
             $info->name = $request->name;
-            $info->image_url = $request->image_url;
+            // $info->image_url = $request->image_url;
             $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
             $info->is_parent = $request->is_parent;
             $info->save();
@@ -190,6 +201,7 @@ class CategoryController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
+
 
     public function show($id)
     {

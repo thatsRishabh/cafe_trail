@@ -32,7 +32,8 @@ Route::post('dashboard-graph', [App\Http\Controllers\DashboardController::class,
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 
-Route::resource('product-menu', App\Http\Controllers\ProductMenuController::class)->only(['store','destroy','show', 'update']);
+Route::resource('product-menu', App\Http\Controllers\ProductMenuController::class)->only(['store','destroy','show']);
+Route::post('product-menu-update/{id?}', [App\Http\Controllers\ProductMenuController::class, 'update']); 
 
 // product-info
 Route::post('product-infos', [App\Http\Controllers\ProductInfoController::class, 'searchProductInfo']); 
@@ -49,8 +50,9 @@ Route::resource('unit', App\Http\Controllers\UnitController::class)->only(['stor
 
 // Category
 Route::post('categorys', [App\Http\Controllers\CategoryController::class, 'searchCategory']); 
-Route::resource('category', App\Http\Controllers\CategoryController::class)->only(['store','destroy','show', 'update']);
+Route::resource('category', App\Http\Controllers\CategoryController::class)->only(['store','destroy','show']);
 Route::post('subcategorys', [App\Http\Controllers\CategoryController::class, 'searchSubcategory']); 
+Route::post('category-update/{id?}', [App\Http\Controllers\CategoryController::class, 'update']); 
 
 // Employee
 Route::post('employees', [App\Http\Controllers\EmployeeController::class, 'searchEmployee']); 

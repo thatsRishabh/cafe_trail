@@ -61,6 +61,7 @@ class UnitController extends Controller
             'name'                       => 'required',
             // 'abbreiation'                => 'required',
             // 'minvalue'                   => 'required|numeric',
+            // 'minvalue'                   => ($request->minvalue) > 10 ? '': 'declined:false',
            
         ]);
 

@@ -87,15 +87,23 @@ class ProductStockManageController extends Controller
     
     public function store(Request $request)
     {
+        $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+
         $validation = Validator::make($request->all(), [
             'stock_operation'                => 'required',
             // 'stock_operation'                => [new Enum(ServerStatus::class)],
             'product_id'                   => 'required|numeric',
             // 'old_stock'                => 'nullable|numeric',
             // 'new_stock'                => 'nullable|numeric',
-            'change_stock'                      => 'required|numeric',
+            // 'change_stock'                      => 'required|integer|gte:10',
+            'change_stock'                      => ($old->current_quanitity) > 0 
+            && (($old->current_quanitity) >= unitConversion($request->unit_id, ($request->change_stock)) &&(strtolower($request->stock_operation) == "out") )
+            ?  'required': 'required|declined:false',
             'unit_id'                      => 'required|numeric',
            
+        ],
+        [
+            'change_stock.declined' => 'low quantity in stock'
         ]);
 
         if ($validation->fails()) {
