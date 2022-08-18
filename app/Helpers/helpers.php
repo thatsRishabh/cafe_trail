@@ -40,66 +40,168 @@ function unitConversion($unitID, $quantity) {
 
 function imageBaseURL() {
 
-	        return "http://192.168.1.10:8000/";
+	        return "http://192.168.1.39:8000/";
+			// return "https://backend.gofactz.com/public/";
 
 }
 
-	function getLast30TotalSale()
+	function getLast30TotalSale($day, $startDate , $endDate)
 		{
-			$today     = new \DateTime();
-			$begin     = $today->sub(new \DateInterval('P30D'));
-			$end       = new \DateTime();
-			$end       = $end->modify('+1 day');
-			$interval  = new \DateInterval('P1D');
-			$daterange = new \DatePeriod($begin, $interval, $end);
-			$totalSale =[];
-			foreach ($daterange as $date) {
-				
-			$salesSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
-				
-				$totalSale[] = $salesSum;
+			if(!empty($day))
+            {
+
+				$today     = new \DateTime();
+				// $begin     = $today->sub(new \DateInterval('P30D'));
+	
+				if(($day == 1 ))
+				{
+					$begin = $today->sub(new \DateInterval('P0D'));
+				}
+				elseif (($day == 7)) 
+				{
+					$begin= $today->sub(new \DateInterval('P7D'));
+				}
+				elseif (($day == 30 )) 
+				{
+					$begin= $today->sub(new \DateInterval('P30D'));
+				}
+	
+				$end       = new \DateTime();
+				$end       = $end->modify('+1 day');
+				$interval  = new \DateInterval('P1D');
+				$daterange = new \DatePeriod($begin, $interval, $end);
+				$totalSale =[];
+				foreach ($daterange as $date) {
+					
+				$salesSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
+					
+					$totalSale[] = $salesSum;
+				}
 			}
+
+		
+			if(!empty( $startDate))
+            {
+
+				$rangArray = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+					
+					for ($currentDate = $startDate; $currentDate <= $endDate; 
+													$currentDate += (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
+				$totalSale =[];
+				foreach ($rangArray as $date) {
+					
+					$salesSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
+					
+					$totalSale[] = $salesSum;
+				}
+		
+			}
+		
 		
 
 			// $data = implode(', ', $totalSale);
 			return $totalSale;
 		}
 
-	function getLast30TotalCustomer()
-		{
-			$today     = new \DateTime();
-			$begin     = $today->sub(new \DateInterval('P30D'));
-			$end       = new \DateTime();
-			$end       = $end->modify('+1 day');
-			$interval  = new \DateInterval('P1D');
-			$daterange = new \DatePeriod($begin, $interval, $end);
-			$totalCustomer =[];
-			foreach ($daterange as $date) {
+	// function getLast30TotalCustomer($day)
+	// 	{
+	// 		$today     = new \DateTime();
+	// 		// $begin     = $today->sub(new \DateInterval('P30D'));
+
+	// 		if(($day == 1 ))
+	// 		{
+	// 			$begin = $today->sub(new \DateInterval('P0D'));
+	// 		}
+	// 		elseif (($day == 7)) 
+	// 		{
+	// 			$begin= $today->sub(new \DateInterval('P7D'));
+	// 		}
+	// 		elseif (($day == 30 )) 
+	// 		{
+	// 			$begin= $today->sub(new \DateInterval('P30D'));
+	// 		}
+
+	// 		$end       = new \DateTime();
+	// 		$end       = $end->modify('+1 day');
+	// 		$interval  = new \DateInterval('P1D');
+	// 		$daterange = new \DatePeriod($begin, $interval, $end);
+	// 		$totalCustomer =[];
+	// 		foreach ($daterange as $date) {
 				
-			$customer = Order::whereDate('created_at',$date->format('Y-m-d'))->count(); 
+	// 		$customer = Order::whereDate('created_at',$date->format('Y-m-d'))->count(); 
 				
-				$totalCustomer[] = $customer;
-			}
+	// 			$totalCustomer[] = $customer;
+	// 		}
 		
 
-			// $data = implode(', ', $totalCustomer);
-			return $totalCustomer;
-		}
+	// 		// $data = implode(', ', $totalCustomer);
+	// 		return $totalCustomer;
+	// 	}
 
-	function getLast30TotalProduct()
+	function getLast30TotalProduct($day, $startDate , $endDate)
 		{
-			$today     = new \DateTime();
-			$begin     = $today->sub(new \DateInterval('P30D'));
-			$end       = new \DateTime();
-			$end       = $end->modify('+1 day');
-			$interval  = new \DateInterval('P1D');
-			$daterange = new \DatePeriod($begin, $interval, $end);
-			$totalProduct =[];
-			foreach ($daterange as $date) {
-				
-			$productSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('cartTotalQuantity'); 
-				
-				$totalProduct[] = $productSum;
+			if(!empty($day))
+            {
+				$today     = new \DateTime();
+				// $begin     = $today->sub(new \DateInterval('P30D'));
+	
+				if(($day == 1 ))
+				{
+					$begin = $today->sub(new \DateInterval('P0D'));
+				}
+				elseif (($day == 7)) 
+				{
+					$begin= $today->sub(new \DateInterval('P7D'));
+				}
+				elseif (($day == 30 )) 
+				{
+					$begin= $today->sub(new \DateInterval('P30D'));
+				}
+	
+				$end       = new \DateTime();
+				$end       = $end->modify('+1 day');
+				$interval  = new \DateInterval('P1D');
+				$daterange = new \DatePeriod($begin, $interval, $end);
+				$totalProduct =[];
+				foreach ($daterange as $date) {
+					
+				$productSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('cartTotalQuantity'); 
+					
+					$totalProduct[] = $productSum;
+				}
+			
+		
+			}
+
+			if(!empty( $startDate))
+            {
+
+				$rangArray = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+					
+					for ($currentDate = $startDate; $currentDate <= $endDate; 
+													$currentDate += (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
+				$totalProduct =[];
+				foreach ($rangArray as $date) {
+					
+					$productSum = Order::whereDate('created_at',$date)->sum('cartTotalQuantity'); 
+					
+					$totalProduct[] = $productSum;
+				}
+		
 			}
 		
 
@@ -107,21 +209,66 @@ function imageBaseURL() {
 			return $totalProduct;
 		}
 
-	function getLast30TotalRevenue()
+	function getLast30TotalRevenue($day, $startDate , $endDate)
 		{
-			$today     = new \DateTime();
-			$begin     = $today->sub(new \DateInterval('P30D'));
-			$end       = new \DateTime();
-			$end       = $end->modify('+1 day');
-			$interval  = new \DateInterval('P1D');
-			$daterange = new \DatePeriod($begin, $interval, $end);
-			$totalRevenue =[];
-			foreach ($daterange as $date) {
-				
-				$revenueSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
-				
-				$totalRevenue[] = $revenueSum;
+			if(!empty($day))
+            {
+
+						$today     = new \DateTime();
+					// // $begin     = $today->sub(new \DateInterval('P30D'));
+
+					if(($day == 1 ))
+					{
+						$begin = $today->sub(new \DateInterval('P0D'));
+					}
+					elseif (($day == 7)) 
+					{
+						$begin= $today->sub(new \DateInterval('P7D'));
+					}
+					elseif (($day == 30 )) 
+					{
+						$begin= $today->sub(new \DateInterval('P30D'));
+					}
+
+					$end       = new \DateTime();
+					$end       = $end->modify('+1 day');
+					$interval  = new \DateInterval('P1D');
+					$daterange = new \DatePeriod($begin, $interval, $end);
+					
+					$totalRevenue =[];
+					foreach ($daterange as $date) {
+						
+						$revenueSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
+						
+						$totalRevenue[] = $revenueSum;
+					}
+
 			}
+
+			if(!empty( $startDate))
+            {
+
+				$rangArray = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+					
+					for ($currentDate = $startDate; $currentDate <= $endDate; 
+													$currentDate += (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
+				$totalRevenue =[];
+				foreach ($rangArray as $date) {
+					
+					$revenueSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
+					
+					$totalRevenue[] = $revenueSum;
+				}
+		
+			}
+			
 		
 
 			// $data = implode(', ', $totalRevenue);
@@ -129,16 +276,47 @@ function imageBaseURL() {
 		}
 
 
-	function getLast30DaysList()
+	function getLast30DaysList($day, $startDate , $endDate)
 		{
-			$today     = new \DateTime();
-			$begin     = $today->sub(new \DateInterval('P30D'));
-			$end       = new \DateTime();
-			$end       = $end->modify('+1 day');
-			$interval  = new \DateInterval('P1D');
-			$daterange = new \DatePeriod($begin, $interval, $end);
-			foreach ($daterange as $date) {
-				$dateList[] = ''.$date->format("Y-m-d").'';
+			if(!empty($day))
+            {
+				$today     = new \DateTime();
+				// $begin     = $today->sub(new \DateInterval('P0D'));
+				
+				if(($day == 1 ))
+				{
+					$begin = $today->sub(new \DateInterval('P0D'));
+				}
+				elseif (($day == 7)) 
+				{
+					$begin= $today->sub(new \DateInterval('P7D'));
+				}
+				elseif (($day == 30 )) 
+				{
+					$begin= $today->sub(new \DateInterval('P30D'));
+				}
+				$end       = new \DateTime();
+				$end       = $end->modify('+1 day');
+				$interval  = new \DateInterval('P1D');
+				$daterange = new \DatePeriod($begin, $interval, $end);
+				foreach ($daterange as $date) {
+					$dateList[] = ''.$date->format("Y-m-d").'';
+				}
+            }
+
+			if(!empty( $startDate))
+            {
+				$dateList = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+             
+				for ($currentDate = $startDate; $currentDate <= $endDate; 
+												$currentDate += (86400)) {
+														
+					$date = date('Y-m-d', $currentDate);
+					$dateList[] = $date;
+				}
+		
 			}
 			
 			return $dateList;
