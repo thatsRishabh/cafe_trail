@@ -18,10 +18,15 @@ class OrderContain extends Model
         'order_duration',
         'netPrice',
     ];
+    
     // working perfectly even after commenting above code
 
     public function  Orders()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+    protected $casts = [
+        'created_at' => 'date',
+    ];
+
 }

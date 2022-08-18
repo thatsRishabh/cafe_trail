@@ -9,6 +9,7 @@ use App\Models\AttendenceList;
 use App\Models\Category;
 use App\Models\OrderContain;
 use App\Models\Order;
+use App\Models\OrderContain;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +49,6 @@ function imageBaseURL() {
 			return "https://backend.gofactz.com/public/";
 
 }
-
 
 	function getLast30TotalSale($day, $startDate , $endDate)
 		{
@@ -395,4 +395,32 @@ function imageBaseURL() {
 
 
 
+
+
+	function getDetails($request){
+		$start_date = $request->start_date;
+		$end_date = \Carbon\Carbon::parse($request->end_date)->addDays(1);
+		foreach (OrderContain::select('name')->whereBetween('created_at', [$start_date, $end_date])->distinct('name')->get() as $name ) {
+			$data['name'] = $name->name;
+			$data['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
+			$data['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
+			$details[] = $data;
+			}
+			return $details;
+		}
+
+	function getTotalOrder(){
+
+		foreach (DB::table('order_contains')->select('created_at')->distinct('created_at')->get() as $date ) {
+			$dates =  explode(" ",$date->created_at);
+			$datas = $dates[0];
+			// echo $dates[0];
+			$data['date'] = $datas;
+
+			$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->groupby('created_at')->where('created_at', $date->created_at)->sum('quantity'); 
+			$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->groupby('created_at')->where('created_at', $date->created_at)->sum('netPrice');
+			$details[] = $data;
+			}
+			return 	$details;
+		}
 	

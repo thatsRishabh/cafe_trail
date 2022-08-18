@@ -70,6 +70,7 @@ class EmployeeController extends Controller
             'address'                      => 'required',
             'gender'                       => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
+            'salary'                      => 'required|numeric',
            
         ]);
 
@@ -110,6 +111,7 @@ class EmployeeController extends Controller
             'address'                      => 'required',
             'gender'                       => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
+            'salary'                      => 'required|numeric',
            
         ]);
 

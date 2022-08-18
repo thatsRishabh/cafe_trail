@@ -15,6 +15,7 @@ class Handler extends ExceptionHandler
     protected $levels = [
         //
     ];
+    
 
     /**
      * A list of the exception types that are not reported.

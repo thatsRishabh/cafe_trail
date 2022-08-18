@@ -35,7 +35,7 @@ class DashboardController extends Controller
             }
     }
 
-    public function orderList()
+    public function orderList(Request $request)
     {
         try {
             $data = [];
@@ -114,22 +114,6 @@ class DashboardController extends Controller
             // //     $total = $query->count();
             // //     // $result = $data['name']->offset(($page - 1) * $perPage)->limit($perPage)->get();
 
-            // //     $pagination =  [
-            // //         'data' => $result,
-            // //         'total' => $total,
-            // //         'current_page' => $page,
-            // //         'per_page' => $perPage,
-            // //         'last_page' => ceil($total / $perPage)
-            // //     ];
-            // //     $data['name'] = $pagination;
-            // // }
-            // else
-            // {
-            //     $data['name'] = $data['name']->get();
-            //     foreach($data['name'] as $name){
-            //        return $data;
-            //     }
-            // }
 
             return response()->json(prepareResult(true, $data, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         }

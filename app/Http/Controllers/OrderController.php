@@ -15,6 +15,7 @@ class OrderController extends Controller
     public function searchOrder(Request $request)
     {
         try {
+           
             $query = Order::select('*')
                     ->with('orderContains')
                     ->orderBy('id', 'desc');
@@ -31,6 +32,7 @@ class OrderController extends Controller
             {
                 $query->where('order_status', $request->order_status);
             }
+            
             // if(!empty($request->created_at))
             // {
             //     $query->where('created_at', $request->created_at);
