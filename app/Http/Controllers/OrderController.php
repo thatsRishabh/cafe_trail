@@ -36,12 +36,18 @@ class OrderController extends Controller
             //     $query->where('created_at', $request->created_at);
             // }
            
-            // date wise filter from here
+            // date wise filter with order status
             if(!empty($request->end_date))
             {
                 $query->where('order_status', $request->order_status)->whereDate('updated_at', '=', $request->end_date);
             }
-           
+
+           // date wise filter from here
+            if(!empty($request->from_date) && !empty($request->last_date))
+            {
+                $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->last_date);
+            }
+
             if(!empty($request->per_page_record))
             {
                 $perPage = $request->per_page_record;
@@ -110,8 +116,8 @@ class OrderController extends Controller
                 $addorder->instructions = $order['instructions'] ?? "";
 
                 // below data is from another table
-                // $addorder->name = $productMenuItem->name;
-                $addorder->name = $order['name'];
+                $addorder->name = $productMenuItem->name;
+                // $addorder->name = $order['name'];
                 $addorder->quantity = $order['quantity'];
 
                  // below data is from another table
@@ -185,8 +191,8 @@ class OrderController extends Controller
                $addorder->instructions = $order['instructions'] ?? "";
 
                // below data is from another table
-               // $addorder->name = $productMenuItem->name;
-               $addorder->name = $order['name'];
+               $addorder->name = $productMenuItem->name;
+            //    $addorder->name = $order['name'];
                $addorder->quantity = $order['quantity'];
 
                 // below data is from another table

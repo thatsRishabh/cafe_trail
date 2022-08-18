@@ -34,6 +34,10 @@ class ProductMenuController extends Controller
             {
                 $query->where('product_menus.category_id', $request->category_id);
             }
+            if(!empty($request->subcategory_id))
+            {
+                $query->where('product_menus.subcategory_id', $request->subcategory_id);
+            }
             if(!empty($request->product))
             {
                 $query->where('product', 'LIKE', '%'.$request->product.'%');
@@ -71,20 +75,45 @@ class ProductMenuController extends Controller
 
     public function store(Request $request)
     {
+        // if(!empty($request->parent_id)){
+        //     $productMenuData = ProductMenu::where('product_menus.id', $request->parent_id)->get('price')->first();
+        // }
+       
+
         $validation = Validator::make($request->all(), [
             // {($request->parent_id) ? $request->parent_id :null}
             
             // 'name'                    => ($request->parent_id) ? ' ': 'required',
             'description'                => ($request->parent_id) ? ' ': 'required',
-            'category_id'                   => 'nullable|numeric',
-            'subcategory_id'                => 'nullable|numeric',
-            // 'price'                      => 'required|numeric',
+            'category_id'                   => 'required|numeric',
+            'subcategory_id'                => 'required|numeric',
+            'category_id'                   => ($request->parent_id) ? ' ': 'required',
+            'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
+            'price'                      => 'required|numeric',
+    //    'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
+           
+          
            
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         } 
+
+        if($request->parent_id){
+            $productMenuData = ProductMenu::where('product_menus.id', $request->parent_id)->get('price')->first();
+
+            $validation = Validator::make($request->all(),[     
+               'price'  => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',   
+               
+            ],
+            [
+                'price.declined' => 'Half price is greater than full price'
+            ]);
+            if ($validation->fails()) {
+                return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+            } 
+        }
 
         DB::beginTransaction();
         try {

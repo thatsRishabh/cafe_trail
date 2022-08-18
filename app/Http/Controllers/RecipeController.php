@@ -36,6 +36,10 @@ class RecipeController extends Controller
             {
                 $query->where('name', $request->name);
             }
+            if(!empty($request->product_menu_name))
+            {
+                $query->where('product_menus.name', $request->product_menu_name);
+            }
             if(!empty($request->recipe_status))
             {
                 $query->where('recipe_status', $request->recipe_status);

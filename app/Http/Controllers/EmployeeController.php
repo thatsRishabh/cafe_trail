@@ -88,6 +88,7 @@ class EmployeeController extends Controller
             $info->address = $request->address;
             $info->gender = $request->gender;
             $info->mobile = $request->mobile;
+            $info->salary = $request->salary;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -127,6 +128,7 @@ class EmployeeController extends Controller
             $info->address = $request->address;
             $info->gender = $request->gender;
             $info->mobile = $request->mobile;
+            $info->salary = $request->salary;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);

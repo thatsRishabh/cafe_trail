@@ -63,6 +63,7 @@ Route::resource('employee', App\Http\Controllers\EmployeeController::class)->onl
 Route::post('employee-attendences', [App\Http\Controllers\EmployeeAttendenceController::class, 'searchEmployeeAttendence']); 
 Route::resource('employee-attendence', App\Http\Controllers\EmployeeAttendenceController::class)->only(['store','destroy','show', 'update']);
 Route::post('attendences-date-wise', [App\Http\Controllers\EmployeeAttendenceController::class, 'dateWiseSearch']); 
+Route::post('monthly-attendence', [App\Http\Controllers\EmployeeAttendenceController::class, 'monthlyAttendence']); 
 
 // customer
 Route::post('customers', [App\Http\Controllers\CustomerController::class, 'searchCustomer']); 

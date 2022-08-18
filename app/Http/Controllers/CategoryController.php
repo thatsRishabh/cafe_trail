@@ -17,10 +17,15 @@ class CategoryController extends Controller
             $query = Category::select('*')
                     ->whereNull('parent_id')
                     ->with('subCategory')
-                     ->orderBy('name', 'asc');
+                    ->orderBy('id', 'desc');
+                    //  ->orderBy('name', 'asc');
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
+            }
+            if(!empty($request->name))
+            {
+                $query->where('name', $request->name);
             }
             if(!empty($request->category))
             {
@@ -156,8 +161,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        // $temp= gettype($request->image) == "string" ? 1 : 2;
-        // return $temp;
+        
         
         $validation = Validator::make($request->all(), [
             // 'name'                    => 'required|unique:categories,name',
