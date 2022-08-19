@@ -34,7 +34,8 @@ Route::post('total-order', [App\Http\Controllers\DashboardController::class, 'to
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 
-Route::resource('product-menu', App\Http\Controllers\ProductMenuController::class)->only(['store','destroy','show', 'update']);
+Route::resource('product-menu', App\Http\Controllers\ProductMenuController::class)->only(['store','destroy','show']);
+Route::post('product-menu-update/{id?}', [App\Http\Controllers\ProductMenuController::class, 'update']); 
 
 // product-info
 Route::post('product-infos', [App\Http\Controllers\ProductInfoController::class, 'searchProductInfo']); 
@@ -51,8 +52,9 @@ Route::resource('unit', App\Http\Controllers\UnitController::class)->only(['stor
 
 // Category
 Route::post('categorys', [App\Http\Controllers\CategoryController::class, 'searchCategory']); 
-Route::resource('category', App\Http\Controllers\CategoryController::class)->only(['store','destroy','show', 'update']);
+Route::resource('category', App\Http\Controllers\CategoryController::class)->only(['store','destroy','show']);
 Route::post('subcategorys', [App\Http\Controllers\CategoryController::class, 'searchSubcategory']); 
+Route::post('category-update/{id?}', [App\Http\Controllers\CategoryController::class, 'update']); 
 
 // Employee
 Route::post('employees', [App\Http\Controllers\EmployeeController::class, 'searchEmployee']); 
@@ -63,6 +65,8 @@ Route::resource('employee', App\Http\Controllers\EmployeeController::class)->onl
 Route::post('employee-attendences', [App\Http\Controllers\EmployeeAttendenceController::class, 'searchEmployeeAttendence']); 
 Route::resource('employee-attendence', App\Http\Controllers\EmployeeAttendenceController::class)->only(['store','destroy','show', 'update']);
 Route::post('attendences-date-wise', [App\Http\Controllers\EmployeeAttendenceController::class, 'dateWiseSearch']); 
+Route::post('monthly-attendence', [App\Http\Controllers\EmployeeAttendenceController::class, 'monthlyAttendence']); 
+Route::post('monthly-attendence-pdf', [App\Http\Controllers\EmployeeAttendenceController::class, 'monthlyAttendencePDF']); 
 
 // customer
 Route::post('customers', [App\Http\Controllers\CustomerController::class, 'searchCustomer']); 
@@ -81,6 +85,7 @@ Route::resource('recipe', App\Http\Controllers\RecipeController::class)->only(['
 // Order
 Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
 Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
+Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
 
 // CustomerAccountManage
 Route::post('customer-account-manages', [App\Http\Controllers\CustomerAccountManageController::class, 'searchCustomerAccount']); 

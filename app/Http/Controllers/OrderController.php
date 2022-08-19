@@ -9,6 +9,7 @@ use App\Models\ProductMenu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\PDF;
 
 class OrderController extends Controller
 {
@@ -38,12 +39,18 @@ class OrderController extends Controller
             //     $query->where('created_at', $request->created_at);
             // }
            
-            // date wise filter from here
+            // date wise filter with order status
             if(!empty($request->end_date))
             {
                 $query->where('order_status', $request->order_status)->whereDate('updated_at', '=', $request->end_date);
             }
-           
+
+           // date wise filter from here
+            if(!empty($request->from_date) && !empty($request->last_date))
+            {
+                $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->last_date);
+            }
+
             if(!empty($request->per_page_record))
             {
                 $perPage = $request->per_page_record;
@@ -112,8 +119,8 @@ class OrderController extends Controller
                 $addorder->instructions = $order['instructions'] ?? "";
 
                 // below data is from another table
-                // $addorder->name = $productMenuItem->name;
-                $addorder->name = $order['name'];
+                $addorder->name = $productMenuItem->name;
+                // $addorder->name = $order['name'];
                 $addorder->quantity = $order['quantity'];
 
                  // below data is from another table
@@ -187,8 +194,8 @@ class OrderController extends Controller
                $addorder->instructions = $order['instructions'] ?? "";
 
                // below data is from another table
-               // $addorder->name = $productMenuItem->name;
-               $addorder->name = $order['name'];
+               $addorder->name = $productMenuItem->name;
+            //    $addorder->name = $order['name'];
                $addorder->quantity = $order['quantity'];
 
                 // below data is from another table
@@ -253,4 +260,20 @@ class OrderController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
         }
     }
+
+    public function printOrder($id) {
+       
+
+    
+        $data['orderData'] = Order::select('*')->with('orderContains')->where('id', $id)->get();
+
+
+            // // $info = Employee::find($request->employee_id);
+            // $temp['data1'] = $info;
+            $pdf = PDF::loadView('employee-pdf', $data);
+    
+            return $pdf->download('pdf_file.pdf');
+            return $data;
+    
+        }
 }

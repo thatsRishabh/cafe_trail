@@ -194,7 +194,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+	    // niklasravnsborg\LaravelPdf\PdfServiceProvider::class,
 
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -210,6 +212,10 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+
+        // ...
+	// 'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class
+    'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),
 
 ];

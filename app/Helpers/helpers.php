@@ -6,10 +6,14 @@ use App\Models\ProductMenu;
 use App\Models\ProductInfo;
 use App\Models\EmployeeAttendence;
 use App\Models\AttendenceList;
-use App\Models\Order;
+use App\Models\Category;
 use App\Models\OrderContain;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
 function prepareResult($error, $data, $msg)
 {
 	return ['success' => $error, 'data' => $data, 'message' => $msg];
@@ -40,8 +44,8 @@ function unitConversion($unitID, $quantity) {
 
 function imageBaseURL() {
 
-	        return "http://192.168.1.39:8000/";
-			// return "https://backend.gofactz.com/public/";
+	        // return "http://192.168.1.25:8000/";
+			return "https://backend.gofactz.com/public/";
 
 }
 
@@ -321,6 +325,74 @@ function imageBaseURL() {
 			
 			return $dateList;
 		}
+
+		function getCategoryName($categoryDay)
+		{
+			// if(!empty($categoryDay))
+            // {
+
+			// 			$today     = new \DateTime();
+			// 		// // $begin     = $today->sub(new \DateInterval('P30D'));
+
+			// 		if(($categoryDay == 1 ))
+			// 		{
+			// 			$begin = $today->sub(new \DateInterval('P0D'));
+			// 		}
+			// 		elseif (($categoryDay == 7)) 
+			// 		{
+			// 			$begin= $today->sub(new \DateInterval('P7D'));
+			// 		}
+			// 		elseif (($categoryDay == 30 )) 
+			// 		{
+			// 			$begin= $today->sub(new \DateInterval('P30D'));
+			// 		}
+
+			// 		$end       = new \DateTime();
+			// 		$end       = $end->modify('+1 day');
+			// 		$interval  = new \DateInterval('P1D');
+			// 		$daterange = new \DatePeriod($begin, $interval, $end);
+					
+			// 		// $tree = User::where('branch_id',$branch_id)->pluck('id')
+			// 		// ->toArray();
+			// 		$catogoryID =[];
+			// 		foreach ($daterange as $date) {
+						
+			// 			// $categorySearch= OrderContain::whereDate('created_at',$date->format('Y-m-d'))->pluck('category_id');
+			// 			$categorySearch= OrderContain::whereDate('created_at',$date->format('Y-m-d'))->get('category_id')->unique();
+						
+			// 			$catogoryID[] = $categorySearch;
+			// 		}
+
+			// 		// $catogoryName=[];
+			// 		// foreach ($catogoryID as $category) {
+						
+			// 		// 	$catogoryName[]= Category::where('id',$category)->pluck('name')->first();
+						
+				
+			// 		// }
+					
+			// }
+			
+ 
+			// $unique = $catogoryID->unique();
+			 
+			// $unique->values()->all();
+
+			// $data = implode(', ', $totalRevenue);
+
+			
+
+			$categorySearch= DB::table("order_contains")->select('category_id')->whereDate('created_at','>', now()->subDays(30)->endOfDay())->unique()->all();
+
+			// $users = DB::table("users")
+			// 	->select('id')
+			// 	->where('accounttype', 'standard')
+			// 	->where('created_at', '>', now()->subDays(30)->endOfDay())
+			// 	->all();
+			return $categorySearch;
+		}
+
+
 
 
 

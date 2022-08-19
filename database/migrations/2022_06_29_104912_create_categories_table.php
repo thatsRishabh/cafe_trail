@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('is_parent')->comment('1 means Yes, 2 no')->after('parent_id')->nullable();  
             $table->string('name');
             $table->string('image')->nullable();
-            $table->text('image_url')->nullable();
+            // $table->text('image_url')->nullable();
             $table->timestamps();
         });
     }

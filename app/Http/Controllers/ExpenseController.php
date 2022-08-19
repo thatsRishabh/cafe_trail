@@ -24,6 +24,10 @@ class ExpenseController extends Controller
             {
                 $query->where('items', $request->items);
             }
+            if(!empty($request->totalExpense))
+            {
+                $query->where('totalExpense', $request->totalExpense);
+            }
             if(!empty($request->description))
             {
                 $query->where('description', $request->description);
@@ -65,10 +69,10 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'items'                    => 'nullable',
-            'description'              => 'nullable',
-            'totalExpense'             => 'required|numeric',
-            'expense_date'             => 'required',
+            'items'                    => 'required',
+            'description'                => 'required',
+            'totalExpense'                => 'required|numeric',
+            'expense_date'                    => 'required',
            
         ]);
 
@@ -95,8 +99,8 @@ class ExpenseController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'items'                    => 'nullable',
-            'description'                => 'nullable',
+            'items'                    => 'required',
+            'description'                => 'required',
             'totalExpense'                => 'required|numeric',
             'expense_date'                    => 'required',
            

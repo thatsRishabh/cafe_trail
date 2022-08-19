@@ -87,15 +87,23 @@ class ProductStockManageController extends Controller
     
     public function store(Request $request)
     {
+        $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+
         $validation = Validator::make($request->all(), [
             'stock_operation'                => 'required',
             // 'stock_operation'                => [new Enum(ServerStatus::class)],
             'product_id'                   => 'required|numeric',
             // 'old_stock'                => 'nullable|numeric',
             // 'new_stock'                => 'nullable|numeric',
-            'change_stock'                      => 'required|numeric',
+            // 'change_stock'                      => 'required|integer|gte:10',
+            'change_stock'                      => (strtolower($request->stock_operation) == "out") 
+            && ($old->current_quanitity) <= unitConversion($request->unit_id, ($request->change_stock))
+            ? 'required|declined:false' : 'required',
             'unit_id'                      => 'required|numeric',
            
+        ],
+        [
+            'change_stock.declined' => 'low quantity in stock'
         ]);
 
         if ($validation->fails()) {
@@ -127,7 +135,7 @@ class ProductStockManageController extends Controller
             $updateStock->save();
 
             DB::commit();
-            return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
+            return response()->json(prepareResult(true, $info, trans('Your data has been saved successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
             DB::rollback();
@@ -137,12 +145,16 @@ class ProductStockManageController extends Controller
 
     public function update(Request $request, $id)
     {
+        $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+
         $validation = Validator::make($request->all(), [
             'stock_operation'          => 'required',
             'product_id'               => 'required|numeric',
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
-            'change_stock'             => 'required|numeric',
+            'change_stock'                      => (strtolower($request->stock_operation) == "out") 
+            && ($old->current_quanitity) <= unitConversion($request->unit_id, ($request->change_stock))
+            ? 'required|declined:false' : 'required',
             'unit_id'                  => 'required|numeric',
            
         ]);

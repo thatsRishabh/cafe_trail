@@ -67,6 +67,8 @@ class DashboardController extends Controller
     public function dashboardGraph(Request $request){
         try {
             $data = [];
+            // $data['category_name'] =getCategoryName($request->categoryDay);
+            // $data['category_quantity'] =getCategoryQuantity($request->categoryDay);
             $data['total_sale'] =getLast30TotalSale($request->day , $request->startDate, $request->endDate);
             // // $data['total_customer'] =getLast30TotalCustomer();
             $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);

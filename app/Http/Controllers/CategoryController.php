@@ -17,10 +17,15 @@ class CategoryController extends Controller
             $query = Category::select('*')
                     ->whereNull('parent_id')
                     ->with('subCategory')
-                     ->orderBy('name', 'asc');
+                    ->orderBy('id', 'desc');
+                    //  ->orderBy('name', 'asc');
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
+            }
+            if(!empty($request->name))
+            {
+                $query->where('name', $request->name);
             }
             if(!empty($request->category))
             {
@@ -53,11 +58,11 @@ class CategoryController extends Controller
                 $query = $query->get();
             }
 
-            return response(prepareResult(true, $query, trans('translate.fetched_records')), 200 , ['Result'=>'Your data has been saved successfully']);
+            return response(prepareResult(true, $query, trans('Record Featched Successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
         } 
         catch (\Throwable $e) {
             Log::error($e);
-            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('Error while featching Records')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
 
@@ -141,7 +146,7 @@ class CategoryController extends Controller
             }
 
             $info->name = $request->name;
-            $info->image_url = $request->image_url;
+            // $info->image_url = $request->image_url;
             $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
             $info->is_parent = $request->is_parent;
             $info->save();
@@ -156,9 +161,10 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-       
+        
+        
         $validation = Validator::make($request->all(), [
-            'name'                    => 'required|unique',
+            // 'name'                    => 'required|unique:categories,name',
            
         ]);
 
@@ -172,13 +178,22 @@ class CategoryController extends Controller
 
             if(!empty($request->image))
             {
-              $file=$request->image;
-            $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=$request->image->move('assets',$filename);
+                if(gettype($request->image) == "string"){
+                    $info->image = $request->image;
+                }
+                else{
+                       $file=$request->image;
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $info->image=imageBaseURL().$request->image->move('assets',$filename);
+                }
+
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=imageBaseURL().$request->image->move('assets',$filename);
             }
 
             $info->name = $request->name;
-            $info->image_url = $request->image_url;
+            // $info->image_url = $request->image_url;
             $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
             $info->is_parent = $request->is_parent;
             $info->save();
@@ -190,6 +205,7 @@ class CategoryController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
+
 
     public function show($id)
     {
