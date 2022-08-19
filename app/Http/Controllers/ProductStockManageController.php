@@ -135,7 +135,7 @@ class ProductStockManageController extends Controller
             $updateStock->save();
 
             DB::commit();
-            return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
+            return response()->json(prepareResult(true, $info, trans('Your data has been saved successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
             DB::rollback();

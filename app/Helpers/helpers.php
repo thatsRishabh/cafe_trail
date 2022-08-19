@@ -9,7 +9,6 @@ use App\Models\AttendenceList;
 use App\Models\Category;
 use App\Models\OrderContain;
 use App\Models\Order;
-use App\Models\OrderContain;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

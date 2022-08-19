@@ -9,6 +9,7 @@ use App\Models\ProductMenu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\PDF;
 
 class OrderController extends Controller
 {
@@ -259,4 +260,20 @@ class OrderController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
         }
     }
+
+    public function printOrder($id) {
+       
+
+    
+        $data['orderData'] = Order::select('*')->with('orderContains')->where('id', $id)->get();
+
+
+            // // $info = Employee::find($request->employee_id);
+            // $temp['data1'] = $info;
+            $pdf = PDF::loadView('employee-pdf', $data);
+    
+            return $pdf->download('pdf_file.pdf');
+            return $data;
+    
+        }
 }
