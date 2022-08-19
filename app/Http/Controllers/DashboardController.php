@@ -27,11 +27,11 @@ class DashboardController extends Controller
 
            
 
-            return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Your data has been saved successfully']);
+            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
             } 
             catch (\Throwable $e) {
                 Log::error($e);
-                return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+                return response()->json(prepareResult(false, $e->getMessage(), trans('Error while fatching Records')), 500,  ['Result'=>'Your data has not been saved']);
             }
     }
 
@@ -42,11 +42,11 @@ class DashboardController extends Controller
         $data= getDetails($request);
         // $data['order_quantity'] =getQuantity();
         // $data['total_price'] =getTotalPrice();
-        return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Orders Data']);
+        return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Orders Data']);
     } 
     catch (\Throwable $e) {
         Log::error($e);
-        return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+        return response()->json(prepareResult(false, $e->getMessage(), trans('Error while fatching Records')), 500,  ['Result'=>'Your data has not been saved']);
     }
         
     }
@@ -54,11 +54,11 @@ class DashboardController extends Controller
         try {
             
             $data=getTotalOrder();
-            return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Orders Data']);
+            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Orders Data']);
         } 
         catch (\Throwable $e) {
             Log::error($e);
-            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('Error while fatching Records')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
 
@@ -74,11 +74,11 @@ class DashboardController extends Controller
             $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
             $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
             $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
-            return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Graph Data']);
+            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
         } 
         catch (\Throwable $e) {
             Log::error($e);
-            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('Error while fatching Records')), 500,  ['Result'=>'Your data has not been saved']);
         }
 
     }
@@ -94,11 +94,11 @@ class DashboardController extends Controller
             // $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
             // $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
             // $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
-            return response(prepareResult(true, $data, trans('translate.fetched_records')), 200 , ['Result'=>'Graph Data']);
+            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
         } 
         catch (\Throwable $e) {
             Log::error($e);
-            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'Your data has not been saved']);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('Error while fatching Records')), 500,  ['Result'=>'Your data has not been saved']);
         }
 
     }
