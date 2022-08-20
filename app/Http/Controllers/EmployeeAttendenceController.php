@@ -203,8 +203,16 @@ class EmployeeAttendenceController extends Controller
         $data['year_month']=$request->year_month;
        $employeeData = Employee::where('id', $request->employee_id)->get('salary')->first();
         $data['employeeSalary'] = $employeeData->salary;
-   
+        $joining_date = Employee::where('id', $request->employee_id)->get('joining_date');
+        $joining_dates = substr($joining_date, -13,-6);
+        // echo $joining_dates;
+        if(($request->year_month) < ($joining_dates)){
+            return 'Employee did not Joined on given date';
+        }
+        else{
         return $data;
+    }
+   
 
     }
 

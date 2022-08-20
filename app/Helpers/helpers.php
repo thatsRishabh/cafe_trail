@@ -528,9 +528,11 @@ function imageBaseURL() {
 				$totalOrderId =[];
 				foreach ($daterange as $date) {
 					
-					$orderId = Order::whereDate('created_at',$date->format('Y-m-d'))->select('id')->get(); 
-					$totalOrderId[] = $orderId;
-				    
+					$orderId = Order::whereDate('created_at',$date->format('Y-m-d'))->select('id')->get();
+					 
+					// foreach($orderId as $order){
+						$totalOrderId[] = $orderId;
+					// }
 				}
 			
 			
@@ -556,18 +558,13 @@ function imageBaseURL() {
 					
 					$orderId = Order::whereDate('created_at',$date)->select('id')->get(); 
 					foreach($orderId as $order){
-						$orders[] = $order->id;
+						$totalOrderId[] = $order->id;
 					}
-					// $totalOrderId[] = $orders;
+					$totalOrderId[] = $orders;
 				}
-				
-			
-		
 			}
-		
-
 			// $data = implode(', ', $totalProduct);
-			return $orders;
+			return $totalOrderId;
 			}
 	// function getOrderId(){
 	// 	$totalSale =[];

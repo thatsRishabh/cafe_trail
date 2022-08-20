@@ -68,7 +68,7 @@ class ProductInfoController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name'                       => 'required',
+            'name'                       => 'required|unique:App\Models\ProductInfo,name',
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
             // 'minimum_qty'              => 'required|numeric',
@@ -91,6 +91,7 @@ class ProductInfoController extends Controller
             $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
             $info->minimum_qty = $request->minimum_qty;
             $info->price = $request->price;
+            
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been saved successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
