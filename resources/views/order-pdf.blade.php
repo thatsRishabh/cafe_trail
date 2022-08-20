@@ -1,3 +1,8 @@
+<?php
+
+$data= App\Models\Order::select('*')->with('orderContains')->where('id', $order_id)->first();
+?>
+
 <style type="text/css">
     @font-face {
   font-family: SourceSansPro;
@@ -205,6 +210,7 @@ footer {
 </style>
 
 
+<
   <body>
     <header class="clearfix">
       <!-- <div id="logo">
@@ -223,20 +229,20 @@ footer {
       <div id="details" class="clearfix">
         <div id="client">
           <div class="to">INVOICE TO:</div>
-          @foreach($orderData as $key => $infos)
-          <h2 class="name">Table No. {{($infos->table_number)}} </h2>
-          @endforeach
+          
+          <h2 class="name">Table No. {{($data['table_number'])}} </h2>
+         
 
 
           <div class="address">Contact Number</div>
           <div class="email"><a href="mailto:john@example.com">john@example.com</a></div>
         </div>
         <div id="invoice">
-        @foreach($orderData as $key => $infos)
-        <h1>Invoice no. {{($infos->id)}} </h1>
-        <div class="date">Total Quantity: {{($infos->cartTotalQuantity)}}</div>
-        <div class="date">Date of Invoice: {{($infos->created_at)}}</div>
-          @endforeach
+       
+        <h1>Invoice no. </h1>
+        <div class="date">Total Quantity: {{($data['cartTotalQuantity'])}}</div>
+        <div class="date">Date of Invoice: {{($data['created_at'])}}</div>
+         
         </div>
       </div>
       <div id="table1">
@@ -251,50 +257,39 @@ footer {
           </tr>
         </thead>
         <tbody>
+        @foreach(@$data->orderContains as $key => $info)
           <tr>
-            <td class="no">01</td>
-            <td class="desc"><h3>Website Design</h3>Creating a recognizable design solution based on the company's existing visual identity</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">30</td>
-            <td class="total">$1,200.00</td>
+            <td class="no">{{ $key+1 }}</td>
+            <td class="desc"><h3>{{$info->name}}</h3></td>
+            <td class="unit">Rs. {{$info->price}}</td>
+            <td class="qty">{{$info->quantity}}</td>
+            <td class="total">Rs. {{$info->netPrice}}</td>
           </tr>
-          <tr>
-            <td class="no">02</td>
-            <td class="desc"><h3>Website Development</h3>Developing a Content Management System-based Website</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">80</td>
-            <td class="total">$3,200.00</td>
-          </tr>
-          <tr>
-            <td class="no">03</td>
-            <td class="desc"><h3>Search Engines Optimization</h3>Optimize the site for search engines (SEO)</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">20</td>
-            <td class="total">$800.00</td>
-          </tr>
+          @endforeach
+        
         </tbody>
 
-        @foreach($orderData as $key => $infos)
+       
         <tfoot>
           <tr>
             <td colspan="2"></td>
             <td colspan="2">SUBTOTAL</td>
-            <td>Rs. {{($infos->cartTotalAmount)}}</td>
+            <td>Rs. {{($data['cartTotalAmount'])}}</td>
           </tr>
           <tr>
             <td colspan="2"></td>
-            <td colspan="2">TAX 25%</td>
-            <td>Rs. {{($infos->taxes)}}</td>
+            <td colspan="2">TAX </td>
+            <td>Rs. {{($data['taxes'])}}</td>
           </tr>
           <tr>
             <td colspan="2"></td>
             <td colspan="2">GRAND TOTAL</td>
-            <td>Rs. {{($infos->netAmount)}}</td>
+            <td>Rs. {{($data['netAmount'])}}</td>
           </tr>
         </tfoot>
 
-          @endforeach
-
+        
+        
         
 
       </table>

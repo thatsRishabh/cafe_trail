@@ -28,13 +28,15 @@ Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']);
 // dashboard
 Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
 Route::post('order-list', [App\Http\Controllers\DashboardController::class, 'orderList']); 
-Route::get('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
+Route::post('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
+Route::post('dashboard-graph-list', [App\Http\Controllers\DashboardController::class, 'dashboardGraphByName']); 
 Route::post('total-order', [App\Http\Controllers\DashboardController::class, 'totalOrder']);
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 
 Route::resource('product-menu', App\Http\Controllers\ProductMenuController::class)->only(['store','destroy','show']);
 Route::post('product-menu-update/{id?}', [App\Http\Controllers\ProductMenuController::class, 'update']); 
+Route::post('product-menus-list', [App\Http\Controllers\ProductMenuController::class, 'productMenuList']);
 
 // product-info
 Route::post('product-infos', [App\Http\Controllers\ProductInfoController::class, 'searchProductInfo']); 
