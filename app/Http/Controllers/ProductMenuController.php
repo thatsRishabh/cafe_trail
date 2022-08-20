@@ -90,11 +90,6 @@ class ProductMenuController extends Controller
             {
                 $query->where('category_id', $request->category_id);
             }
-            if(!empty($request->parent_id))
-            {
-                $query->where('parent_id', $request->parent_id);
-            }
-
 
             if(!empty($request->per_page_record))
             {
