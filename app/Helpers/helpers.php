@@ -415,7 +415,7 @@ function imageBaseURL() {
 			$datas = $dates[0];
 			// echo $dates[0];
 			$data['date'] = $datas;
-
+			// $data['totalQuantity'] = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->sum('quantity'); 
 			$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->groupby('created_at')->where('created_at', $date->created_at)->sum('quantity'); 
 			$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->groupby('created_at')->where('created_at', $date->created_at)->sum('netPrice');
 			$details[] = $data;
@@ -489,19 +489,7 @@ function imageBaseURL() {
 			return $totalSale;
 		}
 
-	// function getTotalSale(){
-	// 	$totalSale =[];
-	// 			foreach (Order::select('id')->distinct('id')->get() as $id) {
-					
-	// 			$salesSum = DB::table('orders')->where('id', $id->id)->sum('netAmount'); 
-					
-	// 				$totalSale[] = $salesSum;
-	// 			}
-	// 			return $totalSale;
-	// }
-
-
-	function getLast30OrderId($day, $startDate , $endDate)
+	function getLast30details($day, $startDate , $endDate)
 		{
 			if(!empty($day))
             {
@@ -525,15 +513,20 @@ function imageBaseURL() {
 				$end       = $end->modify('+1 day');
 				$interval  = new \DateInterval('P1D');
 				$daterange = new \DatePeriod($begin, $interval, $end);
-				$totalOrderId =[];
+				// foreach ($daterange as $date) {
+				// 	$dateList[] = ''.$date->format("Y-m-d").'';
+				// }
+				$orderDetails =[];
 				foreach ($daterange as $date) {
-					
-					$orderId = Order::whereDate('created_at',$date->format('Y-m-d'))->select('id')->get();
-					 
-					// foreach($orderId as $order){
-						$totalOrderId[] = $orderId;
-					// }
+					$orders['date']= $date->format("Y-m-d");
+					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
+					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orderDetails[] = $orders;
 				}
+				return $orderDetails;
+				
+
 			
 			
 		
@@ -553,102 +546,19 @@ function imageBaseURL() {
 						$rangArray[] = $date;
 					}
   			
-				$totalOrderId =[];
+				$orderDetails =[];
 				foreach ($rangArray as $date) {
+					$orders['date']= $date;
+					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
+					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orderDetails[] = $orders;
 					
-					$orderId = Order::whereDate('created_at',$date)->select('id')->get(); 
-					foreach($orderId as $order){
-						$orders[] = $order->id;
-					}
-					$totalOrderId[] = $orders;
 				}
+				return $orderDetails;
 			}
-			// $data = implode(', ', $totalProduct);
-			return $totalOrderId;
-			}
-	// function getOrderId(){
-	// 	$totalSale =[];
-	// 			foreach (Order::select('id')->distinct('id')->get() as $id) {
-					
-	// 			// $salesSum = DB::table('orders')->where('id', $id->id)->sum('netAmount'); 
-					
-	// 				$totalSale[] = $id->id;
-	// 			}
-	// 			return $totalSale;
-	// }
-
-
-	function getLast30TotalProducts($day, $startDate , $endDate)
-		{
-			if(!empty($day))
-            {
-				$today     = new \DateTime();
-				// $begin     = $today->sub(new \DateInterval('P30D'));
-	
-				if(($day == 1 ))
-				{
-					$begin = $today->sub(new \DateInterval('P0D'));
-				}
-				elseif (($day == 7)) 
-				{
-					$begin= $today->sub(new \DateInterval('P7D'));
-				}
-				elseif (($day == 30 )) 
-				{
-					$begin= $today->sub(new \DateInterval('P30D'));
-				}
-	
-				$end       = new \DateTime();
-				$end       = $end->modify('+1 day');
-				$interval  = new \DateInterval('P1D');
-				$daterange = new \DatePeriod($begin, $interval, $end);
-				$totalProduct =[];
-				foreach ($daterange as $date) {
-					
-				$productSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('cartTotalQuantity'); 
-					
-					$totalProduct[] = $productSum;
-				}
+		
 			
-		
-			}
-
-			if(!empty( $startDate))
-            {
-
-				$rangArray = []; 
-				$startDate = strtotime($startDate);
-				$endDate = strtotime($endDate);
-					
-					for ($currentDate = $startDate; $currentDate <= $endDate; 
-													$currentDate += (86400)) {
-															
-						$date = date('Y-m-d', $currentDate);
-						$rangArray[] = $date;
-					}
-  			
-				$totalProduct =[];
-				foreach ($rangArray as $date) {
-					
-					$productSum = Order::whereDate('created_at',$date)->sum('cartTotalQuantity'); 
-					
-					$totalProduct[] = $productSum;
-				}
-		
-			}
-		
-
 			// $data = implode(', ', $totalProduct);
-			return $totalProduct;
 		}
-	// function getTotalProduct(){
-	// 	$totalSale =[];
-	// 			foreach (Order::select('id')->distinct('id')->get() as $id) {
-					
-	// 			$salesSum = DB::table('orders')->where('id', $id->id)->sum('cartTotalQuantity'); 
-					
-	// 				$totalSale[] = $salesSum;
-	// 			}
-	// 			return $totalSale;
-	// }
 	

@@ -87,9 +87,9 @@ class DashboardController extends Controller
         try {
             $data = [];
 
-            $data['order_id'] =getLast30OrderId($request->day , $request->startDate, $request->endDate);
-            $data['total_product'] = getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
-            $data['total_sale'] = getLast30TotalSales($request->day , $request->startDate, $request->endDate);
+            $data['order_details'] =getLast30details($request->day , $request->startDate, $request->endDate);
+            // $data['total_product'] = getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
+            // $data['total_sale'] = getLast30TotalSales($request->day , $request->startDate, $request->endDate);
             // // // $data['total_customer'] =getLast30TotalCustomer();
             // $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
             // $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
