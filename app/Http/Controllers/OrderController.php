@@ -270,9 +270,10 @@ class OrderController extends Controller
 
             // // $info = Employee::find($request->employee_id);
             // $temp['data1'] = $info;
-            $pdf = PDF::loadView('employee-pdf', $data);
+            // $pdf = PDF::loadView('employee-pdf', $data);
     
-            return $pdf->download('pdf_file.pdf');
+            $pdf = PDF::loadView('order-pdf', $data);
+            return $pdf->download(time().'pdf_file.pdf');
             return $data;
     
         }

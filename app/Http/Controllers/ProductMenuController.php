@@ -84,15 +84,21 @@ class ProductMenuController extends Controller
         $validation = Validator::make($request->all(), [
             // {($request->parent_id) ? $request->parent_id :null}
             
-            // 'name'                    => ($request->parent_id) ? ' ': 'required',
-            'description'                => ($request->parent_id) ? ' ': 'required',
-            'category_id'                   => 'required|numeric',
-            'subcategory_id'                => 'required|numeric',
-            'category_id'                   => ($request->parent_id) ? ' ': 'required',
-            'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
-            'price'                      => 'required|numeric',
+            // 'name'                    => 'required',
+            // // 'description'                => ($request->parent_id) ? ' ': 'required',
+            // 'description'                => 'required',
+            // 'category_id'                   => 'required|numeric',
+            // // 'subcategory_id'                => 'required|numeric',
+            // // 'category_id'                   => ($request->parent_id) ? ' ': 'required',
+            // // 'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
+            // 'price'                      => 'required|numeric',
     //    'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
            
+            "product_list.*.name"  => "required", 
+            "product_list.*.description"  => "required", 
+            "product_list.*.price"  => "required|numeric", 
+            "product_list.*.order_duration"  => "required|numeric", 
+            "product_list.*.category_id"  => "required|numeric", 
           
            
         ]);
@@ -101,60 +107,84 @@ class ProductMenuController extends Controller
             return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         } 
 
-        if($request->parent_id){
-            $productMenuData = ProductMenu::where('product_menus.id', $request->parent_id)->get('price')->first();
+        // if($request->parent_id){
+        //     $productMenuData = ProductMenu::where('product_menus.id', $request->parent_id)->get('price')->first();
 
-            $validation = Validator::make($request->all(),[     
-               'price'  => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',   
+        //     $validation = Validator::make($request->all(),[     
+        //        'price'  => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',   
                
-            ],
-            [
-                'price.declined' => 'Half price is greater than full price'
-            ]);
-            if ($validation->fails()) {
-                return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
-            } 
-        }
+        //     ],
+        //     [
+        //         'price.declined' => 'Half price is greater than full price'
+        //     ]);
+        //     if ($validation->fails()) {
+        //         return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+        //     } 
+        // }
 
         DB::beginTransaction();
         try {
-            $info = new ProductMenu;
+            // $info = new ProductMenu;
 
-            $category_name = Category::where('categories.id', $request->subcategory_id)->get('name')->first();
+            // $category_name = Category::where('categories.id', $request->subcategory_id)->get('name')->first();
 
+            // // if(!empty($request->image))
+            // // {
+            // //   $file=$request->image;
+            // // $filename=time().'.'.$file->getClientOriginalExtension();
+            // // $info->image=$request->image->move('assets',$filename);
+            // // }
+
+            
             // if(!empty($request->image))
             // {
             //   $file=$request->image;
             // $filename=time().'.'.$file->getClientOriginalExtension();
-            // $info->image=$request->image->move('assets',$filename);
+            // $info->image=imageBaseURL().$request->image->move('assets',$filename);
             // }
 
-            
-            if(!empty($request->image))
-            {
-              $file=$request->image;
-            $filename=time().'.'.$file->getClientOriginalExtension();
-            $info->image=imageBaseURL().$request->image->move('assets',$filename);
-            }
+            // // $file=$request->image;
+            // // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
 
-            // $file=$request->image;
-            // $filename= $file ? time().'.'.$file->getClientOriginalExtension() : "";
+            // // $info->image=$request->file->move('assets',$filename);
+            // $info->name = ($request->name) ? $request->name : $category_name->name;
+            // $info->order_duration = $request->order_duration;
+            // $info->description = $request->description;
+            // // $info->image_url = $request->image_url;
+            // $info->category_id = $request->category_id;
+            // $info->subcategory_id = $request->subcategory_id;
+            // $info->price = $request->price;
+            // $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            // $info->is_parent = $request->is_parent;
+            // $info->save();
 
-            // $info->image=$request->file->move('assets',$filename);
-            $info->name = ($request->name) ? $request->name : $category_name->name;
-            $info->order_duration = $request->order_duration;
-            $info->description = $request->description;
-            // $info->image_url = $request->image_url;
-            $info->category_id = $request->category_id;
-            $info->subcategory_id = $request->subcategory_id;
-            $info->price = $request->price;
-            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
-            $info->is_parent = $request->is_parent;
-            $info->save();
+
+            foreach ($request->product_list as $key => $products) {
+             
+                   $addProduct = new ProductMenu;
+                   $addProduct->name =  $products['name'];
+                   $addProduct->description =  $products['description'];
+                   $addProduct->price =  $products['price'];
+                   $addProduct->order_duration =  $products['order_duration'];
+                   $addProduct->category_id =  $products['category_id'];
+                  
+              
+                    if(!empty($products['image']))
+                        {
+                        $file=$products['image'];
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $addProduct->image =imageBaseURL().$request->image->move('assets',$filename);
+                        }
+
+                   $addProduct->save();
+                   
+    
+               }
+
 
             DB::commit();
             // $info['product_menus'] = $info->halfPrice;
-            return response()->json(prepareResult(true, $info, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
+            return response()->json(prepareResult(true, $addProduct, trans('translate.created')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
             DB::rollback();
