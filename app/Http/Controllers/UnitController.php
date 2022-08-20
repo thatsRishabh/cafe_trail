@@ -59,7 +59,7 @@ class UnitController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'name'                       => 'required',
-            // 'abbreiation'                => 'required',
+            'abbreiation'                => 'required',
             // 'minvalue'                   => 'required|numeric',
             // 'minvalue'                   => ($request->minvalue) > 10 ? '': 'declined:false',
            
@@ -89,7 +89,7 @@ class UnitController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'name'                       => 'required',
-            // 'abbreiation'                => 'required',
+            'abbreiation'                => 'required',
             // 'minvalue'                   => 'required|numeric',
            
         ]);

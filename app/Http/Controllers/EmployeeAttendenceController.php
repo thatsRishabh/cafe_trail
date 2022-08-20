@@ -172,6 +172,7 @@ class EmployeeAttendenceController extends Controller
     }
 
     public function dateWiseSearch(Request $request) {
+        try {
         $info = AttendenceList::where('employee_id', $request->employee_id);
         if(!empty($request->from_date) && !empty($request->end_date))
         {
@@ -185,12 +186,22 @@ class EmployeeAttendenceController extends Controller
         {
             $info->whereDate('created_at', '<=', $request->end_date);
         }
-        $result= $info->get();
-        return $result;
+        if($info)
+            {
+                $result= $info->get();
+                return response(prepareResult(true, $result, trans('Record Fatched Successfully')), 200 , ['Result'=>'httpcodes.found']);
+            }
+            return response(prepareResult(false, [], trans('Error while fatching Records')),500,  ['Result'=>'httpcodes.not_found']);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
+        }
+        // $result= $info->get();
+        // return $result;
     }
 
     public function monthlyAttendence(Request $request) {
-       
+    try {
 
         $data = [];
 
@@ -205,13 +216,17 @@ class EmployeeAttendenceController extends Controller
         $data['employeeSalary'] = $employeeData->salary;
         $joining_date = Employee::where('id', $request->employee_id)->get('joining_date');
         $joining_dates = substr($joining_date, -13,-6);
-        // echo $joining_dates;
-        if(($request->year_month) < ($joining_dates)){
-            return 'Employee did not Joined on given date';
+    if(($request->year_month) > ($joining_dates))
+            {
+            
+                return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'httpcodes.found']);
+            }
+            return response(prepareResult(false, [], trans('Employee did not Joined on given date')),500,  ['Result'=>'httpcodes.not_found']);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
         }
-        else{
-        return $data;
-    }
+    
    
 
     }
