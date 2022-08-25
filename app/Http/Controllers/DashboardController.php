@@ -39,7 +39,7 @@ class DashboardController extends Controller
     {
         try {
             
-        $data['order-details']= getDetails($request->day , $request->startDate, $request->endDate, $request->category);
+        $data = getDetails($request->start_date, $request->end_date, $request->category);
         return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Orders Data']);
     } 
     catch (\Throwable $e) {
@@ -70,16 +70,10 @@ class DashboardController extends Controller
     public function dashboardGraphByName(Request $request){
         try {
             $data = [];
+            $data['order_details'] = getLast30details($request->day , $request->startDate, $request->endDate);
 
-            $data['order_details'] =getLast30details($request->day , $request->startDate, $request->endDate);
-            // $data['total_product'] = getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
-            // $data['total_sale'] = getLast30TotalSales($request->day , $request->startDate, $request->endDate);
-            // // // $data['total_customer'] =getLast30TotalCustomer();
-            // $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
-            // $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
-            // $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
-
-            return response(prepareResult(true,  $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
+            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
+            
         } 
         catch (\Throwable $e) {
             Log::error($e);
