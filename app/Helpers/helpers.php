@@ -393,119 +393,27 @@ function imageBaseURL() {
 			return $categorySearch;
 		}
 
-
-
-
-
-	// function getDetails($request){
-	// 	$start_date = $request->start_date;
-	// 	$end_date = \Carbon\Carbon::parse($request->end_date)->addDays(1);
-	// 	foreach (OrderContain::select('name')->whereBetween('created_at', [$start_date, $end_date])->distinct('name')->get() as $name ) {
-	// 		$data['name'] = $name->name;
-	// 		$data['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
-	// 		$data['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
-	// 		$details[] = $data;
-	// 		}
-	// 		return $details;
-	// 	}
-
-	// function getTotalOrder(){
-
-	// 	foreach (DB::table('order_contains')->select('created_at')->distinct('created_at')->get() as $date ) {
-	// 		$dates =  explode(" ",$date->created_at);
-	// 		$datas = $dates[0];
-	// 		$data['date'] = $datas;
-	// 		$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->groupby('created_at')->where('created_at', $date->created_at)->sum('quantity'); 
-	// 		$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->groupby('created_at')->where('created_at', $date->created_at)->sum('netPrice');
-	// 		$details[] = $data;
-	// 		}
-	// 		return 	$details;
-	// 	}
-	function getDetails($day, $startDate , $endDate, $category)
+	function getDetails($startDate , $endDate, $category)
 	{
-		if(!empty($day))
+		if(!empty($startDate))
 		{
-			$today     = new \DateTime();
-			// $begin     = $today->sub(new \DateInterval('P30D'));
-
-			if(($day == 1 ))
-			{
-				$begin = $today->sub(new \DateInterval('P0D'));
-			}
-			elseif (($day == 7)) 
-			{
-				$begin= $today->sub(new \DateInterval('P7D'));
-			}
-			elseif (($day == 30 )) 
-			{
-				$begin= $today->sub(new \DateInterval('P30D'));
-			}
-
-			$end       = new \DateTime();
-			$end       = $end->modify('+1 day');
-			$interval  = new \DateInterval('P1D');
-			$daterange = new \DatePeriod($begin, $interval, $end);
-
-			$orderDetails =[];
-			foreach ($daterange as $date) {
-				$orders['date']= $date->format("Y-m-d");
-				$orders['name']= DB::table('order_contains')->whereDate('created_at',$date)->where('category_id', $category)->distinct('name')->get('name');
-				// $orders['name']= $name->name ?? "";
-				foreach($orders['name'] as $name){
-				echo $name->name;
-				$orders['sales']= OrderContain::whereDate('created_at',$date)->where('name', $name->name)->sum('netPrice');
-				$orders['product'] = OrderContain::whereDate('created_at',$date)->where('name', $name->name)->sum('quantity');
-				$orders['revenue']= OrderContain::whereDate('created_at',$date)->where('name', $name->name)->sum('netPrice');
-				$orderDetails[] = $orders;
-			}
-			}
-			return $orderDetails;
+			$date = Carbon::createFromFormat('Y-m-d', $endDate);
+$daysToAdd = 1;
+$date = $date->addDays($daysToAdd);
+			$a = 	DB::table('order_contains as w')
+			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+			->where('w.category_id', $category)
+			->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+            ->orderBy('w.created_at')
+            ->get();
+			$orderDetails = $a;
+			return  $orderDetails;
 	
 		}
 
-		if(!empty( $startDate))
-		{
-
-			$rangArray = []; 
-			$startDate = strtotime($startDate);
-			$endDate = strtotime($endDate);
-				
-				for ($currentDate = $startDate; $currentDate <= $endDate; 
-												$currentDate += (86400)) {
-														
-					$date = date('Y-m-d', $currentDate);
-					$rangArray[] = $date;
-				}
-				$orderDetails =[];
-			foreach ($rangArray as $date) {
-				$orders['date']= $date;
-				$orders['name']= OrderContain::whereDate('created_at',$date)->where('category_id', $category)->distinct('name')->get('name');
-				// $orders['name']= $name->name ?? "";
-				foreach($orders['name'] as $name){
-				$orders['sales']= OrderContain::whereDate('created_at',$date)->where('category_id', $category)->sum('netPrice');
-				$orders['product'] = OrderContain::whereDate('created_at',$date)->where('category_id', $category)->sum('quantity');
-				$orders['revenue']= OrderContain::whereDate('created_at',$date)->where('category_id', $category)->sum('netPrice');
-				$orderDetails[] = $orders;
-			}
-			}
-			return $orderDetails;
-	
-		}
-		  
-		// 	$orderDetails =[];
-		// 	foreach ($rangArray as $date) {
-		// 		$orders['date']= $date;
-		// 		$names= OrderContain::whereDate('created_at',$date)->where('category_id', $category)->distinct('name')->first('name');
-		// 		$orders['name']= $names->name ?? "";
-		// 		foreach($names as $name){
-		// 		$orders['sales']= OrderContain::where('name', $name->name)->sum('netPrice');
-		// 		$orders['product'] = OrderContain::where('name', $name->name)->sum('quantity'); 
-		// 		$orders['revenue']= OrderContain::where('name', $name->name)->sum('netPrice');
-		// 		$orderDetails[] = $orders;
-		// 	}
-		// 	}
-		// 	return $orderDetails;
-		// }
+		
 	}
 	function getLast30TotalSales($day, $startDate , $endDate)
 		{

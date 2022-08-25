@@ -39,7 +39,7 @@ class DashboardController extends Controller
     {
         try {
             
-        $data['order-details']= getDetails($request->day , $request->startDate, $request->endDate, $request->category);
+        $data = getDetails($request->start_date, $request->end_date, $request->category);
         return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Orders Data']);
     } 
     catch (\Throwable $e) {
@@ -72,26 +72,10 @@ class DashboardController extends Controller
             $data = [];
             $data['order_details'] = getLast30details($request->day , $request->startDate, $request->endDate);
 
-            if(!empty($request->per_page_record))
-            {
-                $perPage = $request->per_page_record;
-                $page = $request->input('page', 1);
-                $total = count($data['order_details']);
-                $result = $data['order_details']->offset(($page - 1) * $perPage)->limit($perPage)->get();
-
-                $pagination =  [
-                    'data' => $result,
-                    'total' => $total,
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'last_page' => ceil($total / $perPage)
-                ];
-                $data = $pagination;
-            }
-            else
-            {
+           
+            
                 return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
-            }
+         
             
         } 
         catch (\Throwable $e) {
