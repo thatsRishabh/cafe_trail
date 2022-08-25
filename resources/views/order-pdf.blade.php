@@ -50,9 +50,9 @@ header {
 }
 
 #company {
-  float: left;
-  text-align: left;
- 
+  float: center;
+  text-align: center;
+  margin-left: 40px;
 }
 
 
@@ -62,8 +62,9 @@ header {
 
 #client {
   padding-left: 6px;
-  border-left: 6px solid #0087C3;
-  float: left;
+  float: center;
+  text-align: center;
+  margin-left: 40px;
 }
 
 #client .to {
@@ -165,6 +166,9 @@ table tfoot td {
   background: #FFFFFF;
   border-bottom: none;
   font-size: 1.2em;
+  float: center;
+  text-align: center;
+  margin-left: 40px;
   white-space: nowrap; 
   border-top: 1px solid #AAAAAA; 
 }
@@ -223,28 +227,19 @@ footer {
         <div>Near D-Mart, Beside Prakesh Dhaba</div>
         <div>Hoshangabad Road, Bhopal</div>
         <div>	+91 9171 333 851</div>
-        <div><a href="mailto:company@example.com">chaihojaye.bpl@gmail.com</a></div>
+        <div>	chaihojaye.bpl@gmail.com</div>
+       
       </div>
       </div>
     </header>
     <main>
       <div id="details" class="clearfix">
         <div id="client">
-          <div class="to">INVOICE TO:</div>
-          
-          <h2 class="name">Table No. {{($data['table_number'])}} </h2>
-         
+          <div class="to">INVOICE TO: Table No. {{($data['table_number'])}} </div>
 
-
-          <div class="address">Contact Number</div>
-          <div class="email"><a href="mailto:john@example.com">john@example.com</a></div>
-        </div>
-        <div id="invoice">
-       
-        <h1>Invoice no. {{($data['id'])}} </h1>
-        <div class="date">Total Quantity: {{($data['cartTotalQuantity'])}}</div>
-        <div class="date">Date of Invoice: {{($date)}}</div>
-         
+          <div class="address">Invoice no. {{($data['id'])}} </div>
+          <div class="address">Total Quantity: {{($data['cartTotalQuantity'])}}</div>
+          <div class="address">Date of Invoice: {{($date)}} </div>
         </div>
       </div>
       <div id="table1">

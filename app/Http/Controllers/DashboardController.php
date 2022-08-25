@@ -39,9 +39,7 @@ class DashboardController extends Controller
     {
         try {
             
-        $data= getDetails($request);
-        // $data['order_quantity'] =getQuantity();
-        // $data['total_price'] =getTotalPrice();
+        $data['order-details']= getDetails($request->day , $request->startDate, $request->endDate, $request->category);
         return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Orders Data']);
     } 
     catch (\Throwable $e) {
@@ -50,20 +48,6 @@ class DashboardController extends Controller
     }
         
     }
-    public function totalOrder(){
-        try {
-            
-            $data=getTotalOrder();
-            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Orders Data']);
-        } 
-        catch (\Throwable $e) {
-            Log::error($e);
-            return response()->json(prepareResult(false, $e->getMessage(), trans('Error while fatching Records')), 500,  ['Result'=>'Your data has not been saved']);
-        }
-    }
-
-
-
     public function dashboardGraph(Request $request){
         try {
             $data = [];
@@ -72,7 +56,7 @@ class DashboardController extends Controller
             $data['total_sale'] =getLast30TotalSale($request->day , $request->startDate, $request->endDate);
             // // $data['total_customer'] =getLast30TotalCustomer();
             $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
-            $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
+            $data['total_expense'] =getLast30TotalExpense($request->day , $request->startDate, $request->endDate);
             $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
             return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
         } 

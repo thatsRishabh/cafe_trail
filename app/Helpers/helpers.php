@@ -8,6 +8,7 @@ use App\Models\EmployeeAttendence;
 use App\Models\AttendenceList;
 use App\Models\Category;
 use App\Models\OrderContain;
+use App\Models\Expense;
 use App\Models\Order;
 use App\Models\RecipeContains;
 use App\Models\User;
@@ -15,40 +16,40 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-function prepareResult($error, $data, $msg)
-{
-	return ['success' => $error, 'data' => $data, 'message' => $msg];
-}
+	function prepareResult($error, $data, $msg)
+	{
+		return ['success' => $error, 'data' => $data, 'message' => $msg];
+	}
 
-function unitConversion($unitID, $quantity) {
+	function unitConversion($unitID, $quantity) {
 
-	$unitName = Unit::where('id', $unitID)->get('name')->first();
-	// return $unitName->name;
-   
-	if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter") || (strtolower($unitName->name) == "litre"))
-	    {
-	        $value = $quantity*1000;
-	        return $value;
-	    }
-	    elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "pack" || "piece")) 
-	    {
-			$value = $quantity;
-	        return $value;
-	    }
-		elseif ((strtolower($unitName->name) == "dozen")) 
-	    {
-			$value = $quantity*12;
-	        return $value;
-	    }
+		$unitName = Unit::where('id', $unitID)->get('name')->first();
+		// return $unitName->name;
+	
+		if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter") || (strtolower($unitName->name) == "litre"))
+			{
+				$value = $quantity*1000;
+				return $value;
+			}
+			elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "pack" || "piece")) 
+			{
+				$value = $quantity;
+				return $value;
+			}
+			elseif ((strtolower($unitName->name) == "dozen")) 
+			{
+				$value = $quantity*12;
+				return $value;
+			}
 
-}
+	}
 
-function imageBaseURL() {
+	function imageBaseURL() {
 
-	        return "http://192.168.1.16:8000/";
-			// return "https://backend.gofactz.com/public/";
+				return "http://192.168.1.16:8000/";
+				// return "https://backend.gofactz.com/public/";
 
-}
+	}
 
 	function getLast30TotalSale($day, $startDate , $endDate)
 		{
@@ -214,7 +215,7 @@ function imageBaseURL() {
 			return $totalProduct;
 		}
 
-	function getLast30TotalRevenue($day, $startDate , $endDate)
+	function getLast30TotalExpense($day, $startDate , $endDate)
 		{
 			if(!empty($day))
             {
@@ -240,12 +241,12 @@ function imageBaseURL() {
 					$interval  = new \DateInterval('P1D');
 					$daterange = new \DatePeriod($begin, $interval, $end);
 					
-					$totalRevenue =[];
+					$totalExpense =[];
 					foreach ($daterange as $date) {
 						
-						$revenueSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
+						$expenseSum = Expense::whereDate('created_at',$date->format('Y-m-d'))->sum('totalExpense'); 
 						
-						$totalRevenue[] = $revenueSum;
+						$totalExpense[] = $expenseSum;
 					}
 
 			}
@@ -264,12 +265,12 @@ function imageBaseURL() {
 						$rangArray[] = $date;
 					}
   			
-				$totalRevenue =[];
+				$totalExpense =[];
 				foreach ($rangArray as $date) {
 					
-					$revenueSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
+					$expenseSum = Expense::whereDate('created_at',$date)->sum('totalExpense'); 
 					
-					$totalRevenue[] = $revenueSum;
+					$totalExpense[] = $expenseSum;
 				}
 		
 			}
@@ -277,7 +278,7 @@ function imageBaseURL() {
 		
 
 			// $data = implode(', ', $totalRevenue);
-			return $totalRevenue;
+			return $totalExpense;
 		}
 
 
@@ -389,7 +390,7 @@ function imageBaseURL() {
 			// 	->select('id')
 			// 	->where('accounttype', 'standard')
 			// 	->where('created_at', '>', now()->subDays(30)->endOfDay())
-			// 	->all();
+			// 	->all();	
 			return $categorySearch;
 		}
 
@@ -397,18 +398,73 @@ function imageBaseURL() {
 
 
 
-	function getDetails($request){
-		$start_date = $request->start_date;
-		$end_date = \Carbon\Carbon::parse($request->end_date)->addDays(1);
-		foreach (OrderContain::select('name')->whereBetween('created_at', [$start_date, $end_date])->distinct('name')->get() as $name ) {
-			$data['name'] = $name->name;
-			$data['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
-			$data['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
-			$details[] = $data;
-			}
-			return $details;
-		}
+	// function getDetails($request){
+	// 	$start_date = $request->start_date;
+	// 	$end_date = \Carbon\Carbon::parse($request->end_date)->addDays(1);
+	// 	foreach (OrderContain::select('name')->whereBetween('created_at', [$start_date, $end_date])->distinct('name')->get() as $name ) {
+	// 		$data['name'] = $name->name;
+	// 		$data['totalQuantity'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('quantity'); 
+	// 		$data['totalPrice'] = DB::table('order_contains')->whereBetween('created_at', [$start_date, $end_date])->where('name', $name->name)->groupby('name')->sum('netPrice');
+	// 		$details[] = $data;
+	// 		}
+	// 		return $details;
+	// 	}
 
+	// function getTotalOrder(){
+
+	// 	foreach (DB::table('order_contains')->select('created_at')->distinct('created_at')->get() as $date ) {
+	// 		$dates =  explode(" ",$date->created_at);
+	// 		$datas = $dates[0];
+	// 		$data['date'] = $datas;
+	// 		$data['totalQuantity'] = DB::table('order_contains')->select('quantity')->groupby('created_at')->where('created_at', $date->created_at)->sum('quantity'); 
+	// 		$data['totalPrice'] = DB::table('order_contains')->select('netPrice')->groupby('created_at')->where('created_at', $date->created_at)->sum('netPrice');
+	// 		$details[] = $data;
+	// 		}
+	// 		return 	$details;
+	// 	}
+
+	function getDetails($day, $startDate , $endDate, $category)
+	{
+		if(!empty($day))
+		{
+			$today     = new \DateTime();
+			// $begin     = $today->sub(new \DateInterval('P30D'));
+
+			if(($day == 1 ))
+			{
+				$begin = $today->sub(new \DateInterval('P0D'));
+			}
+			elseif (($day == 7)) 
+			{
+				$begin= $today->sub(new \DateInterval('P7D'));
+			}
+			elseif (($day == 30 )) 
+			{
+				$begin= $today->sub(new \DateInterval('P30D'));
+			}
+
+			$end       = new \DateTime();
+			$end       = $end->modify('+1 day');
+			$interval  = new \DateInterval('P1D');
+			$daterange = new \DatePeriod($begin, $interval, $end);
+
+			$orderDetails =[];
+			foreach ($daterange as $date) {
+				$orders['date']= $date->format("Y-m-d");
+				$orders['name']= DB::table('order_contains')->whereDate('created_at',$date)->where('category_id', $category)->distinct('name')->get('name');
+				// $orders['name']= $name->name ?? "";
+				foreach($orders['name'] as $name){
+				echo $name->name;
+				$orders['sales']= OrderContain::whereDate('created_at',$date)->where('name', $name->name)->sum('netPrice');
+				$orders['product'] = OrderContain::whereDate('created_at',$date)->where('name', $name->name)->sum('quantity');
+				$orders['revenue']= OrderContain::whereDate('created_at',$date)->where('name', $name->name)->sum('netPrice');
+				$orderDetails[] = $orders;
+			}
+			}
+			return $orderDetails;
+	
+		}
+	}
 	function getTotalOrder(){
 
 		foreach (DB::table('order_contains')->select('created_at')->distinct('created_at')->get() as $date ) {
@@ -517,12 +573,12 @@ function imageBaseURL() {
 				// foreach ($daterange as $date) {
 				// 	$dateList[] = ''.$date->format("Y-m-d").'';
 				// }
-				$orderDetails =[];
+				// $orderDetails =[];
 				foreach ($daterange as $date) {
 					$orders['date']= $date->format("Y-m-d");
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
-					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 				}
 				
@@ -545,18 +601,30 @@ function imageBaseURL() {
 						$rangArray[] = $date;
 					}
   			
-				$orderDetails =[];
+				// $orderDetails =[];
 				foreach ($rangArray as $date) {
 					$orders['date']= $date;
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
-					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
 				}
 				return $orderDetails;
 			}
-		
+			else{
+				foreach (OrderContain::select('created_at')->get() as $date ) {
+					$onlydate = substr($date->created_at, 0,10);
+					// echo $data;
+					$data['date'] = $onlydate;
+					$data['sales'] = OrderContain::whereDate('created_at', $onlydate)->sum('netPrice');
+					$data['product'] = OrderContain::whereDate('created_at', $onlydate)->sum('quantity'); 
+					$data['expense'] = Expense::whereDate('created_at',$date)->sum('totalExpense');
+					$details[] = $data;
+					}
+					return 	$details;
+				}
+			
 			
 			// $data = implode(', ', $totalProduct);
 		}

@@ -279,7 +279,7 @@ class OrderController extends Controller
                                 $data =[
                                     'order_id'=>$id,
                                 ];
-                                $customPaper = array(0,0,360,360);
+                                $customPaper = array(0,0,260,560);
                                 $pdf = PDF::loadView('order-pdf', $data)->setPaper( $customPaper);
                                 $pdf->save('pdf_bill'.$filename);
                                 $url = imageBaseURL().'pdf_bill'.$filename;
