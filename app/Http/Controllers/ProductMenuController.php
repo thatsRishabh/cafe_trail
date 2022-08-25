@@ -25,27 +25,31 @@ class ProductMenuController extends Controller
 
             $query = Category::select('*')->with('productMenu')
                     ->orderBy('id', 'desc');
-
+                    
             if(!empty($request->id))
             {
-                $query->where('product_menus.id', $request->id);
+                $query->where('id', $request->id);
             }
-            if(!empty($request->price))
+            if(!empty($request->name))
             {
-                $query->where('product_menus.price', $request->price);
+                $query->where('name', $request->name);
             }
-            if(!empty($request->category_id))
-            {
-                $query->where('product_menus.category_id', $request->category_id);
-            }
-            if(!empty($request->subcategory_id))
-            {
-                $query->where('product_menus.subcategory_id', $request->subcategory_id);
-            }
-            if(!empty($request->product))
-            {
-                $query->where('product', 'LIKE', '%'.$request->product.'%');
-            }
+            // if(!empty($request->price))
+            // {
+            //     $query->where('product_menus.price', $request->price);
+            // }
+            // if(!empty($request->category_id))
+            // {
+            //     $query->where('product_menus.category_id', $request->category_id);
+            // }
+            // if(!empty($request->subcategory_id))
+            // {
+            //     $query->where('product_menus.subcategory_id', $request->subcategory_id);
+            // }
+            // if(!empty($request->product))
+            // {
+            //     $query->where('product', 'LIKE', '%'.$request->product.'%');
+            // }
 
 
             if(!empty($request->per_page_record))
@@ -90,6 +94,7 @@ class ProductMenuController extends Controller
             {
                 $query->where('category_id', $request->category_id);
             }
+
 
             if(!empty($request->per_page_record))
             {
@@ -213,18 +218,15 @@ class ProductMenuController extends Controller
                    $addProduct->price =  $products['price'];
                    $addProduct->order_duration =  $products['order_duration'];
                    $addProduct->category_id =  $products['category_id'];
-                  
-              
+                       
                     if(!empty($products['image']))
                         {
                         $file=$products['image'];
                         $filename=time().'.'.$file->getClientOriginalExtension();
-                        $addProduct->image =imageBaseURL().$request->image->move('assets',$filename);
+                        $addProduct->image =imageBaseURL().$products['image']->move('assets',$filename);
                         }
 
                    $addProduct->save();
-                   
-    
                }
 
 

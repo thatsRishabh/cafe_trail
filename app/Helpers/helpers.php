@@ -9,6 +9,7 @@ use App\Models\AttendenceList;
 use App\Models\Category;
 use App\Models\OrderContain;
 use App\Models\Order;
+use App\Models\RecipeContains;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,12 +25,12 @@ function unitConversion($unitID, $quantity) {
 	$unitName = Unit::where('id', $unitID)->get('name')->first();
 	// return $unitName->name;
    
-	if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter"))
+	if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter") || (strtolower($unitName->name) == "litre"))
 	    {
 	        $value = $quantity*1000;
 	        return $value;
 	    }
-	    elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "piece/pack")) 
+	    elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "pack" || "piece")) 
 	    {
 			$value = $quantity;
 	        return $value;
@@ -44,8 +45,8 @@ function unitConversion($unitID, $quantity) {
 
 function imageBaseURL() {
 
-	        // return "http://192.168.1.25:8000/";
-			return "https://backend.gofactz.com/public/";
+	        return "http://192.168.1.16:8000/";
+			// return "https://backend.gofactz.com/public/";
 
 }
 
@@ -524,10 +525,8 @@ function imageBaseURL() {
 					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orderDetails[] = $orders;
 				}
-				return $orderDetails;
 				
-
-			
+				return $orderDetails;
 			
 		
 			}
@@ -560,5 +559,30 @@ function imageBaseURL() {
 		
 			
 			// $data = implode(', ', $totalProduct);
+		}
+
+		function recipeDeduction($productID)
+		{
+			
+			$deletOld  = RecipeContains::where('recipe_id', $productID)->get();
+			$recipeStock = []; 
+			foreach ($deletOld as $key => $value) {
+					
+				
+				$updateStock = ProductInfo::find($value->product_info_stock_id);
+
+				   $updateStock->current_quanitity =  $updateStock->current_quanitity - unitConversion($value->unit_id, $value->quantity);
+				   $updateStock->save();
+				
+				   
+				//    below code is for debugging purpose, getting output of array
+
+				// $recipeStock[] = [
+				// 	// 'emp_id' =>  $getCurrentQuantity->current_quanitity,
+				// 	'emp_2' =>  $updateStock->current_quanitity,				
+				// ];
+			}
+			
+			// return $recipeStock;
 		}
 	

@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\PDF;
+use App\Models\Recipe;
+use App\Models\RecipeContains;
+
 
 class OrderController extends Controller
 {
@@ -130,6 +133,9 @@ class OrderController extends Controller
                 $addorder->netPrice = $order['netPrice'];
                 $addorder->save();
                 
+                // this will delete quantity from stock as per reicpe
+                $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
+                recipeDeduction($recipeID->id);
             }
  
                 // database sum querry
@@ -261,23 +267,36 @@ class OrderController extends Controller
         }
     }
 
-    public function printOrder($id) {
+        public function printOrder($id) {
        
 
-    
-        //$datainfo= Order::select('*')->with('orderContains')->where('id', $id)->first();
-            // // $info = Employee::find($request->employee_id);
-            // $temp['data1'] = $info;
-            // $pdf = PDF::loadView('employee-pdf', $data);
-            // print_r(@$data->orderContains);
-            // die;
-            $data =[
-                'order_id'=>$id,
-            ];
-    
-            $pdf = PDF::loadView('order-pdf', $data);
-            return $pdf->download(time().'pdf_file.pdf');
-            return $data;
-    
-        }
+                try {
+            
+                    $info = Order::find($id);
+                    if($info)
+                    {
+                                $filename = $id."-".time().".pdf";
+                                $data =[
+                                    'order_id'=>$id,
+                                ];
+                                $customPaper = array(0,0,360,360);
+                                $pdf = PDF::loadView('order-pdf', $data)->setPaper( $customPaper);
+                                $pdf->save('pdf_bill'.$filename);
+                                $url = imageBaseURL().'pdf_bill'.$filename;
+                        
+                                $info = Order::find($id);
+                                $info->bill_pdf = $url;
+                                $info->save();
+
+
+                        return response(prepareResult(true, $url, trans('print out successful')), 200 , ['Result'=>'httpcodes.found']);
+                    }
+                    return response(prepareResult(false, [], trans('Record Id Not Found')),500,  ['Result'=>'httpcodes.not_found']);
+                } catch (\Throwable $e) {
+                    Log::error($e);
+                    return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
+                }
+            }
+
+
 }

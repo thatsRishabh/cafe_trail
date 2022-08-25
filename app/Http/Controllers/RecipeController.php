@@ -88,6 +88,7 @@ class RecipeController extends Controller
             // 'unit_id'                => 'nullable|numeric',
            
             "recipe_methods.*.unit_id"  => "required|numeric", 
+            "recipe_methods.*.quantity" => "required|numeric", 
 
         ]);
 
@@ -142,11 +143,11 @@ class RecipeController extends Controller
                $addRecipe->save();
                
              // getting old stock value
-            $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
-             // updating the productinfo table as well
-             $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
-             $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
-             $updateStock->save();
+            // $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
+            //  // updating the productinfo table as well
+            //  $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
+            //  $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
+            //  $updateStock->save();
 
            }
 
@@ -170,6 +171,7 @@ class RecipeController extends Controller
             // 'quantity'                   => 'nullable|numeric',
             // 'unit_id'                => 'nullable|numeric',
             "recipe_methods.*.unit_id"  => "required|numeric", 
+            "recipe_methods.*.quantity" => "required|numeric", 
            
         ]);
 
@@ -246,11 +248,11 @@ class RecipeController extends Controller
                $addRecipe->save();
                
              // getting old stock value
-            $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
-             // updating the productinfo table as well
-             $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
-             $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
-             $updateStock->save();
+            // $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
+            //  // updating the productinfo table as well
+            //  $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
+            //  $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
+            //  $updateStock->save();
            
            }
 

@@ -94,7 +94,8 @@ class DashboardController extends Controller
             // $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
             // $data['total_revenue'] =getLast30TotalRevenue($request->day , $request->startDate, $request->endDate);
             // $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
-            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
+
+            return response(prepareResult(true,  $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
         } 
         catch (\Throwable $e) {
             Log::error($e);

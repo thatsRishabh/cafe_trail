@@ -86,6 +86,7 @@ Route::resource('recipe', App\Http\Controllers\RecipeController::class)->only(['
 Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
 Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
 Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
+Route::post('orders-decution', [App\Http\Controllers\OrderController::class, 'orderDecution']); 
 
 // CustomerAccountManage
 Route::post('customer-account-manages', [App\Http\Controllers\CustomerAccountManageController::class, 'searchCustomerAccount']); 

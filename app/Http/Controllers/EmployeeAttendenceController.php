@@ -221,7 +221,7 @@ class EmployeeAttendenceController extends Controller
             
                 return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'httpcodes.found']);
             }
-            return response(prepareResult(false, [], trans('Employee did not Joined on given date')),500,  ['Result'=>'httpcodes.not_found']);
+            return response(prepareResult(false, null, trans('Employee did not Joined on given date')),200,  ['Result'=>'httpcodes.not_found']);
         } catch (\Throwable $e) {
             Log::error($e);
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);

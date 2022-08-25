@@ -1,6 +1,8 @@
 <?php
 
 $data= App\Models\Order::select('*')->with('orderContains')->where('id', $order_id)->first();
+
+$date = date_format($data['created_at'], 'Y-m-d');
 ?>
 
 <style type="text/css">
@@ -239,9 +241,9 @@ footer {
         </div>
         <div id="invoice">
        
-        <h1>Invoice no. </h1>
+        <h1>Invoice no. {{($data['id'])}} </h1>
         <div class="date">Total Quantity: {{($data['cartTotalQuantity'])}}</div>
-        <div class="date">Date of Invoice: {{($data['created_at'])}}</div>
+        <div class="date">Date of Invoice: {{($date)}}</div>
          
         </div>
       </div>
