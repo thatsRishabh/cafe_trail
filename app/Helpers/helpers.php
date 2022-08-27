@@ -404,13 +404,54 @@ $date = $date->addDays($daysToAdd);
 			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
 			->where('w.category_id', $category)
 			->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+			// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
 			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
 			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
-            ->orderBy('w.created_at')
+            ->orderBy('w.created_at', 'desc')
             ->get();
 			$orderDetails = $a;
 			return  $orderDetails;
 	
+		}
+		elseif(!empty($category)){
+			$startDate = date('Y-m-d');
+			// echo $startDate;
+			$toDay = Carbon::createFromFormat('Y-m-d', $startDate);
+            $daysToAdd = 0;
+            $toDay = $toDay->addDays($daysToAdd);
+			$enddate = Carbon::createFromFormat('Y-m-d', $startDate);
+            $daysToAdd = -30;
+            $enddate = $enddate->addDays($daysToAdd);
+			$a = 	DB::table('order_contains as w')
+			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+			->whereBetween('w.category_id', $category)
+			->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
+			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+            ->orderBy('w.created_at', 'desc')
+            ->get();
+			$orderDetails = $a;
+			return  $orderDetails;
+		}
+		else{
+			$startDate = date('Y-m-d');
+			// echo $startDate;
+			$toDay = Carbon::createFromFormat('Y-m-d', $startDate);
+            $daysToAdd = 0;
+            $toDay = $toDay->addDays($daysToAdd);
+			$enddate = Carbon::createFromFormat('Y-m-d', $startDate);
+            $daysToAdd = -30;
+            $enddate = $enddate->addDays($daysToAdd);
+			$a = 	DB::table('order_contains as w')
+			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+			->whereBetween('w.category_id', [1, 1000])
+			->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
+			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+            ->orderBy('w.created_at', 'desc')
+            ->get();
+			$orderDetails = $a;
+			return  $orderDetails;
 		}
 
 		
@@ -485,54 +526,52 @@ $date = $date->addDays($daysToAdd);
 		{
 			if(!empty($day))
             {
-				$today     = new \DateTime();
-				// $begin     = $today->sub(new \DateInterval('P30D'));
-	
-				if(($day == 1 ))
-				{
-					$begin = $today->sub(new \DateInterval('P0D'));
-				}
-				elseif (($day == 7)) 
-				{
-					$begin= $today->sub(new \DateInterval('P7D'));
-				}
-				elseif (($day == 30 )) 
-				{
-					$begin= $today->sub(new \DateInterval('P30D'));
-				}
-	
-				$end       = new \DateTime();
-				$end       = $end->modify('+1 day');
-				$interval  = new \DateInterval('P1D');
-				$daterange = new \DatePeriod($begin, $interval, $end);
-				// foreach ($daterange as $date) {
-				// 	$dateList[] = ''.$date->format("Y-m-d").'';
-				// }
+				$rangArray = []; 
+				$startDate = date('Y-m-d');
+				$toDay = Carbon::createFromFormat('Y-m-d', $startDate);
+            	$daysToAdd = 0;
+				$toDay = $toDay->addDays($daysToAdd);
+				// return $toDay;
+				$toDay = strtotime($toDay);
+				// return $toDay;
+				$endDay = Carbon::createFromFormat('Y-m-d', $startDate);
+            	$daysToAdd = -($day-1);
+            	$endDay = $endDay->addDays($daysToAdd);
+				// return $endDate;
+				$endDate = strtotime($endDay);
+				// return $endDate;
+				
+					
+					for ($currentDate = $toDay; $currentDate >= $endDate; 
+													$currentDate -= (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
 				// $orderDetails =[];
-				foreach ($daterange as $date) {
-					$orders['date']= $date->format("Y-m-d");
+				foreach ($rangArray as $date) {
+					$orders['date']= $date;
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
 					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orderDetails[] = $orders;
+					
 				}
 				return $orderDetails;
-				
-
-			
 			
 		
 			}
 
-			if(!empty( $startDate))
+			elseif(!empty( $startDate))
             {
 
 				$rangArray = []; 
 				$startDate = strtotime($startDate);
 				$endDate = strtotime($endDate);
 					
-					for ($currentDate = $startDate; $currentDate <= $endDate; 
-													$currentDate += (86400)) {
+					for ($currentDate = $endDate; $currentDate >= $startDate; 
+													$currentDate -= (86400)) {
 															
 						$date = date('Y-m-d', $currentDate);
 						$rangArray[] = $date;
@@ -550,16 +589,40 @@ $date = $date->addDays($daysToAdd);
 				return $orderDetails;
 			}
 			else{
-				foreach (OrderContain::select('created_at')->get() as $date ) {
-					$onlydate = substr($date->created_at, 0,10);
-					// echo $data;
-					$data['date'] = $onlydate;
-					$data['sales'] = OrderContain::whereDate('created_at', $onlydate)->sum('netPrice');
-					$data['product'] = OrderContain::whereDate('created_at', $onlydate)->sum('quantity'); 
-					$data['revenue'] = OrderContain::whereDate('created_at', $onlydate)->sum('netPrice');
-					$details[] = $data;
+				$rangArray = []; 
+				$startDate = date('Y-m-d');
+				$toDay = Carbon::createFromFormat('Y-m-d', $startDate);
+            	$daysToAdd = 0;
+				$toDay = $toDay->addDays($daysToAdd);
+				// return $toDay;
+				$toDay = strtotime($toDay);
+				// return $toDay;
+				$endDay = Carbon::createFromFormat('Y-m-d', $startDate);
+            	$daysToAdd = -(7);
+            	$endDay = $endDay->addDays($daysToAdd);
+				// return $endDate;
+				$endDate = strtotime($endDay);
+				// return $endDate;
+				
+					
+					for ($currentDate = $toDay; $currentDate >= $endDate; 
+													$currentDate -= (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
 					}
-					return 	$details;
+  			
+				// $orderDetails =[];
+				foreach ($rangArray as $date) {
+					$orders['date']= $date;
+					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
+					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orderDetails[] = $orders;
+					
+				}
+				return $orderDetails;
+			
 				}
 			
 			

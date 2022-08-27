@@ -69,8 +69,8 @@ class DashboardController extends Controller
 
     public function dashboardGraphByName(Request $request){
         try {
-            $data = [];
-            $data['order_details'] = getLast30details($request->day , $request->startDate, $request->endDate);
+            // $data = [];
+            $data = getLast30details($request->day , $request->startDate, $request->endDate);
 
            
             
