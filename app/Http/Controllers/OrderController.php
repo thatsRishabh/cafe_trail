@@ -118,6 +118,7 @@ class OrderController extends Controller
                 $addorder->order_id =  $info->id;
                 $addorder->product_menu_id = $order['product_menu_id'];
                 $addorder->category_id = $order['category_id'];
+                // $addorder->unit_id = $order['unit_id'];
                 $addorder->order_duration = $order['order_duration'];
                 $addorder->instructions = $order['instructions'] ?? "";
 
@@ -134,8 +135,8 @@ class OrderController extends Controller
                 $addorder->save();
                 
                 // this will delete quantity from stock as per reicpe
-                $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
-                recipeDeduction($recipeID->id);
+                // $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
+                // recipeDeduction($recipeID->id);
             }
  
                 // database sum querry
@@ -196,9 +197,10 @@ class OrderController extends Controller
                $addorder->order_id =  $info->id;
                $addorder->product_menu_id = $order['product_menu_id'];
                $addorder->category_id = $order['category_id'];
+            //    $addorder->unit_id = $order['unit_id'];
                $addorder->order_duration = $order['order_duration'];
                $addorder->instructions = $order['instructions'] ?? "";
-
+               
                // below data is from another table
                $addorder->name = $productMenuItem->name;
             //    $addorder->name = $order['name'];
@@ -210,6 +212,10 @@ class OrderController extends Controller
                // $addorder->netPrice = $order['quantity'] * $productMenuItem->price ;
                $addorder->netPrice = $order['netPrice'];
                $addorder->save();
+
+                 // this will delete quantity from stock as per reicpe
+                $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
+                recipeDeduction($recipeID->id);
                 
             }
  
@@ -279,7 +285,7 @@ class OrderController extends Controller
                                 $data =[
                                     'order_id'=>$id,
                                 ];
-                                $customPaper = array(0,0,260,560);
+                                $customPaper = array(0,0,260,960);
                                 $pdf = PDF::loadView('order-pdf', $data)->setPaper( $customPaper);
                                 $pdf->save('pdf_bill'.$filename);
                                 $url = imageBaseURL().'pdf_bill'.$filename;

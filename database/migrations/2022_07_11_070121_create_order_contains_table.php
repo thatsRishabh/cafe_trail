@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreign('product_menu_id')->references('id')->on('product_menus')->onDelete('cascade');
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->unsignedBigInteger('unit_id')->comment('This will be from unit(id) table')->nullable();
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
             $table->string('name')->nullable();
             $table->integer('quantity')->nullable();
             $table->integer('price')->nullable();

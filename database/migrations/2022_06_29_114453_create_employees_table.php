@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('mobile');
             $table->string('designation', 100);
             $table->string('email')->unique();
+            $table->string('password')->nullable();
             $table->text('address');
             $table->date('joining_date')->comment('This will be in yyyy-mm-dd');
             $table->date('birth_date')->comment('This will be in yyyy-mm-dd');

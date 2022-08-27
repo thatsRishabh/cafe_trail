@@ -25,6 +25,15 @@ Route::get('/checkconnection', [UserInfo::class, 'checkConnection']);
 Route::post('temp', [App\Http\Controllers\UserInfo::class, 'temp']); 
 Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']); 
 
+// User login
+Route::post('user-login', [App\Http\Controllers\UserLoginController::class, 'login']);
+// Route::middleware('auth:api')->group(function () {
+//     // Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
+//     Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
+
+//     Route::resource('unit', App\Http\Controllers\UnitController::class)->only(['store','destroy','show', 'update']);
+// });
+
 // dashboard
 Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
 Route::post('category-wise-list', [App\Http\Controllers\DashboardController::class, 'orderList']); 

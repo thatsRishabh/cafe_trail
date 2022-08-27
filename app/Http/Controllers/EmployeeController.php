@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 
 class EmployeeController extends Controller
@@ -84,6 +86,7 @@ class EmployeeController extends Controller
             $info->name = $request->name;
             $info->designation = $request->designation;
             $info->email = $request->email;
+            // $info->password = Hash::make($request->password);
             $info->birth_date = $request->birth_date;
             $info->joining_date = $request->joining_date;
             $info->address = $request->address;
@@ -91,6 +94,13 @@ class EmployeeController extends Controller
             $info->mobile = $request->mobile;
             $info->salary = $request->salary;
             $info->save();
+
+            $infoUser = new User;
+            $infoUser->name = $request->name;
+            $infoUser->email = $request->email;
+            $infoUser->password = Hash::make($request->password);
+            $infoUser->save();
+
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been saved successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
@@ -125,6 +135,7 @@ class EmployeeController extends Controller
             $info->name = $request->name;
             $info->designation = $request->designation;
             $info->email = $request->email;
+            // $info->password = Hash::make($request->password);
             $info->birth_date = $request->birth_date;
             $info->joining_date = $request->joining_date;
             $info->address = $request->address;
@@ -132,6 +143,13 @@ class EmployeeController extends Controller
             $info->mobile = $request->mobile;
             $info->salary = $request->salary;
             $info->save();
+
+            $infoUser = User::find($id);
+            $infoUser->name = $request->name;
+            $infoUser->email = $request->email;
+            $infoUser->password = Hash::make($request->password);
+            $infoUser->save();
+
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been Updated successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {

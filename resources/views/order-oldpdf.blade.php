@@ -25,20 +25,19 @@ a {
 body {
   position: relative;
   width: 21cm;  
-  /* height: 20.7cm;  */
+  height: 29.7cm; 
   margin: 0 auto; 
   color: #555555;
   background: #FFFFFF; 
   font-family: Arial, sans-serif; 
   font-size: 14px; 
   font-family: SourceSansPro;
-  border-bottom: 1px dashed black; 
 }
 
 header {
-  padding: 5px 0;
-  margin-bottom: 0px;
-  /* border-bottom: 1px dashed black;  */
+  padding: 10px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #AAAAAA;
 }
 
 #logo {
@@ -53,24 +52,19 @@ header {
 #company {
   float: center;
   text-align: center;
-  margin-top: 0%;
   margin-left: 40px;
- 
 }
 
 
 #details {
-  margin-bottom: 0px;
-   /* border-bottom: 1px dashed black;   */
+  margin-bottom: 50px;
 }
- /* .booder{
-  border-bottom: 1px dashed black; 
-}  */
+
 #client {
-  padding-left: 3px;
+  padding-left: 6px;
   float: center;
   text-align: center;
-  margin-left: 50px;
+  margin-left: 40px;
 }
 
 #client .to {
@@ -101,12 +95,8 @@ h2.name {
   font-size: 1.1em;
   color: #777777;
 }
+
 table {
-     font-family: arial, sans-serif;
-    border-collapse: collapse; 
-    width: 30%;
-  }
-/* table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
@@ -123,9 +113,9 @@ table td {
   background: #EEEEEE;
   text-align: center;
   border-bottom: 1px solid #FFFFFF;
-} */
+}
 
-/* table th {
+table th {
   white-space: nowrap;        
   font-weight: normal;
 }
@@ -139,9 +129,9 @@ table td h3{
   font-size: 1.2em;
   font-weight: normal;
   margin: 0 0 0.2em 0;
-} */
+}
 
-/* table .no {
+table .no {
   color: #FFFFFF;
   font-size: 1.6em;
   background: #57B223;
@@ -169,9 +159,9 @@ table td.total {
 
 table tbody tr:last-child td {
   border: none;
-} */
+}
 
-/* table tfoot td {
+table tfoot td {
   padding: 10px 20px;
   background: #FFFFFF;
   border-bottom: none;
@@ -181,9 +171,9 @@ table tbody tr:last-child td {
   margin-left: 40px;
   white-space: nowrap; 
   border-top: 1px solid #AAAAAA; 
-} */
+}
 
-/* table tfoot tr:first-child td {
+table tfoot tr:first-child td {
   border-top: none; 
 }
 
@@ -192,11 +182,11 @@ table tfoot tr:last-child td {
   font-size: 1.4em;
   border-top: 1px solid #57B223; 
 
-} */
+}
 
-/* table tfoot tr td:first-child {
+table tfoot tr td:first-child {
   border: none;
-} */
+}
 
 #thanks{
   font-size: 2em;
@@ -222,12 +212,7 @@ footer {
   padding: 8px 0;
   text-align: center;
 }
-td,
-  th {
-    /* border: 3px solid #dddddd; */
-    text-align: left;
-    padding: 5px;
-  }
+
 </style>
 
 
@@ -247,8 +232,7 @@ td,
       </div>
       </div>
     </header>
--------------------------------------------------------
-     <main >
+    <main>
       <div id="details" class="clearfix">
         <div id="client">
           <div class="to">INVOICE TO: Table No. {{($data['table_number'])}} </div>
@@ -258,61 +242,62 @@ td,
           <div class="address">Date of Invoice: {{($date)}} </div>
         </div>
       </div>
--------------------------------------------------------
-      <div>
-     </div>
-      <div>
-
-      <table>
-        <tr>
-          <th class="no">#</th>
-          <th>PRODUCT</th>
-          <th>PRICE</th>
-          <th>QTY</th>
-          <th>TOTAL</th>
-        </tr>
--------------------------------------------------------
+      <div id="table1">
+      <table border="0" cellspacing="0" cellpadding="0">
+        <thead>
+          <tr>
+            <th class="no">#</th>
+            <th class="desc">PRODUCT</th>
+            <th class="unit">UNIT PRICE</th>
+            <th class="qty">QUANTITY</th>
+            <th class="total">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
         @foreach(@$data->orderContains as $key => $info)
-        <tr>
-          <td class="no">{{ $key+1 }}</td>
-          <td class="desc"><h3>{{$info->name}}</h3></td>
-          <td class="unit">Rs. {{$info->price}}</td>
-          <td class="qty">{{$info->quantity}}</td>
-          <td class="total">Rs. {{$info->netPrice}}</td>
-        </tr>
-        @endforeach
-      </table>
--------------------------------------------------------
-      <table>
-        <tr>
+          <tr>
+            <td class="no">{{ $key+1 }}</td>
+            <td class="desc"><h3>{{$info->name}}</h3></td>
+            <td class="unit">Rs. {{$info->price}}</td>
+            <td class="qty">{{$info->quantity}}</td>
+            <td class="total">Rs. {{$info->netPrice}}</td>
+          </tr>
+          @endforeach
+        
+        </tbody>
 
-          <td>SUBTOTAL</td>
-          <td>Rs. {{($data['cartTotalAmount'])}}</td>
-        </tr>
+       
+        <tfoot>
+          <tr>
+            <td colspan="2"></td>
+            <td colspan="2">SUBTOTAL</td>
+            <td>Rs. {{($data['cartTotalAmount'])}}</td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td colspan="2">TAX </td>
+            <td>Rs. {{($data['taxes'])}}</td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td colspan="2">GRAND TOTAL</td>
+            <td>Rs. {{($data['netAmount'])}}</td>
+          </tr>
+        </tfoot>
 
-        <tr>
-
-          <td>TAX </td>
-          <td>Rs. {{($data['taxes'])}}</td>
-        </tr>
-        <tr>
-
-          <td>GRAND TOTAL</td>
-          <td>Rs. {{($data['netAmount'])}}</td>
-        </tr>
-
+        
+        
+        
 
       </table>
       </div>
--------------------------------------------------------
       <div id="thanks">Thank you!</div>
-      <!-- <div id="notices">
+      <div id="notices">
         <div>NOTICE:</div>
         <div class="notice">Under any circumstance no refund will be made.</div>
-      </div> -->
+      </div>
     </main>
-    <!-- <footer>
-      Invoice was created on a computer and is valid 
-      without the signature and seal.
-    </footer> -->
+    <footer>
+      Invoice was created on a computer and is valid without the signature and seal.
+    </footer>
   </body>

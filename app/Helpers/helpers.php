@@ -46,7 +46,7 @@ use Carbon\Carbon;
 
 	function imageBaseURL() {
 
-				return "http://192.168.1.16:8000/";
+				return "http://192.168.1.20:8000/";
 				// return "https://backend.gofactz.com/public/";
 
 	}
