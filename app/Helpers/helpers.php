@@ -425,7 +425,7 @@ use Carbon\Carbon;
             $enddate = $enddate->addDays($daysToAdd);
 			$a = 	DB::table('order_contains as w')
 			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
-			->whereBetween('w.category_id', $category)
+			->where('w.category_id', $category)
 			->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
 			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
 			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])

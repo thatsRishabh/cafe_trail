@@ -32,7 +32,7 @@ body {
   font-family: Arial, sans-serif; 
   font-size: 14px; 
   font-family: SourceSansPro;
-  border-bottom: 1px dashed black; 
+  /* border-bottom: 1px dashed black;  */
 }
 
 header {
