@@ -49,8 +49,8 @@ use Illuminate\Support\Facades\Auth;
 
 	function imageBaseURL() {
 
-				return "http://192.168.1.6:8000/";
-				// return "https://backend.gofactz.com/public/";
+				// return "http://192.168.1.6:8000/";
+				return "https://backend.gofactz.com/public/";
 
 	}
 
