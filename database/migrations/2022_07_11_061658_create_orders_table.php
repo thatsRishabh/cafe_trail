@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('cartTotalAmount')->nullable();
             $table->integer('taxes')->nullable();
             $table->integer('netAmount')->nullable(); 
+            $table->string('bill_pdf')->nullable();
             $table->timestamps();
         });
     }

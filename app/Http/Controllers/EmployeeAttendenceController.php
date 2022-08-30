@@ -221,7 +221,7 @@ class EmployeeAttendenceController extends Controller
             
                 return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'httpcodes.found']);
             }
-            return response(prepareResult(false, [], trans('Employee did not Joined on given date')),500,  ['Result'=>'httpcodes.not_found']);
+            return response(prepareResult(false, null, trans('Employee did not Joined on given date')),200,  ['Result'=>'httpcodes.not_found']);
         } catch (\Throwable $e) {
             Log::error($e);
             return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
@@ -231,35 +231,4 @@ class EmployeeAttendenceController extends Controller
 
     }
 
-    public function monthlyAttendencePDF(Request $request) {
-       
-
-    //     $data = [];
-
-    //     // use of template literal while adding date
-    //     $data['total_days_present'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',2)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
-
-    //     $data['total_days_absent'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',1)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
-
-    //     $data['days_in_month'] = cal_days_in_month(CAL_GREGORIAN, substr($request->year_month, 5,6), substr($request->year_month, 0,4));
-    //     $data['year_month']=$request->year_month;
-    //    $employeeData = Employee::where('id', $request->employee_id)->get('salary')->first();
-    //     $data['employeeSalary'] ="hello";
-   
-    //      // retreive all records from db
-    //   $data = Employee::all();
-    //   // share data to view
-    //   view()->share('employee',$data);
-    //   $pdf = PDF::loadView('pdf_view', $data);
-    //   // download PDF file with download method
-    //   return $pdf->download('pdf_file.pdf');
-
-        $info = Employee::find($request->employee_id);
-        $temp['data1'] = $info;
-        // $pdf = PDF::loadView('employee-pdf', $temp);
-
-	    // return $pdf->download('pdf_file.pdf');
-        return $temp;
-
-    }
 }

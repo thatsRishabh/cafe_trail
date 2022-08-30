@@ -10,46 +10,55 @@ use App\Models\Category;
 use App\Models\OrderContain;
 use App\Models\Expense;
 use App\Models\Order;
+use App\Models\RecipeContains;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
-function prepareResult($error, $data, $msg)
-{
-	return ['success' => $error, 'data' => $data, 'message' => $msg];
-}
 
-function unitConversion($unitID, $quantity) {
+	function prepareResult($error, $data, $msg)
+	{
+		return ['success' => $error, 'data' => $data, 'message' => $msg];
+	}
 
-	$unitName = Unit::where('id', $unitID)->get('name')->first();
-	// return $unitName->name;
-   
-	if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter"))
-	    {
-	        $value = $quantity*1000;
-	        return $value;
-	    }
-	    elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "piece/pack")) 
-	    {
-			$value = $quantity;
-	        return $value;
-	    }
-		elseif ((strtolower($unitName->name) == "dozen")) 
-	    {
-			$value = $quantity*12;
-	        return $value;
-	    }
 
-}
+	function unitConversion($unitID, $quantity) {
 
-function imageBaseURL() {
+		$unitName = Unit::where('id', $unitID)->get('name')->first();
+		// return $unitName->name;
+	
+		if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter") || (strtolower($unitName->name) == "litre"))
+			{
+				$value = $quantity*1000;
+				return $value;
+			}
+			elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "pack" || "piece")) 
+			{
+				$value = $quantity;
+				return $value;
+			}
+			elseif ((strtolower($unitName->name) == "dozen")) 
+			{
+				$value = $quantity*12;
+				return $value;
+			}
 
-	        // return "http://192.168.1.25:8000/";
-			return "https://backend.gofactz.com/public/";
+	}
 
-}
+	function imageBaseURL() {
 
+				// return "http://192.168.1.6:8000/";
+				return "https://backend.gofactz.com/public/";
+
+	}
+
+	function getUser() {
+		return auth('api')->user();
+	}
+
+	
 	function getLast30TotalSale($day, $startDate , $endDate)
 		{
 			if(!empty($day))
@@ -397,20 +406,21 @@ function imageBaseURL() {
 	{
 		if(!empty($startDate))
 		{
-			$date = Carbon::createFromFormat('Y-m-d', $endDate);
-$daysToAdd = 1;
-$date = $date->addDays($daysToAdd);
-			$a = 	DB::table('order_contains as w')
-			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
-			->where('w.category_id', $category)
-			->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
-			// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
-			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
-			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
-            ->orderBy('w.created_at', 'desc')
-            ->get();
-			$orderDetails = $a;
-			return  $orderDetails;
+				$date = Carbon::createFromFormat('Y-m-d', $endDate);
+				// $daysToAdd = 1;
+				$date = $date->addDays(1);
+				$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				->where('w.category_id', $category)
+				->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+				// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+				$orderDetails = $a;
+				return  $orderDetails;
+				return 'hello';
 	
 		}
 		elseif(!empty($category)){
@@ -522,7 +532,7 @@ $date = $date->addDays($daysToAdd);
 			return $totalSale;
 		}
 
-	function getLast30details($day, $startDate , $endDate)
+		function getLast30details($day, $startDate , $endDate)
 		{
 			if(!empty($day))
             {
@@ -554,7 +564,7 @@ $date = $date->addDays($daysToAdd);
 					$orders['date']= $date;
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
-					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
 				}
@@ -582,7 +592,7 @@ $date = $date->addDays($daysToAdd);
 					$orders['date']= $date;
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
-					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
 				}
@@ -627,5 +637,30 @@ $date = $date->addDays($daysToAdd);
 			
 			
 			// $data = implode(', ', $totalProduct);
+		}
+
+		function recipeDeduction($productID)
+		{
+			
+			$deletOld  = RecipeContains::where('recipe_id', $productID)->get();
+			$recipeStock = []; 
+			foreach ($deletOld as $key => $value) {
+					
+				
+				$updateStock = ProductInfo::find($value->product_info_stock_id);
+
+				   $updateStock->current_quanitity =  $updateStock->current_quanitity - unitConversion($value->unit_id, $value->quantity);
+				   $updateStock->save();
+				
+				   
+				//    below code is for debugging purpose, getting output of array
+
+				// $recipeStock[] = [
+				// 	// 'emp_id' =>  $getCurrentQuantity->current_quanitity,
+				// 	'emp_2' =>  $updateStock->current_quanitity,				
+				// ];
+			}
+			
+			// return $recipeStock;
 		}
 	

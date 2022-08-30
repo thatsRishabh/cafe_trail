@@ -72,10 +72,7 @@ class DashboardController extends Controller
             // $data = [];
             $data = getLast30details($request->day , $request->startDate, $request->endDate);
 
-           
-            
-                return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
-         
+            return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);
             
         } 
         catch (\Throwable $e) {

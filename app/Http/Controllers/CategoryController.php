@@ -15,8 +15,8 @@ class CategoryController extends Controller
     {
         try {
             $query = Category::select('*')
-                    ->whereNull('parent_id')
-                    ->with('subCategory')
+                    // ->whereNull('parent_id')
+                    // ->with('subCategory')
                     ->orderBy('id', 'desc');
                     //  ->orderBy('name', 'asc');
             if(!empty($request->id))

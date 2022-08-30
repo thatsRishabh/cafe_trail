@@ -45,16 +45,22 @@ class ProductStockManageController extends Controller
              // date wise filter from here
              if(!empty($request->from_date) && !empty($request->end_date))
             {
+                $query->whereDate('product_stock_manages.created_at', '>=', $request->from_date)->whereDate('product_stock_manages.created_at', '<=', $request->end_date);
+            }
+
+            if(!empty($request->from_date) && !empty($request->end_date) && !empty($request->product_id))
+            {
                 $query->where('product_id', $request->product_id)->whereDate('product_stock_manages.created_at', '>=', $request->from_date)->whereDate('product_stock_manages.created_at', '<=', $request->end_date);
             }
-            elseif(!empty($request->from_date) && empty($request->end_date))
-            {
-                $query->where('customer_id', $request->customer_id)->whereDate('product_stock_manages.created_at', '>=', $request->from_date);
-            }
-            elseif(empty($request->from_date) && !empty($request->end_date))
-            {
-                $query->where('customer_id', $request->customer_id)->whereDate('product_stock_manages.created_at', '<=', $request->end_date);
-            }
+
+            // elseif(!empty($request->from_date) && empty($request->end_date))
+            // {
+            //     $query->where('customer_id', $request->customer_id)->whereDate('product_stock_manages.created_at', '>=', $request->from_date);
+            // }
+            // elseif(empty($request->from_date) && !empty($request->end_date))
+            // {
+            //     $query->where('customer_id', $request->customer_id)->whereDate('product_stock_manages.created_at', '<=', $request->end_date);
+            // }
 
             if(!empty($request->per_page_record))
             {

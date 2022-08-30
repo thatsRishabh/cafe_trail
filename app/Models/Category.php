@@ -9,13 +9,13 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function subCategory()
-    {
-         return $this->hasMany(self::class,'parent_id','id');
-    }
-
-    // public function recipeMethods()
+    // public function subCategory()
     // {
-    //     return $this->hasMany(RecipeContains::class, 'recipe_id', 'id');
+    //      return $this->hasMany(self::class,'parent_id','id');
     // }
+
+    public function productMenu()
+    {
+        return $this->hasMany(ProductMenu::class, 'category_id', 'id');
+    }
 }

@@ -77,6 +77,8 @@ class RecipeController extends Controller
 
     public function store(Request $request)
     {
+        
+
         $validation = Validator::make($request->all(), [
             // 'name'                    => 'required',
             'recipe_status'                    => 'required|numeric',
@@ -85,10 +87,34 @@ class RecipeController extends Controller
             // 'quantity'                   => 'nullable|numeric',
             // 'unit_id'                => 'nullable|numeric',
            
+            "recipe_methods.*.unit_id"  => "required|numeric", 
+            "recipe_methods.*.quantity" => "required|numeric", 
+
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+        }
+
+        if($request->recipe_methods){
+
+            foreach ($request->recipe_methods as $key => $recipe1) {
+                $oldValue1 = ProductInfo::where('product_infos.id', $recipe1['product_info_stock_id'])->get('current_quanitity')->first();
+              
+                $validation = Validator::make($request->all(),[      
+                    "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity <= unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required', 
+                    
+                 ],
+                 [
+                     'recipe_methods.*.quantity.declined' => 'Less value left in stock'
+                 ]
+             );
+
+            }
+          
+            if ($validation->fails()) {
+                return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+            } 
         }
 
         DB::beginTransaction();
@@ -117,11 +143,11 @@ class RecipeController extends Controller
                $addRecipe->save();
                
              // getting old stock value
-            $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
-             // updating the productinfo table as well
-             $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
-             $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
-             $updateStock->save();
+            // $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
+            //  // updating the productinfo table as well
+            //  $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
+            //  $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
+            //  $updateStock->save();
 
            }
 
@@ -144,6 +170,8 @@ class RecipeController extends Controller
             // 'name'                      => 'required',
             // 'quantity'                   => 'nullable|numeric',
             // 'unit_id'                => 'nullable|numeric',
+            "recipe_methods.*.unit_id"  => "required|numeric", 
+            "recipe_methods.*.quantity" => "required|numeric", 
            
         ]);
 
@@ -151,6 +179,28 @@ class RecipeController extends Controller
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
 
+        if($request->recipe_methods){
+
+            foreach ($request->recipe_methods as $key => $recipe1) {
+                $oldValue1 = ProductInfo::where('product_infos.id', $recipe1['product_info_stock_id'])->get('current_quanitity')->first();
+              
+                $validation = Validator::make($request->all(),[      
+                    "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity <= unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required', 
+                    
+                 ],
+                 [
+                     'recipe_methods.*.quantity.declined' => 'Less value left in stock'
+                 ]
+             );
+
+            }
+          
+            if ($validation->fails()) {
+                return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+            } 
+        }
+
+        
         DB::beginTransaction();
         try {
 
@@ -198,11 +248,11 @@ class RecipeController extends Controller
                $addRecipe->save();
                
              // getting old stock value
-            $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
-             // updating the productinfo table as well
-             $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
-             $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
-             $updateStock->save();
+            // $oldValue = ProductInfo::where('product_infos.id', $recipe['product_info_stock_id'])->get('current_quanitity')->first();
+            //  // updating the productinfo table as well
+            //  $updateStock = ProductInfo::find($recipe['product_info_stock_id']);
+            //  $updateStock->current_quanitity =  $oldValue->current_quanitity - unitConversion($recipe['unit_id'], $recipe['quantity']);
+            //  $updateStock->save();
            
            }
 
