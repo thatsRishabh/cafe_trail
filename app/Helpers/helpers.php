@@ -15,11 +15,14 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 
 	function prepareResult($error, $data, $msg)
 	{
 		return ['success' => $error, 'data' => $data, 'message' => $msg];
 	}
+
 
 	function unitConversion($unitID, $quantity) {
 
@@ -46,11 +49,16 @@ use Carbon\Carbon;
 
 	function imageBaseURL() {
 
-				return "http://192.168.1.20:8000/";
+				return "http://192.168.1.6:8000/";
 				// return "https://backend.gofactz.com/public/";
 
 	}
 
+	function getUser() {
+		return auth('api')->user();
+	}
+
+	
 	function getLast30TotalSale($day, $startDate , $endDate)
 		{
 			if(!empty($day))
@@ -399,8 +407,8 @@ use Carbon\Carbon;
 		if(!empty($startDate))
 		{
 				$date = Carbon::createFromFormat('Y-m-d', $endDate);
-				$daysToAdd = 1;
-				$date = $date->addDays($daysToAdd);
+				// $daysToAdd = 1;
+				$date = $date->addDays(1);
 				$a = 	DB::table('order_contains as w')
 				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
 				->where('w.category_id', $category)
@@ -412,6 +420,7 @@ use Carbon\Carbon;
 				->get();
 				$orderDetails = $a;
 				return  $orderDetails;
+				return 'hello';
 	
 		}
 		elseif(!empty($category)){

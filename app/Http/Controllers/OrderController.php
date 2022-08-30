@@ -215,7 +215,8 @@ class OrderController extends Controller
 
                  // this will delete quantity from stock as per reicpe
                 $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
-                recipeDeduction($recipeID->id);
+                $recipeID ? recipeDeduction($recipeID->id) : '';
+                // recipeDeduction($recipeID->id);
                 
             }
  

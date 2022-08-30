@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserLoginController extends Controller
 {
@@ -37,6 +38,15 @@ class UserLoginController extends Controller
                     
                     $data['token'] = $user->createToken('authToken')->accessToken;
                     $data['email'] = $request->email;
+                    $permissionData[] =[
+                        'action'=>"dashboard",
+                        'name'=>"dashboard-view",
+                    ];
+                    $data['permissions'] =  $permissionData;
+                    $userData =[
+                        'role'=>"admin"
+                    ];
+                    $data['user'] =  $userData;
                     // $token = $user->createToken('authToken')->accessToken;
                    
                     // $token = auth()->user()->createToken('authToken')->accessToken;
@@ -58,6 +68,24 @@ class UserLoginController extends Controller
                 return response()->json(prepareResult(false, $e->getMessage(), trans('Error while featching Records')), 500,  ['Result'=>'Your data has not been saved']);
             }
    }
+
+   public function logout(Request $request)
+    {
+        $user = getUser();
+        if (!is_object($user)) {
+            return response(prepareResult(false, [], trans('message_user_not_found')), 500,  ['Result'=>'message_user_not_found']);    
+        }
+        if(Auth::check()) {
+            $token = $request->bearerToken();
+            Auth::user()->token()->revoke();
+            return response(prepareResult(true, [], trans('logged out successfully')), 200,  ['Result'=>'logged out successfully']);
+        }else{
+            return response(prepareResult(false, [], trans('internal_server_error')), 500,  ['Result'=>'internal_server_error']);    
+        }
+        // return  $request->bearerToken();
+        return $user;
+
+    }
 
 
 //    public function login(Request $request)

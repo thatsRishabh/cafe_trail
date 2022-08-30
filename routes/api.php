@@ -27,18 +27,29 @@ Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']);
 
 // User login
 Route::post('user-login', [App\Http\Controllers\UserLoginController::class, 'login']);
-// Route::middleware('auth:api')->group(function () {
-//     // Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
-//     Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
+Route::middleware('auth:api')->group(function () {
+    // User logout
+    Route::post('user-logout', [App\Http\Controllers\UserLoginController::class, 'logout']);
 
-//     Route::resource('unit', App\Http\Controllers\UnitController::class)->only(['store','destroy','show', 'update']);
-// });
+    // Order
+    Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
+    Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
+    Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
+  
+    // dashboard
+    Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
+    Route::post('category-wise-list', [App\Http\Controllers\DashboardController::class, 'orderList']); 
+    Route::post('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
+    Route::post('dashboard-graph-list', [App\Http\Controllers\DashboardController::class, 'dashboardGraphByName']); 
 
-// dashboard
-Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
-Route::post('category-wise-list', [App\Http\Controllers\DashboardController::class, 'orderList']); 
-Route::post('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
-Route::post('dashboard-graph-list', [App\Http\Controllers\DashboardController::class, 'dashboardGraphByName']); 
+    
+});
+
+// // dashboard
+// Route::post('dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
+// Route::post('category-wise-list', [App\Http\Controllers\DashboardController::class, 'orderList']); 
+// Route::post('dashboard-graph', [App\Http\Controllers\DashboardController::class, 'dashboardGraph']); 
+// Route::post('dashboard-graph-list', [App\Http\Controllers\DashboardController::class, 'dashboardGraphByName']); 
 
 // product-menu
 Route::post('product-menus', [App\Http\Controllers\ProductMenuController::class, 'searchProductMenu']); 
@@ -91,10 +102,10 @@ Route::post('recipes', [App\Http\Controllers\RecipeController::class, 'searchRec
 Route::resource('recipe', App\Http\Controllers\RecipeController::class)->only(['store','destroy','show', 'update']);
 
 // Order
-Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
-Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
-Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
-Route::post('orders-decution', [App\Http\Controllers\OrderController::class, 'orderDecution']); 
+// Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
+// Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);
+// Route::get('print-order/{id?}', [App\Http\Controllers\OrderController::class, 'printOrder']); 
+// Route::post('orders-decution', [App\Http\Controllers\OrderController::class, 'orderDecution']); 
 
 // CustomerAccountManage
 Route::post('customer-account-manages', [App\Http\Controllers\CustomerAccountManageController::class, 'searchCustomerAccount']); 
