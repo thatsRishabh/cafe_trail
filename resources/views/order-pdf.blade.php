@@ -285,21 +285,19 @@ td,
 -------------------------------------------------------
       <table>
         <tr>
-
           <td>SUBTOTAL</td>
           <td>Rs. {{($data['cartTotalAmount'])}}</td>
         </tr>
-
+      <!-- 
         <tr>
-
           <td>TAX </td>
           <td>Rs. {{($data['taxes'])}}</td>
-        </tr>
-        <tr>
+        </tr> -->
 
+        <!-- <tr>
           <td>GRAND TOTAL</td>
           <td>Rs. {{($data['netAmount'])}}</td>
-        </tr>
+        </tr> -->
 
 
       </table>

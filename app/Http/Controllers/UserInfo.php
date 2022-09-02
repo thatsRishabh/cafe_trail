@@ -26,51 +26,51 @@ class UserInfo extends Controller
         // data is stored in from of array
     }
 
-    function addData(Request $req)
-    {
+    // function addData(Request $req)
+    // {
 
-        //    form validation querry
-        $req->validate(
-            [
-                'name'=>'required',
-                'mobile'=>'required|numeric|digits_between:10,10',
-                'email'=>'required|email',
-                'pincode'=>'required|numeric|digits_between:6,6',
-            ]
-        );
-        // echo '<pre>';
-        //    print_r($req->all());
+    //     //    form validation querry
+    //     $req->validate(
+    //         [
+    //             'name'=>'required',
+    //             'mobile'=>'required|numeric|digits_between:10,10',
+    //             'email'=>'required|email',
+    //             'pincode'=>'required|numeric|digits_between:6,6',
+    //         ]
+    //     );
+    //     // echo '<pre>';
+    //     //    print_r($req->all());
 
 
 
-        //insert data into DB querry 
-        $info = new UserData;
-        $info->name =$req['name'];
-        $info->mobile =$req['mobile'];
-        $info->email =$req['email'];
-        $info->address =$req['address'];
-        $info->status =$req['status'];
-        $info->pincode =$req['pincode'];
-        $result=$info-> save();
-        if($result)
-        {
-            return ['Result'=>'Your data has been saved successfully'];
-        }else
-        {
-            return ['Result'=>'Your data has not been saved'];
-        }
+    //     //insert data into DB querry 
+    //     $info = new UserData;
+    //     $info->name =$req['name'];
+    //     $info->mobile =$req['mobile'];
+    //     $info->email =$req['email'];
+    //     $info->address =$req['address'];
+    //     $info->status =$req['status'];
+    //     $info->pincode =$req['pincode'];
+    //     $result=$info-> save();
+    //     if($result)
+    //     {
+    //         return ['Result'=>'Your data has been saved successfully'];
+    //     }else
+    //     {
+    //         return ['Result'=>'Your data has not been saved'];
+    //     }
         
-    }
+    // }
 
-    function displayData($id=null)
-    {
-        // return ['Result'=>'Your id is '.$id];
-        // above is to debug id number
+    // function displayData($id=null)
+    // {
+    //     // return ['Result'=>'Your id is '.$id];
+    //     // above is to debug id number
 
 
-        return $id?UserData::find($id):UserData::all();
-        // above logic say, if $id is available than find with respect to $id else display all
-    }
+    //     return $id?UserData::find($id):UserData::all();
+    //     // above logic say, if $id is available than find with respect to $id else display all
+    // }
 
 
     public function temp(Request $request)

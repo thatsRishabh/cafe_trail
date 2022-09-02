@@ -29,17 +29,17 @@ use Illuminate\Support\Facades\Auth;
 		$unitName = Unit::where('id', $unitID)->get('name')->first();
 		// return $unitName->name;
 	
-		if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter") || (strtolower($unitName->name) == "litre"))
+			if((strtolower($unitName->name) == "kilogram") || (strtolower($unitName->name) == "liter") || (strtolower($unitName->name) == "litre"))
 			{
 				$value = $quantity*1000;
 				return $value;
 			}
-			elseif ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "pack" || "piece")) 
+			if ((strtolower($unitName->name) == "gram") || (strtolower($unitName->name) == "millilitre") || (strtolower($unitName->name) == "pack") || (strtolower($unitName->name) == "piece")) 
 			{
 				$value = $quantity;
 				return $value;
 			}
-			elseif ((strtolower($unitName->name) == "dozen")) 
+			if ((strtolower($unitName->name) == "dozen")) 
 			{
 				$value = $quantity*12;
 				return $value;
@@ -49,8 +49,8 @@ use Illuminate\Support\Facades\Auth;
 
 	function imageBaseURL() {
 
-				// return "http://192.168.1.6:8000/";
-				return "https://backend.gofactz.com/public/";
+				return "http://192.168.1.39:8000/";
+				// return "https://backend.gofactz.com/public/";
 
 	}
 

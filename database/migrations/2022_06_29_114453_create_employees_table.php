@@ -15,6 +15,8 @@ return new class extends Migration
     { 
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->comment('This will be from users(id) table')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); 
             $table->string('name', 100);
             $table->bigInteger('mobile');
             $table->string('designation', 100);
