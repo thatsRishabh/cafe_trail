@@ -82,7 +82,16 @@ class EmployeeController extends Controller
 
         DB::beginTransaction();
         try {
+            
+            $infoUser = new User;
+            $infoUser->name = $request->name;
+            $infoUser->email = $request->email;
+            $infoUser->password = Hash::make($request->password);
+            $infoUser->save();
+
+
             $info = new Employee;
+            $info->user_id = $infoUser->id;
             $info->name = $request->name;
             $info->designation = $request->designation;
             $info->email = $request->email;
@@ -95,11 +104,11 @@ class EmployeeController extends Controller
             $info->salary = $request->salary;
             $info->save();
 
-            $infoUser = new User;
-            $infoUser->name = $request->name;
-            $infoUser->email = $request->email;
-            $infoUser->password = Hash::make($request->password);
-            $infoUser->save();
+            // $infoUser = new User;
+            // $infoUser->name = $request->name;
+            // $infoUser->email = $request->email;
+            // $infoUser->password = Hash::make($request->password);
+            // $infoUser->save();
 
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been saved successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -144,7 +153,7 @@ class EmployeeController extends Controller
             $info->salary = $request->salary;
             $info->save();
 
-            $infoUser = User::find($id);
+            $infoUser = User::find($info->user_id);
             $infoUser->name = $request->name;
             $infoUser->email = $request->email;
             $infoUser->password = Hash::make($request->password);

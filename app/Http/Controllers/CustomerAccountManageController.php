@@ -162,13 +162,18 @@ class CustomerAccountManageController extends Controller
             // $info->unit_id = $request->unit_id;
 
             // storing old stock from product infos stock table
-            $info->previous_balance = $old->account_balance;
+            // $info->previous_balance = $old->account_balance;
+            $info->previous_balance = $info->previous_balance;
             $info->change_in_balance = $request->change_in_balance;
 
             // stock in/out calculation
+            // $info->new_balance = strtolower($request->transaction_type) == "credit" 
+            // ? $old->account_balance + $request->change_in_balance 
+            // : $old->account_balance - $request->change_in_balance;
+
             $info->new_balance = strtolower($request->transaction_type) == "credit" 
-            ? $old->account_balance + $request->change_in_balance 
-            : $old->account_balance - $request->change_in_balance;
+            ? $info->previous_balance + $request->change_in_balance 
+            : $info->previous_balance - $request->change_in_balance;
            
             $info->transaction_type = $request->transaction_type;
             $info->mode_of_transaction = $request->mode_of_transaction;

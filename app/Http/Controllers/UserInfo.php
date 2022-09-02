@@ -70,7 +70,7 @@ class UserInfo extends Controller
 
     //     return $id?UserData::find($id):UserData::all();
     //     // above logic say, if $id is available than find with respect to $id else display all
-    }
+    // }
 
 
     // public function temp(Request $request)
@@ -194,4 +194,4 @@ class UserInfo extends Controller
     //                 // };
     //         return $query;        
     // }
-// }
+}
