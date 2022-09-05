@@ -12,15 +12,13 @@ return new class extends Migration
      * @return void
      */
     public function up()
-    { 
-        Schema::create('customers', function (Blueprint $table) {
+    {
+        Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->bigInteger('mobile');
-            $table->string('email');
-            $table->text('address');
-            $table->integer('account_balance')->nullable();
-            $table->enum('gender', ['Male', 'Female'])->nullable();
+            $table->string('items', 100)->nullable();
+            $table->integer('totalExpense')->nullable();
+            $table->date('expense_date')->comment('This will be in yyyy-mm-dd')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('expenses');
     }
 };

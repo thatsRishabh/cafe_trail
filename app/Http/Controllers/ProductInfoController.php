@@ -105,7 +105,8 @@ class ProductInfoController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            'name'                       => 'required',
+            // 'name'                       => 'required',
+            'name'                       => 'required|unique:App\Models\ProductInfo,name',
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
             // 'minimum_qty'                => 'required|numeric',

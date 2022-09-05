@@ -103,7 +103,7 @@ class ProductStockManageController extends Controller
             // 'new_stock'                => 'nullable|numeric',
             // 'change_stock'                      => 'required|integer|gte:10',
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
-            && ($old->current_quanitity) <= unitConversion($request->unit_id, ($request->change_stock))
+            && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
             ? 'required|declined:false' : 'required',
             'unit_id'                      => 'required|numeric',
            
@@ -159,10 +159,13 @@ class ProductStockManageController extends Controller
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
-            && ($old->current_quanitity) <= unitConversion($request->unit_id, ($request->change_stock))
+            && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
             ? 'required|declined:false' : 'required',
             'unit_id'                  => 'required|numeric',
            
+        ],
+        [
+            'change_stock.declined' => 'low quantity in stock'
         ]);
 
         if ($validation->fails()) {

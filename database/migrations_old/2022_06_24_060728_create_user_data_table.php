@@ -12,19 +12,22 @@ return new class extends Migration
      * @return void
      */
     public function up()
-    { 
-        Schema::create('customers', function (Blueprint $table) {
+    {
+        Schema::create('user_data', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->bigInteger('mobile');
-            $table->string('email');
+            $table->string('name', 50);
+            $table->text('mobile')->nullable();
+            $table->string('email')->unique();
             $table->text('address');
-            $table->integer('account_balance')->nullable();
-            $table->enum('gender', ['Male', 'Female'])->nullable();
+            $table->boolean('status')->default(1);
+            $table->integer('pincode');
+            // $table->renameColumn('address', 'myaddress');
             $table->timestamps();
         });
     }
 
+    // $table->dropColumn('votes');
+    // $table->renameColumn('from', 'to');
     /**
      * Reverse the migrations.
      *
@@ -32,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('user_data');
     }
 };

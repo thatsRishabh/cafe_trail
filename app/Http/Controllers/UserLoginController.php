@@ -57,7 +57,8 @@ class UserLoginController extends Controller
                     return response(prepareResult(true, $data, trans('logged in successfully')), 200,  ['Result'=>'logged in successfully']);
 
                     } else {
-                        return response(prepareResult(false, [], trans('message_wrong_password')), 500,  ['Result'=>'message_wrong_password']);
+                        // return response(prepareResult(false, [], trans('message_wrong_password')), 500,  ['Result'=>'message_wrong_password']);
+                        return response(prepareResult(false, [], trans('wrong email or password')), 500,  ['Result'=>'wrong email or password']);
             } 
              } else {
                 return response(prepareResult(false, [], trans('message_user_not_found')), 500,  ['Result'=>'message_user_not_found']);    
