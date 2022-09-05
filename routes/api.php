@@ -27,6 +27,9 @@ Route::post('temp1', [App\Http\Controllers\UserInfo::class, 'temp1']);
 
 // User login
 Route::post('user-login', [App\Http\Controllers\UserLoginController::class, 'login']);
+
+//  // change-password
+// Route::post('change-password', [App\Http\Controllers\UserLoginController::class, 'changePassword']);
 Route::middleware('auth:api')->group(function () {
     // User logout 
     Route::post('user-logout', [App\Http\Controllers\UserLoginController::class, 'logout']);

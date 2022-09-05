@@ -48,4 +48,20 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {
+        if($exception instanceof \Illuminate\Auth\AuthenticationException ){
+            // if($exception instanceof \Component\Routing\Exception\RouteNotFoundException){
+
+             return response(['success' => false, 'message' =>'Unauthenticated', "code" => 401], 401);
+            // return response(prepareResult(true, $query, trans('Record Featched Successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
+
+        }
+
+        if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
+            // return response(['success' => false, 'message' =>'Unauthenticated', "code" => 401], 401);
+        }
+       return parent::render($request, $exception);
+    }
 }

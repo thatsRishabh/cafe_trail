@@ -68,16 +68,16 @@ class UserInfo extends Controller
     //     // above is to debug id number
 
 
-    //     return $id?UserData::find($id):UserData::all();
-    //     // above logic say, if $id is available than find with respect to $id else display all
+        // return $id?UserData::find($id):UserData::all();
+        // above logic say, if $id is available than find with respect to $id else display all
     // }
 
 
-    public function temp(Request $request)
-    {
-        // $old = ProductMenu::where('product_menus.id', $order['product_menu_id'])->get();
-        // $updateStock = ProductInfo::find( $request->product_id);
-            // $updateStock->current_quanitity = $quantitySum;
+    // public function temp(Request $request)
+    // {
+    //     // $old = ProductMenu::where('product_menus.id', $order['product_menu_id'])->get();
+    //     // $updateStock = ProductInfo::find( $request->product_id);
+    //         // $updateStock->current_quanitity = $quantitySum;
     //         $old = ProductMenu::find( $request->product_id);
     //    return $old->product;
         // $new = 10;
@@ -90,7 +90,7 @@ class UserInfo extends Controller
          // $today = getdate();
 
         // return $today['mon'];
-    }
+    // }
 
     // public function temp1(Request $request)
 
@@ -177,21 +177,21 @@ class UserInfo extends Controller
         //     return $hours;
         // }
 
-        public function temp1(Request $request)
-    {
-        $query = RecipeContains::select('*')
-            // ->join('product_menus', 'recipes.product_menu_id', '=', 'product_menus.id')
-            // ->select('recipes.*','product_menus.name as product_menu_name' )
-            //         ->with('recipeMethods:recipe_id,name,quantity,unit_id,product_info_stock_id,unit_name,unit_minValue')
-                    ->where('recipe_id', 78)
-                    ->orderBy('id', 'desc')->get();
+    //     public function temp1(Request $request)
+    // {
+    //     $query = RecipeContains::select('*')
+    //         // ->join('product_menus', 'recipes.product_menu_id', '=', 'product_menus.id')
+    //         // ->select('recipes.*','product_menus.name as product_menu_name' )
+    //         //         ->with('recipeMethods:recipe_id,name,quantity,unit_id,product_info_stock_id,unit_name,unit_minValue')
+    //                 ->where('recipe_id', 78)
+    //                 ->orderBy('id', 'desc')->get();
                  
 
 
                     
-                    // foreach ($query as $key => $recipe) {
-                    //     $value=$recipe->unit_id
-                    // };
-            return $query;        
-    }
+    //                 // foreach ($query as $key => $recipe) {
+    //                 //     $value=$recipe->unit_id
+    //                 // };
+    //         return $query;        
+    // }
 }
