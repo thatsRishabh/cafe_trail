@@ -53,9 +53,10 @@ class DashboardController extends Controller
             $data = [];
             // $data['category_name'] =getCategoryName($request->categoryDay);
             // $data['category_quantity'] =getCategoryQuantity($request->categoryDay);
-            $data['total_sale'] =getLast30TotalSale($request->day , $request->startDate, $request->endDate);
+            // $data['total_name'] =getLast30TotalName($request->day , $request->startDate, $request->endDate,  $request->category);
+            $data['total_sale'] =getLast30TotalSale($request->day , $request->startDate, $request->endDate,  $request->subcategory);
             // // $data['total_customer'] =getLast30TotalCustomer();
-            $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate);
+            $data['total_product'] =getLast30TotalProduct($request->day , $request->startDate, $request->endDate,  $request->subcategory);
             $data['total_expense'] =getLast30TotalExpense($request->day , $request->startDate, $request->endDate);
             $data['labels'] =getLast30DaysList($request->day , $request->startDate, $request->endDate);
             return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'Graph Data']);

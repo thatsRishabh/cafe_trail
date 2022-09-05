@@ -58,8 +58,73 @@ use Illuminate\Support\Facades\Auth;
 		return auth('api')->user();
 	}
 
+	// function getLast30TotalName($day, $startDate , $endDate, $category)
+	// 	{
+	// 		if(!empty($day))
+    //         {
+
+	// 			$today     = new \DateTime();
+	// 			// $begin     = $today->sub(new \DateInterval('P30D'));
 	
-	function getLast30TotalSale($day, $startDate , $endDate)
+	// 			if(($day == 1 ))
+	// 			{
+	// 				$begin = $today->sub(new \DateInterval('P0D'));
+	// 			}
+	// 			elseif (($day == 7)) 
+	// 			{
+	// 				$begin= $today->sub(new \DateInterval('P7D'));
+	// 			}
+	// 			elseif (($day == 30 )) 
+	// 			{
+	// 				$begin= $today->sub(new \DateInterval('P30D'));
+	// 			}
+	
+	// 			$end       = new \DateTime();
+	// 			$end       = $end->modify('+1 day');
+	// 			$interval  = new \DateInterval('P1D');
+	// 			$daterange = new \DatePeriod($begin, $interval, $end);
+	// 			$totalSale =[];
+	// 			foreach ($daterange as $date) {
+					
+	// 			$salesSum = OrderContain::where('category_id',$category)->whereDate('created_at',$date->format('Y-m-d'))->get('name'); 
+					
+	// 				$totalSale[] = $salesSum;
+	// 			}
+	// 		}
+
+		
+		// 	if(!empty( $startDate))
+        //     {
+
+		// 		$rangArray = []; 
+		// 		$startDate = strtotime($startDate);
+		// 		$endDate = strtotime($endDate);
+					
+		// 			for ($currentDate = $startDate; $currentDate <= $endDate; 
+		// 											$currentDate += (86400)) {
+															
+		// 				$date = date('Y-m-d', $currentDate);
+		// 				$rangArray[] = $date;
+		// 			}
+  			
+		// 		$totalSale =[];
+		// 		foreach ($rangArray as $date) {
+					
+		// 			$salesSum = OrderContain::where('category_id',$category)->whereDate('created_at',$date->format('Y-m-d'))->sum('netPrice');
+					
+		// 			$totalSale[] = $salesSum;
+		// 		}
+		
+		// 	}
+		
+		
+
+		// 	// $data = implode(', ', $totalSale);
+		// 	return $totalSale;
+		// }
+
+	
+	function getLast30TotalSale($day, $startDate , $endDate, $subcategory)
 		{
 			if(!empty($day))
             {
@@ -87,7 +152,7 @@ use Illuminate\Support\Facades\Auth;
 				$totalSale =[];
 				foreach ($daterange as $date) {
 					
-				$salesSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
+				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->sum('netPrice'); 
 					
 					$totalSale[] = $salesSum;
 				}
@@ -111,7 +176,7 @@ use Illuminate\Support\Facades\Auth;
 				$totalSale =[];
 				foreach ($rangArray as $date) {
 					
-					$salesSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
+					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->sum('netPrice');
 					
 					$totalSale[] = $salesSum;
 				}
@@ -159,7 +224,7 @@ use Illuminate\Support\Facades\Auth;
 	// 		return $totalCustomer;
 	// 	}
 
-	function getLast30TotalProduct($day, $startDate , $endDate)
+	function getLast30TotalProduct($day, $startDate , $endDate, $subcategory)
 		{
 			if(!empty($day))
             {
@@ -186,7 +251,7 @@ use Illuminate\Support\Facades\Auth;
 				$totalProduct =[];
 				foreach ($daterange as $date) {
 					
-				$productSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('cartTotalQuantity'); 
+				$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->sum('quantity'); 
 					
 					$totalProduct[] = $productSum;
 				}
@@ -211,7 +276,7 @@ use Illuminate\Support\Facades\Auth;
 				$totalProduct =[];
 				foreach ($rangArray as $date) {
 					
-					$productSum = Order::whereDate('created_at',$date)->sum('cartTotalQuantity'); 
+					$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->sum('quantity'); 
 					
 					$totalProduct[] = $productSum;
 				}
@@ -420,7 +485,6 @@ use Illuminate\Support\Facades\Auth;
 				->get();
 				$orderDetails = $a;
 				return  $orderDetails;
-				return 'hello';
 	
 		}
 		elseif(!empty($category)){
