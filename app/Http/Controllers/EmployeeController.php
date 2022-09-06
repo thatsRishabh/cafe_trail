@@ -87,6 +87,7 @@ class EmployeeController extends Controller
             $infoUser->name = $request->name;
             $infoUser->email = $request->email;
             $infoUser->password = Hash::make($request->password);
+         
             $infoUser->save();
 
 
@@ -192,8 +193,10 @@ class EmployeeController extends Controller
             $info = Employee::find($id);
             if($info)
             {
-                $result=$info->delete();
-                return response(prepareResult(true, $result, trans('Record Id Deleted Successfully')), 200 , ['Result'=>'httpcodes.found']);
+                // $result=$info->delete();
+                $infoUser = User::find($info->user_id);
+                $resultUser=$infoUser->delete();
+                return response(prepareResult(true, $resultUser, trans('Record Id Deleted Successfully')), 200 , ['Result'=>'httpcodes.found']);
             }
             return response(prepareResult(false, [], trans('Record Id Not Found')),500,  ['Result'=>'httpcodes.not_found']);
         } catch (\Throwable $e) {

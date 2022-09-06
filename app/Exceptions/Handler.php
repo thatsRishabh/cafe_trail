@@ -52,6 +52,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
+        // don't forget to import RouteNotFoundException above
         if($exception instanceof RouteNotFoundException){
         
 
@@ -59,9 +60,6 @@ class Handler extends ExceptionHandler
 
         }
 
-        // if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
-        //     // return response(['success' => false, 'message' =>'Unauthenticated', "code" => 401], 401);
-        // }
        return parent::render($request, $exception);
     }
 }

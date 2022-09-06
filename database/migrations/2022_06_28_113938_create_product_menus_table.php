@@ -18,11 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id')->comment('This will be from category(id) table')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
 
-            $table->unsignedBigInteger('subcategory_id')->comment('This will be from subcategory(id) table')->nullable();
-            $table->foreign('subcategory_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('product_menus')->onDelete('cascade');
-            $table->boolean('is_parent')->comment('1 means Yes, 2 no')->nullable();
+            // $table->unsignedBigInteger('subcategory_id')->comment('This will be from subcategory(id) table')->nullable();
+            // $table->foreign('subcategory_id')->references('id')->on('categories')->onDelete('cascade');
+            // $table->unsignedBigInteger('parent_id')->nullable();
+            // $table->foreign('parent_id')->references('id')->on('product_menus')->onDelete('cascade');
+            // $table->boolean('is_parent')->comment('1 means Yes, 2 no')->nullable();
 
             $table->string('name', 50)->nullable();
             // $table->string('category_id', 50)->nullable();

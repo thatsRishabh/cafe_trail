@@ -120,7 +120,7 @@ class CustomerAccountManageController extends Controller
            
             $info->transaction_type = $request->transaction_type;
             $info->mode_of_transaction = $request->mode_of_transaction;
-            $info->account_status = $request->account_status;
+            // $info->account_status = $request->account_status;
             $info->save();
 
             // updating the productinfo table as well
@@ -177,7 +177,7 @@ class CustomerAccountManageController extends Controller
            
             $info->transaction_type = $request->transaction_type;
             $info->mode_of_transaction = $request->mode_of_transaction;
-            $info->account_status = $request->account_status;
+            // $info->account_status = $request->account_status;
             $info->save();
 
             // updating the productinfo table as well

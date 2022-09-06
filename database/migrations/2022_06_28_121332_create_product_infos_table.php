@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('name', 50);
             $table->text('description');
             $table->integer('price');
-            $table->integer('minimum_qty')->nullable();
+            // $table->integer('minimum_qty')->nullable();
             $table->integer('current_quanitity');
             $table->timestamps();
         });

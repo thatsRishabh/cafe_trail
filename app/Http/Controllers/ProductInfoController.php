@@ -89,7 +89,7 @@ class ProductInfoController extends Controller
             $info->description = $request->description;
             $info->unit_id = $request->unit_id;
             $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
-            $info->minimum_qty = $request->minimum_qty;
+            // $info->minimum_qty = $request->minimum_qty;
             $info->price = $request->price;
             
             $info->save();
@@ -105,8 +105,8 @@ class ProductInfoController extends Controller
     public function update(Request $request, $id)
     {
         $validation = Validator::make($request->all(), [
-            // 'name'                       => 'required',
-            'name'                       => 'required|unique:App\Models\ProductInfo,name',
+            'name'                       => 'required',
+            // 'name'                       => 'required|unique:App\Models\ProductInfo,name',
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
             // 'minimum_qty'                => 'required|numeric',
@@ -126,7 +126,7 @@ class ProductInfoController extends Controller
             $info->description = $request->description;
             $info->unit_id = $request->unit_id;
             $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
-            $info->minimum_qty = $request->minimum_qty;
+            // $info->minimum_qty = $request->minimum_qty;
             $info->price = $request->price;
             $info->save();
             DB::commit();

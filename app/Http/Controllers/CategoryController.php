@@ -118,7 +118,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name'                    => 'required|unique:categories,name',
+            // 'name'                    => 'required|unique:categories,name',
+               'name'                       => 'required|unique:App\Models\Category,name',
             
            
         ]);
@@ -165,6 +166,7 @@ class CategoryController extends Controller
         
         $validation = Validator::make($request->all(), [
             // 'name'                    => 'required|unique:categories,name',
+            
            
         ]);
 

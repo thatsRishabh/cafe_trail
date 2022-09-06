@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('new_balance')->nullable();
             $table->enum('transaction_type', ['Credit', 'Debit']);
             $table->string('mode_of_transaction')->comment('via cash or upi')->nullable();
-            $table->boolean('account_status')->comment('1 means Active, 2 inactive')->nullable();  
+            // $table->boolean('account_status')->comment('1 means Active, 2 inactive')->nullable();  
             $table->timestamps();
         });
     }

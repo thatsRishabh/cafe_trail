@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->boolean('is_parent')->comment('1 means Yes, 2 no')->nullable();  
+            // $table->unsignedBigInteger('parent_id')->nullable();
+            // $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
+            // $table->boolean('is_parent')->comment('1 means Yes, 2 no')->nullable();  
             $table->string('name');
             $table->string('image')->nullable();
             // $table->text('image_url')->nullable();
