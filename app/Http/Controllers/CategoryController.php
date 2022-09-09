@@ -124,7 +124,7 @@ class CategoryController extends Controller
         ]);
 
         if ($validation->fails()) {
-            return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+            return response(prepareResult(false, $validation->errors(), $validation->errors()), 500,  ['Result'=>'Your data has not been saved']);
         }
         
         DB::beginTransaction();

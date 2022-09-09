@@ -252,7 +252,7 @@ class ProductMenuController extends Controller
             // 'category_id'                   => ($request->parent_id) ? ' ': 'required',
             // 'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
             // 'price'                      => 'required|numeric',
-           //    'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
+            // 'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
 
                 "product_list.*.name"  => "required", 
                 "product_list.*.description"  => "required", 

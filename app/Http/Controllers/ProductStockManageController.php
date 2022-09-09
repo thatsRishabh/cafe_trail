@@ -158,12 +158,16 @@ class ProductStockManageController extends Controller
             'product_id'               => 'required|numeric',
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
-            'change_stock'                      => (strtolower($request->stock_operation) == "out") 
+            'change_stock'              => (strtolower($request->stock_operation) == "out") 
             && ($old->current_quanitity) <= unitConversion($request->unit_id, ($request->change_stock))
             ? 'required|declined:false' : 'required',
             'unit_id'                  => 'required|numeric',
            
-        ]);
+        ],
+        [
+            'change_stock.declined' => 'low quantity in stock'
+        ]);  
+    
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
