@@ -64,7 +64,7 @@ class ProductInfoController extends Controller
             Log::error($e);
             return response()->json(prepareResult(false, $e->getMessage(), trans('Error while featching Records')), 500,  ['Result'=>'Your data has not been saved']);
         }
-     }
+    }
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [

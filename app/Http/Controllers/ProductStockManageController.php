@@ -93,6 +93,8 @@ class ProductStockManageController extends Controller
     
     public function store(Request $request)
     {
+        // $temp= unitSimilarTypeCheck($request->unit_id,$request->product_id);
+        // return $temp;
         $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
 
         $validation = Validator::make($request->all(), [
@@ -105,11 +107,13 @@ class ProductStockManageController extends Controller
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
             && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
             ? 'required|declined:false' : 'required',
-            'unit_id'                      => 'required|numeric',
+            // 'unit_id'                      => 'required|numeric',
+            'unit_id'                      => unitSimilarTypeCheck($request->unit_id,$request->product_id),
            
         ],
         [
-            'change_stock.declined' => 'low quantity in stock'
+            'change_stock.declined' => 'Low quantity in stock',
+            'unit_id.declined' => 'Invalid Unit Type'
         ]);
 
         if ($validation->fails()) {
@@ -161,11 +165,14 @@ class ProductStockManageController extends Controller
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
             && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
             ? 'required|declined:false' : 'required',
-            'unit_id'                  => 'required|numeric',
+            // 'unit_id'                  => 'required|numeric',
+            'unit_id'                      => unitSimilarTypeCheck($request->unit_id,$request->product_id),
            
         ],
         [
-            'change_stock.declined' => 'low quantity in stock'
+            'change_stock.declined' => 'low quantity in stock',
+            'unit_id.declined' => 'Invalid Unit Type',
+
         ]);
 
         if ($validation->fails()) {

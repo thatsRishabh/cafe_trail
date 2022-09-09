@@ -47,6 +47,49 @@ use Illuminate\Support\Facades\Auth;
 
 	}
 
+	function unitSimilarTypeCheck($unitID, $product_stock_id) {
+
+		$unitName = Unit::where('id', $unitID)->get('name')->first();
+		$productUnitID = ProductInfo::where('id', $product_stock_id)->get('unit_id')->first();
+		$productUnitName = Unit::where('id', $productUnitID->unit_id)->get('name')->first();
+		
+		if($unitID != $productUnitID->unit_id)
+		{
+			
+			if((strtolower($productUnitName->name) == "kilogram") && (strtolower($unitName->name) == "gram"))
+			{
+				return 'required';
+			}
+
+			if((strtolower($productUnitName->name) == "gram") && (strtolower($unitName->name) == "kilogram"))
+			{
+				return 'required';
+			}
+			if((strtolower($productUnitName->name) == "millilitre") && (strtolower($unitName->name) == "liter"))
+			{
+				return 'required';
+			}
+
+			if((strtolower($productUnitName->name) == "dozen") && (strtolower($unitName->name) == "piece"))
+			{
+				return 'required';
+			}
+
+			if((strtolower($productUnitName->name) == "piece") && (strtolower($unitName->name) == "dozen"))
+			{
+				return 'required';
+			}
+			else
+            {
+                return 'required|declined:false';
+            }
+		}
+		else
+       {
+           return 'required';
+       }
+	}
+
 	function imageBaseURL() {
 
 				// return "http://192.168.1.17:8000/";

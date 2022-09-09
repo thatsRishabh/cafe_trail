@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\TokenRepository;
+use Laravel\Passport\RefreshTokenRepository;
 
 class UserLoginController extends Controller
 {
@@ -59,7 +61,7 @@ class UserLoginController extends Controller
                     } else {
                         // return response(prepareResult(false, [], trans('message_wrong_password')), 500,  ['Result'=>'message_wrong_password']);
                         return response(prepareResult(false, [], trans('wrong email or password')), 500,  ['Result'=>'wrong email or password']);
-            } 
+                } 
              } else {
                 return response(prepareResult(false, [], trans('message_user_not_found')), 500,  ['Result'=>'message_user_not_found']);    
             }
@@ -77,8 +79,19 @@ class UserLoginController extends Controller
             return response(prepareResult(false, [], trans('message_user_not_found')), 500,  ['Result'=>'message_user_not_found']);    
         }
         if(Auth::check()) {
-            $token = $request->bearerToken();
-            Auth::user()->token()->revoke();
+                $tokenId = $request->bearerToken();
+                Auth::user()->token()->revoke();
+                 
+                
+                // $tokenRepository = app(TokenRepository::class);
+                // $refreshTokenRepository = app(RefreshTokenRepository::class);
+                
+                // // Revoke an access token...
+                // $tokenRepository->revokeAccessToken($tokenId);
+                
+                // // Revoke all of the token's refresh tokens...
+                // $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+
             return response(prepareResult(true, [], trans('logged out successfully')), 200,  ['Result'=>'logged out successfully']);
         }else{
             return response(prepareResult(false, [], trans('internal_server_error')), 500,  ['Result'=>'internal_server_error']);    

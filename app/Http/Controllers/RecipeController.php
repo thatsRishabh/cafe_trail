@@ -87,7 +87,8 @@ class RecipeController extends Controller
             // 'quantity'                   => 'nullable|numeric',
             // 'unit_id'                => 'nullable|numeric',
            
-            "recipe_methods.*.unit_id"  => "required|numeric", 
+            // "recipe_methods.*.unit_id"  => "required|numeric", 
+           
             "recipe_methods.*.quantity" => "required|numeric", 
 
         ]);
@@ -103,10 +104,12 @@ class RecipeController extends Controller
               
                 $validation = Validator::make($request->all(),[      
                     "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required', 
+                    "recipe_methods.*.unit_id"  => unitSimilarTypeCheck($recipe1['unit_id'], $recipe1['product_info_stock_id']), 
                     
                  ],
                  [
-                     'recipe_methods.*.quantity.declined' => 'Less value left in stock'
+                     'recipe_methods.*.quantity.declined' => 'Less value left in stock',
+                     'recipe_methods.*.unit_id.declined' => 'Invalid Unit Type',
                  ]
              );
 
@@ -186,10 +189,12 @@ class RecipeController extends Controller
               
                 $validation = Validator::make($request->all(),[      
                     "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required', 
+                    "recipe_methods.*.unit_id"  => unitSimilarTypeCheck($recipe1['unit_id'], $recipe1['product_info_stock_id']), 
                     
                  ],
                  [
-                     'recipe_methods.*.quantity.declined' => 'Less value left in stock'
+                     'recipe_methods.*.quantity.declined' => 'Less value left in stock',
+                     'recipe_methods.*.unit_id.declined' => 'Invalid Unit Type',
                  ]
              );
 
