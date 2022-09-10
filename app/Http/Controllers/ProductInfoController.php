@@ -65,6 +65,7 @@ class ProductInfoController extends Controller
             return response()->json(prepareResult(false, $e->getMessage(), trans('Error while featching Records')), 500,  ['Result'=>'Your data has not been saved']);
         }
     }
+    
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -104,9 +105,11 @@ class ProductInfoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $nameCheck = ProductInfo::where('id',  $id)->get('name')->first();
+
         $validation = Validator::make($request->all(), [
             'name'                       => 'required',
-            // 'name'                       => 'required|unique:App\Models\ProductInfo,name',
+            'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\ProductInfo,name',
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
             // 'minimum_qty'                => 'required|numeric',

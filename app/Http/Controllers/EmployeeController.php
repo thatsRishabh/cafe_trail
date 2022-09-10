@@ -122,10 +122,13 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id)
     {
+        $emailCheck = Employee::where('id',  $id)->get('email')->first();
+
         $validation = Validator::make($request->all(), [
             'name'                       => 'required',
             'designation'                => 'required',
             // 'email'                      => 'required|email|unique:App\Models\Employee,email',
+            'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Employee,email',
             'birth_date'                       => 'required',
             'joining_date'                => 'required',
             'address'                      => 'required',

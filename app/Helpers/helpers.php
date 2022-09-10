@@ -23,6 +23,12 @@ use Illuminate\Support\Facades\Auth;
 		return ['success' => $error, 'data' => $data, 'message' => $msg];
 	}
 
+	function imageBaseURL() {
+
+		// return "http://192.168.1.17:8000/";
+		return "https://backend.gofactz.com/public/";
+
+	}
 
 	function unitConversion($unitID, $quantity) {
 
@@ -90,12 +96,7 @@ use Illuminate\Support\Facades\Auth;
        }
 	}
 
-	function imageBaseURL() {
 
-				// return "http://192.168.1.17:8000/";
-				return "https://backend.gofactz.com/public/";
-
-	}
 
 	function getUser() {
 		return auth('api')->user();
@@ -194,9 +195,13 @@ use Illuminate\Support\Facades\Auth;
 				$daterange = new \DatePeriod($begin, $interval, $end);
 				$totalSale =[];
 				foreach ($daterange as $date) {
-					
+					if(!empty( $subcategory)){
 				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->sum('netPrice'); 
-					
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+					}
 					$totalSale[] = $salesSum;
 				}
 			}
@@ -218,9 +223,13 @@ use Illuminate\Support\Facades\Auth;
   			
 				$totalSale =[];
 				foreach ($rangArray as $date) {
-					
+					if(!empty( $subcategory)){
 					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->sum('netPrice');
-					
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
 					$totalSale[] = $salesSum;
 				}
 		
@@ -293,9 +302,15 @@ use Illuminate\Support\Facades\Auth;
 				$daterange = new \DatePeriod($begin, $interval, $end);
 				$totalProduct =[];
 				foreach ($daterange as $date) {
-					
+				if(!empty( $subcategory)){
 				$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->sum('quantity'); 
-					
+				}
+				else{
+					$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
+					$productSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity');
+					// $productSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->sum('quantity'); 
+
+				}
 					$totalProduct[] = $productSum;
 				}
 			
@@ -318,9 +333,15 @@ use Illuminate\Support\Facades\Auth;
   			
 				$totalProduct =[];
 				foreach ($rangArray as $date) {
-					
+					if(!empty( $subcategory)){
 					$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->sum('quantity'); 
-					
+				}
+				else{
+
+					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+					$productSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity');
+					// $productSum = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
+				}
 					$totalProduct[] = $productSum;
 				}
 		
@@ -360,7 +381,7 @@ use Illuminate\Support\Facades\Auth;
 					$totalExpense =[];
 					foreach ($daterange as $date) {
 						
-						$expenseSum = Expense::whereDate('created_at',$date->format('Y-m-d'))->sum('totalExpense'); 
+						$expenseSum = Expense::whereDate('expense_date',$date->format('Y-m-d'))->sum('totalExpense'); 
 						
 						$totalExpense[] = $expenseSum;
 					}
@@ -384,17 +405,16 @@ use Illuminate\Support\Facades\Auth;
 				$totalExpense =[];
 				foreach ($rangArray as $date) {
 					
-					$expenseSum = Expense::whereDate('created_at',$date)->sum('totalExpense'); 
+					$expenseSum = Expense::whereDate('expense_date',$date)->sum('totalExpense'); 
 					
 					$totalExpense[] = $expenseSum;
 				}
 		
 			}
-			
-		
 
 			// $data = implode(', ', $totalRevenue);
 			return $totalExpense;
+
 		}
 
 

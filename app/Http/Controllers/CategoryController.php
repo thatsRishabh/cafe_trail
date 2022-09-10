@@ -162,10 +162,11 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        
+        $nameCheck = Category::where('id',  $id)->get('name')->first();
         
         $validation = Validator::make($request->all(), [
             // 'name'                    => 'required|unique:categories,name',
+            'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\Category,name',
             
            
         ]);

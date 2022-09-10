@@ -252,14 +252,19 @@ class ProductMenuController extends Controller
             // 'category_id'                   => ($request->parent_id) ? ' ': 'required',
             // 'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
             // 'price'                      => 'required|numeric',
-           //    'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
+            // 'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
 
-                "product_list.*.name"  => "required", 
-                "product_list.*.description"  => "required", 
-                "product_list.*.price"  => "required|numeric", 
-                "product_list.*.order_duration"  => "required|numeric", 
-                "product_list.*.category_id"  => "required|numeric", 
-           
+                // "product_list.*.name"  => "required", 
+                // "product_list.*.description"  => "required", 
+                // "product_list.*.price"  => "required|numeric", 
+                // "product_list.*.order_duration"  => "required|numeric", 
+                // "product_list.*.category_id"  => "required|numeric", 
+
+              "name"  => "required", 
+                "description"  => "required", 
+                "price"  => "required|numeric", 
+                "order_duration"  => "required|numeric", 
+                "category_id"  => "required|numeric", 
            
         ]);
 
