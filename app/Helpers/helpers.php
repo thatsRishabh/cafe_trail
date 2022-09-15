@@ -168,7 +168,7 @@ use Illuminate\Support\Facades\Auth;
 		// }
 
 	
-	function getLast30TotalSale($day, $startDate , $endDate, $subcategory)
+		function getLast30TotalSale($day, $startDate , $endDate, $subcategory)
 		{
 			if(!empty($day))
             {

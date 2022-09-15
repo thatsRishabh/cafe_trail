@@ -73,7 +73,7 @@ class ProductInfoController extends Controller
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
             // 'minimum_qty'              => 'required|numeric',
-            'current_quanitity'                  => 'required',
+            'current_quanitity'                  => 'required|gte:1',
             'price'                      => 'required|numeric',
             
            
@@ -113,7 +113,7 @@ class ProductInfoController extends Controller
             'description'                => 'required',
             'unit_id'                    => 'required|numeric',
             // 'minimum_qty'                => 'required|numeric',
-            'current_quanitity'           => 'required',
+            'current_quanitity'           => 'required|gte:1',
             'price'                      => 'required|numeric',
            
         ]);

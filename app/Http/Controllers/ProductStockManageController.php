@@ -106,7 +106,7 @@ class ProductStockManageController extends Controller
             // 'change_stock'                      => 'required|integer|gte:10',
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
             && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
-            ? 'required|declined:false' : 'required',
+            ? 'required|declined:false' : 'required|gte:1',
             // 'unit_id'                      => 'required|numeric',
             'unit_id'                      => unitSimilarTypeCheck($request->unit_id,$request->product_id),
            
@@ -164,7 +164,7 @@ class ProductStockManageController extends Controller
             'new_stock'                => 'nullable|numeric',
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
             && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
-            ? 'required|declined:false' : 'required',
+            ? 'required|declined:false' : 'required|gte:1',
             // 'unit_id'                  => 'required|numeric',
             'unit_id'                      => unitSimilarTypeCheck($request->unit_id,$request->product_id),
            

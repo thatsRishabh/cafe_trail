@@ -103,7 +103,8 @@ class RecipeController extends Controller
                 $oldValue1 = ProductInfo::where('product_infos.id', $recipe1['product_info_stock_id'])->get('current_quanitity')->first();
               
                 $validation = Validator::make($request->all(),[      
-                    "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required', 
+                    "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required|gte:1', 
+                
                     "recipe_methods.*.unit_id"  => unitSimilarTypeCheck($recipe1['unit_id'], $recipe1['product_info_stock_id']), 
                     
                  ],
@@ -113,11 +114,12 @@ class RecipeController extends Controller
                  ]
              );
 
-            }
-          
+             
             if ($validation->fails()) {
                 return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
             } 
+            }
+
         }
 
         DB::beginTransaction();
@@ -188,7 +190,7 @@ class RecipeController extends Controller
                 $oldValue1 = ProductInfo::where('product_infos.id', $recipe1['product_info_stock_id'])->get('current_quanitity')->first();
               
                 $validation = Validator::make($request->all(),[      
-                    "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required', 
+                    "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required|gte:1', 
                     "recipe_methods.*.unit_id"  => unitSimilarTypeCheck($recipe1['unit_id'], $recipe1['product_info_stock_id']), 
                     
                  ],
