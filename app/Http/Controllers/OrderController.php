@@ -213,7 +213,7 @@ class OrderController extends Controller
                $addorder->netPrice = $order['netPrice'];
                $addorder->save();
 
-                 // this will delete quantity from stock as per reicpe
+                 // this will delete quantity from stock as per reicpe only when order is approved
                 $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
                 $recipeID ? recipeDeduction($recipeID->id) : '';
                 // recipeDeduction($recipeID->id);

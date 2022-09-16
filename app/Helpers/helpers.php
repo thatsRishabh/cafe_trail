@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Auth;
 
 	function imageBaseURL() {
 
-		// return "http://192.168.1.17:8000/";
+		// return "http://192.168.1.21:8000/";
 		return "https://backend.gofactz.com/public/";
 
 	}
@@ -76,6 +76,11 @@ use Illuminate\Support\Facades\Auth;
 				return 'required';
 			}
 
+			if((strtolower($productUnitName->name) == "liter") && (strtolower($unitName->name) == "millilitre"))
+			{
+				return 'required';
+			}
+			
 			if((strtolower($productUnitName->name) == "dozen") && (strtolower($unitName->name) == "piece"))
 			{
 				return 'required';
