@@ -163,7 +163,7 @@ class ProductStockManageController extends Controller
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
             'change_stock'                      => (strtolower($request->stock_operation) == "out") 
-            && ($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock))
+            && (($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock)))
             ? 'required|declined:false' : 'required|gte:1',
             // 'unit_id'                  => 'required|numeric',
             'unit_id'                      => unitSimilarTypeCheck($request->unit_id,$request->product_id),
@@ -190,6 +190,7 @@ class ProductStockManageController extends Controller
               $updateStock = ProductInfo::find( $request->product_id);
               $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
               ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
+            // ? ($oldStockValue->old_stock = 0 ? 6 :  $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue) ) 
               : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
               $updateStock->save();
 

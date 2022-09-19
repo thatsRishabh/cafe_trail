@@ -37,6 +37,9 @@ Route::middleware('auth:api')->group(function () {
     // change-password
     Route::post('change-password', [App\Http\Controllers\UserLoginController::class, 'changePassword']);
 
+    // forget password
+    Route::post('forget-password', [App\Http\Controllers\UserLoginController::class, 'forgetPassword']);
+
     // Order
     Route::post('orders', [App\Http\Controllers\OrderController::class, 'searchOrder']); 
     Route::resource('order', App\Http\Controllers\OrderController::class)->only(['store','destroy','show', 'update']);

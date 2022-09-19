@@ -12,6 +12,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\TokenRepository;
 use Laravel\Passport\RefreshTokenRepository;
+use App\Mail\SendResetPassworkLink;
+use Illuminate\Support\Facades\Mail;
+// use Mail;
 
 class UserLoginController extends Controller
 {
@@ -136,5 +139,48 @@ class UserLoginController extends Controller
          }
     }
     
+    public function forgetPassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(),[
+                "email" => 'required|email',
+            ]);
+            if ($validator->fails()) {
+                return response(prepareResult(false, $validator->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+            }
+            $user = User::where('email',$request->email)->first();
+            if (!empty($user)) {
+                        
+                    $token = (env('APP_ENV','local') == 'local') ?'123456' : \Str::random(60);
+                    // $passowrd_link = '<a href="'.route('password.reset',$token).'" style="color: #000;font-size: 18px;text-decoration: underline;font-family: "Roboto Condensed", sans-serif;" target="_blank">Reset your password </a>';
+                    $passowrd_link = '<a href=" www.google.com" style="color: #000;font-size: 18px;text-decoration: underline;font-family: "Roboto Condensed", sans-serif;" target="_blank">Reset your password </a>';
+                    $passMessage = 'This email is to confirm a recent password reset request for your account. To confirm this request and reset your password Please click below link ';
+
+                    User::updateOrCreate(['email'=>$user->email],['password_token'=>$token]);   
+                    
+                    $content = ([
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'token' => $token,
+                    'passowrd_link' => $passowrd_link,
+                    'passMessage' => $passMessage,
+                    ]);  
+                    $info= Mail::to($request->email)->send(new SendResetPassworkLink($content));       
+                    // if(env('IS_MAIL_ENABLE',false) == true){   
+                    //     Mail::to($request->email)->send(new SendResetPassworkLink($content));
+                    // }
+                    return response(prepareResult(true, $info, trans('message_password_reset_link')), 200,  ['Result'=>' successfully']);
+
+            }else{
+                return response(prepareResult(true, [], trans('message_user_not_found')), 500,  ['Result'=>' successfully']);
+            }
+        }
+        catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('Error while featching Records')), 500,  ['Result'=>'Your data has not been saved']);
+            
+        }
+    }
+
 
 }
