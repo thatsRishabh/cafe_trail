@@ -155,28 +155,60 @@ class ProductStockManageController extends Controller
 
     public function update(Request $request, $id)
     {
-        $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
-
+       
         $validation = Validator::make($request->all(), [
             'stock_operation'          => 'required',
             'product_id'               => 'required|numeric',
             'old_stock'                => 'nullable|numeric',
             'new_stock'                => 'nullable|numeric',
-            'change_stock'                      => (strtolower($request->stock_operation) == "out") 
-            && (($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock)))
-            ? 'required|declined:false' : 'required|gte:1',
+            // 'change_stock'                      => (strtolower($request->stock_operation) == "out") 
+            // && (($old->current_quanitity) < unitConversion($request->unit_id, ($request->change_stock)))
+            // ? 'required|declined:false' : 'required|gte:1',
             // 'unit_id'                  => 'required|numeric',
             'unit_id'                      => unitSimilarTypeCheck($request->unit_id,$request->product_id),
            
         ],
         [
-            'change_stock.declined' => 'low quantity in stock',
+            // 'change_stock.declined' => 'low quantity in stock',
             'unit_id.declined' => 'Invalid Unit Type',
 
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+        }
+
+            $oldStockValue =ProductStockManage::find($id);
+            $unitData =Unit::find($oldStockValue->unit_id);
+
+        //   // restoring productinfo old stock to previous value after kg/gram/dozen conversion
+        //   $updateStock = ProductInfo::find( $request->product_id);
+        //   $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
+        //   ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
+        //   : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
+        //   $updateStock->save();
+
+        $updateStock = ProductInfo::find( $request->product_id);
+        $checkQuanitity = strtolower($oldStockValue->stock_operation) == "in" 
+        ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
+        : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
+        // $updateStock->save();
+
+        // $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
+
+        $validator = Validator::make($request->all(), [
+            'change_stock'                      => (strtolower($request->stock_operation) == "out") 
+            && (($checkQuanitity) < unitConversion($request->unit_id, ($request->change_stock)))
+            ? 'required|declined:false' : 'required|gte:1',
+           
+        ],
+        [
+            'change_stock.declined' => 'low quantity in stock',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response(prepareResult(false, $validator->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
 
         DB::beginTransaction();
@@ -190,11 +222,10 @@ class ProductStockManageController extends Controller
               $updateStock = ProductInfo::find( $request->product_id);
               $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
               ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
-            // ? ($oldStockValue->old_stock = 0 ? 6 :  $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue) ) 
               : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
               $updateStock->save();
 
-             // getting old stock value
+            //  getting old stock value
              $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
            
              $info = ProductStockManage::find($id);
@@ -209,6 +240,7 @@ class ProductStockManageController extends Controller
             $info->new_stock = strtolower($request->stock_operation) == "in" 
             ? $old->current_quanitity + unitConversion($request->unit_id, $request->change_stock) 
             : $old->current_quanitity - unitConversion($request->unit_id, $request->change_stock);
+            // : $old->current_quanitity = - unitConversion($request->unit_id, $request->change_stock);
 
             $info->stock_operation = $request->stock_operation;
             $info->save();
@@ -219,7 +251,7 @@ class ProductStockManageController extends Controller
              $updateStock->save();
 
             DB::commit();
-            return response()->json(prepareResult(true, $info, trans('Your data has been Updated successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
+            return response()->json(prepareResult(true,  $info, trans('Your data has been Updated successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
         } catch (\Throwable $e) {
             Log::error($e);
             DB::rollback();

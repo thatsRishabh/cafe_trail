@@ -103,6 +103,13 @@ class EmployeeController extends Controller
             $info->gender = $request->gender;
             $info->mobile = $request->mobile;
             $info->salary = $request->salary;
+            if(!empty($request->image))
+            {
+              $file=$request->image;
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            $info->image=imageBaseURL().$request->image->move('assets',$filename);
+            }
+
             $info->save();
 
             // $infoUser = new User;

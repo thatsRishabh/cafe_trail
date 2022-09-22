@@ -34,6 +34,7 @@ class UserLoginController extends Controller
        
         try {
             $user = User::where('email',$request->email)->first();
+            $employeeInfo = Employee::where('email',$request->email)->first();
 
             if (!empty($user)) {
                 if (Hash::check($request->password, $user->password)) {
@@ -52,6 +53,7 @@ class UserLoginController extends Controller
                         'role'=>"admin"
                     ];
                     $data['user'] =  $userData;
+                    $data['employeeInfo'] =  $employeeInfo;
                     // $token = $user->createToken('authToken')->accessToken;
                    
                     // $token = auth()->user()->createToken('authToken')->accessToken;

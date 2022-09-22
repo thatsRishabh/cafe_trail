@@ -118,8 +118,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            // 'name'                    => 'required|unique:categories,name',
-               'name'                       => 'required|unique:App\Models\Category,name',
+            // rahul shanshare asked to implement below 'lte' validation
+               'name'                       => 'max:10|required|unique:App\Models\Category,name',
             
            
         ]);

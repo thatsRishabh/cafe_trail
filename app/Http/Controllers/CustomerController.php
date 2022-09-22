@@ -100,12 +100,12 @@ class CustomerController extends Controller
         $emailCheck = Customer::where('id',  $id)->get('email')->first();
 
         $validation = Validator::make($request->all(), [
-            'name'                    => 'required',
-            'address'                 => 'required',
-            'gender'                   => 'required',
-            // 'email'                      => 'required|email|unique:App\Models\Customer,email',
-             'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Customer,email',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
+            'name'                       => 'required',
+            'address'                    => 'required',
+            'gender'                     => 'required',
+          // 'email'                     => 'required|email|unique:App\Models\Customer,email',
+             'email'                     => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Customer,email',
+            'mobile'                     => 'required|numeric|digits_between:10,10',
            
         ]);
 
