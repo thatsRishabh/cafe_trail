@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->integer('table_number')->nullable();
             $table->boolean('order_status')->comment('1 means pending(by default), 2 means Approved')->nullable();
+            $table->string('duration_expired', 50)->nullable();
             $table->integer('cartTotalQuantity')->nullable();
             $table->integer('cartTotalAmount')->nullable();
             $table->integer('taxes')->nullable();
-            $table->integer('netAmount')->nullable(); 
+            $table->integer('netAmount')->nullable();  
             $table->string('bill_pdf')->nullable();
             $table->timestamps();
         });

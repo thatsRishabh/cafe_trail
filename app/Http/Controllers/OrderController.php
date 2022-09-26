@@ -107,6 +107,7 @@ class OrderController extends Controller
             $info->taxes = $request->taxes;
             $info->netAmount = $request->netAmount;
             $info->order_status = $request->order_status;
+            $info->duration_expired = $request->duration_expired;
             $info->save();
 
             foreach ($request->order_contains as $key => $order) {
@@ -185,6 +186,7 @@ class OrderController extends Controller
             $info->taxes = $request->taxes;
             $info->netAmount = $request->netAmount;
             $info->order_status = $request->order_status;
+            $info->duration_expired = $request->duration_expired;
             $info->save();
 
            $deletOld = OrderContain::where('order_id', $id)->delete();
@@ -215,7 +217,7 @@ class OrderController extends Controller
 
                  // this will delete quantity from stock as per reicpe only when order is approved
                 $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
-                $recipeID ? recipeDeduction($recipeID->id) : '';
+                $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
                 // recipeDeduction($recipeID->id);
                 
             }

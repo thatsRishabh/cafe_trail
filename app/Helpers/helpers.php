@@ -201,7 +201,8 @@ use Illuminate\Support\Facades\Auth;
 				$totalSale =[];
 				foreach ($daterange as $date) {
 					if(!empty( $subcategory)){
-				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->sum('netPrice'); 
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
+				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
@@ -229,7 +230,8 @@ use Illuminate\Support\Facades\Auth;
 				$totalSale =[];
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
-					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->sum('netPrice');
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
@@ -308,7 +310,9 @@ use Illuminate\Support\Facades\Auth;
 				$totalProduct =[];
 				foreach ($daterange as $date) {
 				if(!empty( $subcategory)){
-				$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->sum('quantity'); 
+					$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
+
+				$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity'); 
 				}
 				else{
 					$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
@@ -339,7 +343,8 @@ use Illuminate\Support\Facades\Auth;
 				$totalProduct =[];
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
-					$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->sum('quantity'); 
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+					$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 				}
 				else{
 
@@ -559,7 +564,7 @@ use Illuminate\Support\Facades\Auth;
 			$startDate = date('Y-m-d');
 			// echo $startDate;
 			$toDay = Carbon::createFromFormat('Y-m-d', $startDate);
-            $daysToAdd = 0;
+            $daysToAdd = 1;
             $toDay = $toDay->addDays($daysToAdd);
 			$enddate = Carbon::createFromFormat('Y-m-d', $startDate);
             $daysToAdd = -30;
@@ -577,9 +582,10 @@ use Illuminate\Support\Facades\Auth;
 		}
 		else{
 			$startDate = date('Y-m-d');
+			// $startDate = "2022-09-25";
 			// echo $startDate;
 			$toDay = Carbon::createFromFormat('Y-m-d', $startDate);
-            $daysToAdd = 0;
+            $daysToAdd = 1;
             $toDay = $toDay->addDays($daysToAdd);
 			$enddate = Carbon::createFromFormat('Y-m-d', $startDate);
             $daysToAdd = -30;
@@ -594,6 +600,7 @@ use Illuminate\Support\Facades\Auth;
             ->get();
 			$orderDetails = $a;
 			return  $orderDetails;
+			
 		}
 
 		
@@ -693,9 +700,11 @@ use Illuminate\Support\Facades\Auth;
   			
 				// $orderDetails =[];
 				foreach ($rangArray as $date) {
+					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+
 					$orders['date']= $date;
-					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
-					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
+					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
@@ -721,9 +730,11 @@ use Illuminate\Support\Facades\Auth;
   			
 				// $orderDetails =[];
 				foreach ($rangArray as $date) {
+					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+
 					$orders['date']= $date;
-					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
-					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
+					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
@@ -756,10 +767,12 @@ use Illuminate\Support\Facades\Auth;
   			
 				// $orderDetails =[];
 				foreach ($rangArray as $date) {
+					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+
 					$orders['date']= $date;
-					$orders['sales']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
-					$orders['product'] = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
-					$orders['revenue']= OrderContain::whereDate('created_at',$date)->sum('netPrice');
+					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+					$orders['revenue']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orderDetails[] = $orders;
 					
 				}
@@ -771,7 +784,26 @@ use Illuminate\Support\Facades\Auth;
 			// $data = implode(', ', $totalProduct);
 		}
 
-		function recipeDeduction($productID)
+		// function recipeDeductionValidation($productID, $quantity)
+		// {
+			
+		// 	$deletOld  = RecipeContains::where('recipe_id', $productID)->get();
+		// 	$recipeStock = []; 
+		// 	foreach ($deletOld as $key => $value) {
+					
+				
+		// 		$updateStock = ProductInfo::find($value->product_info_stock_id);
+
+		// 		   $currentQuanitity =  $updateStock->current_quanitity - (unitConversion($value->unit_id, $value->quantity) * $quantity );
+		// 			$validation1 = $currentQuanitity < 0 ? 1 : '';
+		// 			return $validation1;
+				
+		// 		}
+			
+		// 	// return $recipeStock;
+		// }
+
+		function recipeDeduction($productID, $quantity)
 		{
 			
 			$deletOld  = RecipeContains::where('recipe_id', $productID)->get();
@@ -781,7 +813,7 @@ use Illuminate\Support\Facades\Auth;
 				
 				$updateStock = ProductInfo::find($value->product_info_stock_id);
 
-				   $updateStock->current_quanitity =  $updateStock->current_quanitity - unitConversion($value->unit_id, $value->quantity);
+				   $updateStock->current_quanitity =  $updateStock->current_quanitity - (unitConversion($value->unit_id, $value->quantity) * $quantity );
 				   $updateStock->save();
 				
 				   
