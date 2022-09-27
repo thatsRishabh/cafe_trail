@@ -705,7 +705,7 @@ use Illuminate\Support\Facades\Auth;
 					$orders['date']= $date;
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
-					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
+					$orders['expense']= Expense::whereDate('expense_date',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
 				}
@@ -713,7 +713,7 @@ use Illuminate\Support\Facades\Auth;
 			
 		
 			}
-
+			// $expenseSum = Expense::whereDate('expense_date',$date->format('Y-m-d'))->sum('totalExpense'); 
 			elseif(!empty( $startDate))
             {
 
@@ -735,7 +735,7 @@ use Illuminate\Support\Facades\Auth;
 					$orders['date']= $date;
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
-					$orders['expense']= Expense::whereDate('created_at',$date)->sum('totalExpense');
+					$orders['expense']= Expense::whereDate('expense_date',$date)->sum('totalExpense');
 					$orderDetails[] = $orders;
 					
 				}
