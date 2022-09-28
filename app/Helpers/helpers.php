@@ -544,6 +544,9 @@ use Illuminate\Support\Facades\Auth;
 	{
 		if(!empty($startDate))
 		{
+			if(!empty($$category)){
+
+			
 				$date = Carbon::createFromFormat('Y-m-d', $endDate);
 				// $daysToAdd = 1;
 				$date = $date->addDays(1);
@@ -558,7 +561,25 @@ use Illuminate\Support\Facades\Auth;
 				->get();
 				$orderDetails = $a;
 				return  $orderDetails;
-	
+			}else{
+				$date = Carbon::createFromFormat('Y-m-d', $endDate);
+				// $daysToAdd = 1;
+				$date = $date->addDays(1);
+				$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				// ->where('w.category_id', $category)
+				->whereBetween('w.category_id', [1, 1000])
+				->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+				// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+				$orderDetails = $a;
+				return  $orderDetails;
+
+			}
+
 		}
 		elseif(!empty($category)){
 			$startDate = date('Y-m-d');
