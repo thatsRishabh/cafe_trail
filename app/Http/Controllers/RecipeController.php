@@ -107,6 +107,7 @@ class RecipeController extends Controller
                     "recipe_methods.*.quantity"  => ($oldValue1->current_quanitity < unitConversion($recipe1['unit_id'], $recipe1['quantity']) ) ? 'required|declined:false' : 'required|gte:1', 
                 
                     "recipe_methods.*.unit_id"  => unitSimilarTypeCheck($recipe1['unit_id'], $recipe1['product_info_stock_id']), 
+                   
                     
                  ],
                  [
