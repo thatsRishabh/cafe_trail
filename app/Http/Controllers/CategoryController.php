@@ -119,7 +119,7 @@ class CategoryController extends Controller
     {
         $validation = Validator::make($request->all(), [
             // rahul shanshare asked to implement below 'lte' validation
-               'name'                       => 'max:10|required|unique:App\Models\Category,name',
+               'name'                       => 'required|unique:App\Models\Category,name',
             
            
         ]);
