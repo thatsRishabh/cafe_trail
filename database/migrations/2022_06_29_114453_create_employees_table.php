@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('birth_date')->comment('This will be in yyyy-mm-dd');
             $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->integer('salary')->nullable();
+            $table->integer('salary_balance')->comment('Its initial value will be equal to salar')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

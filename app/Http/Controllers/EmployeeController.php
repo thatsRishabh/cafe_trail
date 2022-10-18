@@ -103,6 +103,7 @@ class EmployeeController extends Controller
             $info->gender = $request->gender;
             $info->mobile = $request->mobile;
             $info->salary = $request->salary;
+            $info->salary_balance = $request->salary;
             if(!empty($request->image))
             {
               $file=$request->image;
@@ -162,6 +163,7 @@ class EmployeeController extends Controller
             $info->gender = $request->gender;
             $info->mobile = $request->mobile;
             $info->salary = $request->salary;
+            $info->salary_balance = $request->salary;
             $info->save();
 
             $infoUser = User::find($info->user_id);

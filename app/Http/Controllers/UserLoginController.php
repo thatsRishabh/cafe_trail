@@ -68,7 +68,7 @@ class UserLoginController extends Controller
                         return response(prepareResult(false, [], trans('wrong email or password')), 500,  ['Result'=>'wrong email or password']);
                 } 
              } else {
-                return response(prepareResult(false, [], trans('message_user_not_found')), 500,  ['Result'=>'message_user_not_found']);    
+                return response(prepareResult(false, [], trans('user not found')), 500,  ['Result'=>'user not found']);    
             }
             
          } catch (\Throwable $e) {
@@ -81,7 +81,7 @@ class UserLoginController extends Controller
     {
         $user = getUser();
         if (!is_object($user)) {
-            return response(prepareResult(false, [], trans('message_user_not_found')), 500,  ['Result'=>'message_user_not_found']);    
+            return response(prepareResult(false, [], trans('user not found')), 500,  ['Result'=>'user not found']);    
         }
         if(Auth::check()) {
                 $tokenId = $request->bearerToken();
@@ -171,10 +171,10 @@ class UserLoginController extends Controller
                     // if(env('IS_MAIL_ENABLE',false) == true){   
                     //     Mail::to($request->email)->send(new SendResetPassworkLink($content));
                     // }
-                    return response(prepareResult(true, $info, trans('message_password_reset_link')), 200,  ['Result'=>' successfully']);
+                    return response(prepareResult(true, $info, trans('password reset link')), 200,  ['Result'=>' successfully']);
 
             }else{
-                return response(prepareResult(true, [], trans('message_user_not_found')), 500,  ['Result'=>' successfully']);
+                return response(prepareResult(true, [], trans('user not found')), 500,  ['Result'=>' successfully']);
             }
         }
         catch (\Throwable $e) {

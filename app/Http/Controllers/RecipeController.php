@@ -82,7 +82,7 @@ class RecipeController extends Controller
         $validation = Validator::make($request->all(), [
             // 'name'                    => 'required',
             'recipe_status'                    => 'required|numeric',
-            'description'                => 'required',
+            // 'description'                => 'required',
             'product_menu_id'                => 'required|unique:App\Models\Recipe,product_menu_id',
             // 'name'                      => 'required',
             // 'quantity'                   => 'nullable|numeric',
@@ -175,7 +175,7 @@ class RecipeController extends Controller
 
         $validation = Validator::make($request->all(), [
             // 'name'                    => 'required',
-            'description'                => 'required',
+            // 'description'                => 'required',
             'product_menu_id'            => $email_product_menu_id->product_menu_id == $request->product_menu_id ? 'required' : 'required|unique:App\Models\Recipe,product_menu_id',
              'recipe_status'                    => 'required|numeric',
             // 'name'                      => 'required',

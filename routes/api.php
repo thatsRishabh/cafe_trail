@@ -80,6 +80,9 @@ Route::middleware('auth:api')->group(function () {
         Route::post('employees', [App\Http\Controllers\EmployeeController::class, 'searchEmployee']); 
         Route::resource('employee', App\Http\Controllers\EmployeeController::class)->only(['store','destroy','show', 'update']);
 
+        // SalaryManagement
+        Route::post('salary-managements', [App\Http\Controllers\SalaryManagementController::class, 'searchSalary']); 
+        Route::resource('salary-management', App\Http\Controllers\SalaryManagementController::class)->only(['store','destroy','show', 'update']);
 
         // EmployeeAttendence
         Route::post('employee-attendences', [App\Http\Controllers\EmployeeAttendenceController::class, 'searchEmployeeAttendence']); 

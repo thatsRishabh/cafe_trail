@@ -544,7 +544,7 @@ use Illuminate\Support\Facades\Auth;
 	{
 		if(!empty($startDate))
 		{
-			if(!empty($$category)){
+			if(!empty($category)){
 
 			
 				$date = Carbon::createFromFormat('Y-m-d', $endDate);
