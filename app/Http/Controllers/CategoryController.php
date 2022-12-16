@@ -148,8 +148,8 @@ class CategoryController extends Controller
 
             $info->name = $request->name;
             // $info->image_url = $request->image_url;
-            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
-            $info->is_parent = $request->is_parent;
+            // $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            // $info->is_parent = $request->is_parent;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been saved successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
@@ -197,8 +197,8 @@ class CategoryController extends Controller
 
             $info->name = $request->name;
             // $info->image_url = $request->image_url;
-            $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
-            $info->is_parent = $request->is_parent;
+            // $info->parent_id = ($request->parent_id) ? $request->parent_id :null;
+            // $info->is_parent = $request->is_parent;
             $info->save();
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been Updated successfully')), 200 , ['Result'=>'Your data has been saved successfully']);
