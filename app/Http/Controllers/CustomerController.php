@@ -67,7 +67,7 @@ class CustomerController extends Controller
             'name'                     => 'required',
             'address'                  => 'required',
             'gender'                   => 'required',
-            'email'                    => 'required|email|unique:App\Models\Customer,email',
+            // 'email'                    => 'required|email|unique:App\Models\Customer,email',
             'mobile'                   => 'required|numeric|digits_between:10,10',
            
         ]);
@@ -104,7 +104,7 @@ class CustomerController extends Controller
             'address'                    => 'required',
             'gender'                     => 'required',
           // 'email'                     => 'required|email|unique:App\Models\Customer,email',
-             'email'                     => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Customer,email',
+            //  'email'                     => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Customer,email',
             'mobile'                     => 'required|numeric|digits_between:10,10',
            
         ]);

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->bigInteger('mobile');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->text('address');
             $table->integer('account_balance')->nullable();
             $table->enum('gender', ['Male', 'Female'])->nullable();

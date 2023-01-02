@@ -2,7 +2,7 @@
 
 $data= App\Models\Order::select('*')->with('orderContains')->where('id', $order_id)->first();
 
-$date = date_format($data['created_at'], 'Y-m-d');
+$date = date_format($data['created_at'], 'Y-m-d H:i:s');
 ?>
 
 <style type="text/css">
@@ -70,7 +70,7 @@ header {
   padding-left: 3px;
   float: center;
   text-align: center;
-  margin-left: 50px;
+  margin-left: 40px;
 }
 
 #client .to {
@@ -238,16 +238,17 @@ td,
         <img src="https://drfranchises.com/wp-content/uploads/2021/07/chai-ho-jaye-franchise.jpg">
       </div> -->
       <div id="company">
-        <h2 class="name">Chai Ho Jaye</h2>
-        <div>Near D-Mart, Beside Prakesh Dhaba</div>
-        <div>Hoshangabad Road, Bhopal</div>
-        <div>	+91 9171 333 851</div>
+        <h2 class="name">FALHAR</h2>
+        <!-- <h2 class="name">फलाहार</h2> -->
+        <div>Shop No. 2 & 3, Apollo Sage Hospital</div>
+        <div>Bawadiya Kalan, Bhopal</div>
+        <div>	+91 9098743415</div>
         <div>	chaihojaye.bpl@gmail.com</div>
        
       </div>
       </div>
     </header>
--------------------------------------------------------
+    -----------------------------------------------------------------
      <main >
       <div id="details" class="clearfix">
         <div id="client">
@@ -258,7 +259,7 @@ td,
           <div class="address">Date of Invoice: {{($date)}} </div>
         </div>
       </div>
--------------------------------------------------------
+      -----------------------------------------------------------------
       <div>
      </div>
       <div>
@@ -269,20 +270,22 @@ td,
           <th>PRODUCT</th>
           <th>PRICE</th>
           <th>QTY</th>
+          <th>Time</th>
           <th>TOTAL</th>
         </tr>
--------------------------------------------------------
+-----------------------------------------------------------------
         @foreach(@$data->orderContains as $key => $info)
         <tr>
           <td class="no">{{ $key+1 }}</td>
           <td class="desc"><h3>{{$info->name}}</h3></td>
           <td class="unit">Rs. {{$info->price}}</td>
           <td class="qty">{{$info->quantity}}</td>
+          <td class="">{{$info->order_duration}} min</td>
           <td class="total">Rs. {{$info->netPrice}}</td>
         </tr>
         @endforeach
       </table>
--------------------------------------------------------
+-----------------------------------------------------------------
       <table>
         <tr>
           <td>SUBTOTAL</td>
@@ -302,7 +305,7 @@ td,
 
       </table>
       </div>
--------------------------------------------------------
+      -----------------------------------------------------------------
       <div id="thanks">Thank you!</div>
       <!-- <div id="notices">
         <div>NOTICE:</div>

@@ -89,8 +89,8 @@ class CustomerAccountManageController extends Controller
     {
         $validation = Validator::make($request->all(), [
         
-            'change_in_balance'                   => 'nullable|numeric',
-            'transaction_type'                    => 'required',
+            // 'change_in_balance'                   => 'nullable|numeric',
+            // 'transaction_type'                    => 'required',
             'customer_id'                         => 'required|numeric',
            
         ]);
@@ -111,19 +111,24 @@ class CustomerAccountManageController extends Controller
 
             // storing old stock from product infos stock table
             $info->previous_balance = $old->account_balance;
-            $info->change_in_balance = $request->change_in_balance;
+            $info->sale = $request->sale;
+            $info->payment_received = $request->payment_received ;
 
             // stock in/out calculation
-            $info->new_balance = strtolower($request->transaction_type) == "credit" 
-            ? $old->account_balance + $request->change_in_balance 
-            : $old->account_balance - $request->change_in_balance;
+            // $info->new_balance = strtolower($request->transaction_type) == "credit" 
+            // ? $old->account_balance + $request->change_in_balance 
+            // : $old->account_balance - $request->change_in_balance;
+
+            $info->new_balance = $request->payment_received >= $request->sale
+            ? $old->account_balance + ($request->payment_received - $request->sale)
+            : $old->account_balance - ($request->sale  - $request->payment_received);
            
-            $info->transaction_type = $request->transaction_type;
+            // $info->transaction_type = $request->transaction_type;
             $info->mode_of_transaction = $request->mode_of_transaction;
             // $info->account_status = $request->account_status;
             $info->save();
 
-            // updating the productinfo table as well
+            // updating the Customer table as well
             $updateBalance = Customer::find( $request->customer_id);
             $updateBalance->account_balance = $info->new_balance;
             $updateBalance->save();
@@ -142,8 +147,8 @@ class CustomerAccountManageController extends Controller
     {
         $validation = Validator::make($request->all(), [
       
-            'change_in_balance'                   => 'nullable|numeric',
-            'transaction_type'                    => 'required',
+            // 'change_in_balance'                   => 'nullable|numeric',
+            // 'transaction_type'                    => 'required',
             'customer_id'                         => 'required|numeric',
            
         ]);
@@ -154,28 +159,34 @@ class CustomerAccountManageController extends Controller
 
         DB::beginTransaction();
         try {
+           
+
             $old = Customer::where('customers.id', $request->customer_id)->get('account_balance')->first();
 
             
             $info = CustomerAccountManage::find($id);
             $info->customer_id = $request->customer_id;
-            // $info->unit_id = $request->unit_id;
+
 
             // storing old stock from product infos stock table
             // $info->previous_balance = $old->account_balance;
             $info->previous_balance = $info->previous_balance;
-            $info->change_in_balance = $request->change_in_balance;
+            // $info->change_in_balance = $request->change_in_balance;
+
+            $info->sale = $request->sale;
+            $info->payment_received = $request->payment_received ;
 
             // stock in/out calculation
-            // $info->new_balance = strtolower($request->transaction_type) == "credit" 
-            // ? $old->account_balance + $request->change_in_balance 
-            // : $old->account_balance - $request->change_in_balance;
 
-            $info->new_balance = strtolower($request->transaction_type) == "credit" 
-            ? $info->previous_balance + $request->change_in_balance 
-            : $info->previous_balance - $request->change_in_balance;
+            // $info->new_balance = strtolower($request->transaction_type) == "credit" 
+            // ? $info->previous_balance + $request->change_in_balance 
+            // : $info->previous_balance - $request->change_in_balance;
+
+            $info->new_balance = $request->payment_received >= $request->sale
+            ? $info->previous_balance + ($request->payment_received - $request->sale)
+            : $info->previous_balance - ($request->sale  - $request->payment_received);
            
-            $info->transaction_type = $request->transaction_type;
+            // $info->transaction_type = $request->transaction_type;
             $info->mode_of_transaction = $request->mode_of_transaction;
             // $info->account_status = $request->account_status;
             $info->save();

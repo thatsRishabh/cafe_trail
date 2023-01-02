@@ -66,6 +66,8 @@ class EmployeeController extends Controller
         $validation = Validator::make($request->all(),  [
             'name'                       => 'required',
             'designation'                => 'required',
+            'document_type'              => 'required',
+            'document_number'            => 'required',
             'email'                      => 'required|email|unique:App\Models\Employee,email',
             'birth_date'                  => 'required',
             'joining_date'                => 'required',
@@ -95,6 +97,8 @@ class EmployeeController extends Controller
             $info->user_id = $infoUser->id;
             $info->name = $request->name;
             $info->designation = $request->designation;
+            $info->document_type = $request->document_type;
+            $info->document_number = $request->document_number;
             $info->email = $request->email;
             // $info->password = Hash::make($request->password);
             $info->birth_date = $request->birth_date;
@@ -135,6 +139,8 @@ class EmployeeController extends Controller
         $validation = Validator::make($request->all(), [
             'name'                       => 'required',
             'designation'                => 'required',
+            'document_type'              => 'required',
+            'document_number'            => 'required',
             // 'email'                      => 'required|email|unique:App\Models\Employee,email',
             'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Employee,email',
             'birth_date'                       => 'required',
@@ -152,19 +158,59 @@ class EmployeeController extends Controller
 
         DB::beginTransaction();
         try {
-            $info = Employee::find($id);
-            $info->name = $request->name;
-            $info->designation = $request->designation;
-            $info->email = $request->email;
-            // $info->password = Hash::make($request->password);
-            $info->birth_date = $request->birth_date;
-            $info->joining_date = $request->joining_date;
-            $info->address = $request->address;
-            $info->gender = $request->gender;
-            $info->mobile = $request->mobile;
-            $info->salary = $request->salary;
-            $info->salary_balance = $request->salary;
-            $info->save();
+            // $info = Employee::find($id);
+            // $info->name = $request->name;
+            // $info->designation = $request->designation;
+            // $info->email = $request->email;
+            // // $info->password = Hash::make($request->password);
+            // $info->birth_date = $request->birth_date;
+            // $info->joining_date = $request->joining_date;
+            // $info->address = $request->address;
+            // $info->gender = $request->gender;
+            // $info->mobile = $request->mobile;
+            // $info->salary = $request->salary;
+            // $info->salary_balance = $request->salary;
+            // $info->save();
+
+              $info = Employee::find($id);
+              $info->name = $request->name;
+              $info->designation = $request->designation;
+              $info->document_type = $request->document_type;
+              $info->document_number = $request->document_number;
+              $info->email = $request->email;
+              // $info->password = Hash::make($request->password);
+              $info->birth_date = $request->birth_date;
+              $info->joining_date = $request->joining_date;
+              $info->address = $request->address;
+              $info->gender = $request->gender;
+              $info->mobile = $request->mobile;
+              $info->salary = $request->salary;
+              $info->salary_balance = $request->salary;
+            //   if(!empty($request->image))
+            //   {
+            //     $file=$request->image;
+            //   $filename=time().'.'.$file->getClientOriginalExtension();
+            //   $info->image=imageBaseURL().$request->image->move('assets',$filename);
+            //   }
+
+            if(!empty($request->image))
+            {
+                if(gettype($request->image) == "string"){
+                    $info->image = $request->image;
+                }
+                else{
+                       $file=$request->image;
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $info->image=imageBaseURL().$request->image->move('assets',$filename);
+                }
+
+            //   $file=$request->image;
+            // $filename=time().'.'.$file->getClientOriginalExtension();
+            // $info->image=imageBaseURL().$request->image->move('assets',$filename);
+            }
+            
+  
+              $info->save();
 
             $infoUser = User::find($info->user_id);
             $infoUser->name = $request->name;

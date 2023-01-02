@@ -18,10 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id')->comment('This will be from customers(id) table')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade'); 
             $table->integer('previous_balance')->nullable();
-            $table->integer('change_in_balance')->nullable();
+            $table->integer('sale')->nullable();
+            $table->integer('payment_received')->nullable();
             $table->integer('new_balance')->nullable();
-            $table->enum('transaction_type', ['Credit', 'Debit']);
-            $table->string('mode_of_transaction')->comment('via cash or upi')->nullable();
+            // $table->enum('transaction_type', ['Credit', 'Debit']);
+            $table->integer('mode_of_transaction')->comment('1 for cash, 2 for online')->nullable();
             // $table->boolean('account_status')->comment('1 means Active, 2 inactive')->nullable();  
             $table->timestamps();
         });

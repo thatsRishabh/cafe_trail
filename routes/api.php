@@ -78,7 +78,8 @@ Route::middleware('auth:api')->group(function () {
 
         // Employee
         Route::post('employees', [App\Http\Controllers\EmployeeController::class, 'searchEmployee']); 
-        Route::resource('employee', App\Http\Controllers\EmployeeController::class)->only(['store','destroy','show', 'update']);
+        Route::resource('employee', App\Http\Controllers\EmployeeController::class)->only(['store','destroy','show']);
+        Route::post('employee-update/{id?}', [App\Http\Controllers\EmployeeController::class, 'update']); 
 
         // SalaryManagement
         Route::post('salary-managements', [App\Http\Controllers\SalaryManagementController::class, 'searchSalary']); 

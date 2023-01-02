@@ -208,6 +208,8 @@ class EmployeeAttendenceController extends Controller
         // use of template literal while adding date
         $data['total_days_present'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',2)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
 
+        $data['total_days_halfday'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',2)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
+
         $data['total_days_absent'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',1)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
 
         $data['days_in_month'] = cal_days_in_month(CAL_GREGORIAN, substr($request->year_month, 5,6), substr($request->year_month, 0,4));
