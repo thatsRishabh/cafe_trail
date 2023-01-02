@@ -102,6 +102,8 @@ class OrderController extends Controller
         try {
             $info = new Order;
             $info->table_number = $request->table_number;
+            $info->customer_id = $request->customer_id;
+            $info->mode_of_transaction = $request->mode_of_transaction;
             $info->cartTotalQuantity = $request->cartTotalQuantity;
             $info->cartTotalAmount = $request->cartTotalAmount;
             $info->taxes = $request->taxes;
@@ -181,6 +183,8 @@ class OrderController extends Controller
         try {
             $info = Order::find($id);
             $info->table_number = $request->table_number;
+            $info->customer_id = $request->customer_id;
+            $info->mode_of_transaction = $request->mode_of_transaction;
             $info->cartTotalQuantity = $request->cartTotalQuantity;
             $info->cartTotalAmount = $request->cartTotalAmount;
             $info->taxes = $request->taxes;
