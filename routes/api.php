@@ -90,6 +90,7 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('employee-attendence', App\Http\Controllers\EmployeeAttendenceController::class)->only(['store','destroy','show', 'update']);
         Route::post('attendences-date-wise', [App\Http\Controllers\EmployeeAttendenceController::class, 'dateWiseSearch']); 
         Route::post('monthly-attendence', [App\Http\Controllers\EmployeeAttendenceController::class, 'monthlyAttendence']); 
+        Route::get('employee-id', [App\Http\Controllers\EmployeeAttendenceController::class, 'employeeID']); 
 
         // customer
         Route::post('customers', [App\Http\Controllers\CustomerController::class, 'searchCustomer']); 

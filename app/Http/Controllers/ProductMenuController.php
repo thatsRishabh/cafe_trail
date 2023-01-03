@@ -32,7 +32,8 @@ class ProductMenuController extends Controller
             }
             if(!empty($request->name))
             {
-                $query->where('name', $request->name);
+                // $query->where('name', $request->name);
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
             }
             // if(!empty($request->price))
             // {

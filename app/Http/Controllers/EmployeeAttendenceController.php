@@ -19,7 +19,7 @@ class EmployeeAttendenceController extends Controller
     {
         try {
             $query = EmployeeAttendence::select('*')
-                    ->with('attendenceMethod:attendence_id,employee_id,attendence')
+                    ->with('employee_attendence:attendence_id,employee_id,attendence')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
@@ -74,6 +74,30 @@ class EmployeeAttendenceController extends Controller
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
+
+        if($request->employee_attendence){
+
+            foreach ($request->employee_attendence as $key => $recipe1) {
+                $currentDate= date("Y-m-d");
+                $oldValue1 = AttendenceList::whereDate('created_at', '=',  $currentDate)->where('employee_id', $recipe1['employee_id'])->get('employee_id')->first();
+              
+                $validation = Validator::make($request->all(),[      
+                    "employee_attendence.*.employee_id"  => $oldValue1 ? 'required|declined:false' : 'required', 
+                    
+                 ],
+                 [
+                     'employee_attendence.*.employee_id.declined' => 'Attendence already exists',
+                 ]
+             );
+
+             
+            if ($validation->fails()) {
+                return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
+            } 
+            }
+
+        }
+
         DB::beginTransaction();
         try {
           
@@ -147,6 +171,27 @@ class EmployeeAttendenceController extends Controller
                 // return response(prepareResult(false, $info, trans('translate.fetched_records')), config('httpcodes.success'));
                 return response(prepareResult(true, $info, trans('Record Fatched Successfully')), 200 , ['Result'=>'httpcodes.found']);
             }
+            return response(prepareResult(false, [], trans('Error while fatching Records')),500,  ['Result'=>'httpcodes.not_found']);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(prepareResult(false, $e->getMessage(), trans('translate.something_went_wrong')), 500,  ['Result'=>'httpcodes.internal_server_error']);
+        }
+    }
+
+    public function employeeID()
+    {
+        try {
+
+            $data = [];
+            
+            $data['employee_attendence']= Employee::select('id as employee_id')->get();
+           
+        //    $data['employeeSalary'] = $employeeData->salary;
+
+           
+                // return response(prepareResult(false, $info, trans('translate.fetched_records')), config('httpcodes.success'));
+                return response(prepareResult(true, $data, trans('Record Fatched Successfully')), 200 , ['Result'=>'httpcodes.found']);
+        
             return response(prepareResult(false, [], trans('Error while fatching Records')),500,  ['Result'=>'httpcodes.not_found']);
         } catch (\Throwable $e) {
             Log::error($e);

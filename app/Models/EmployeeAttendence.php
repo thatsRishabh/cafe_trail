@@ -10,7 +10,7 @@ class EmployeeAttendence extends Model
 {
     use HasFactory;
 
-    public function attendenceMethod()
+    public function employee_attendence()
     {
         return $this->hasMany(AttendenceList::class, 'attendence_id', 'id');
     }

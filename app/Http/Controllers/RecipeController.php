@@ -34,11 +34,13 @@ class RecipeController extends Controller
             }
             if(!empty($request->name))
             {
-                $query->where('name', $request->name);
+                // $query->where('name', $request->name);
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
             }
             if(!empty($request->product_menu_name))
             {
-                $query->where('product_menus.name', $request->product_menu_name);
+                // $query->where('product_menus.name', $request->product_menu_name);
+                $query->where('product_menus.name', 'LIKE', '%'.$request->product_menu_name.'%');
             }
             if(!empty($request->recipe_status))
             {

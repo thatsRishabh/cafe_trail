@@ -29,7 +29,7 @@ class ProductInfoController extends Controller
             }
             if(!empty($request->name))
             {
-                $query->where('product_infos.name', $request->name);
+                $query->where('product_infos.name','LIKE', '%'.$request->name.'%');
             }
             if(!empty($request->description))
             {

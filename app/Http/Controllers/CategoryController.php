@@ -78,7 +78,8 @@ class CategoryController extends Controller
             }
             if(!empty($request->category))
             {
-                $query->where('category', $request->category);
+                // $query->where('category', $request->category);
+                $query->where('category', 'LIKE', '%'.$request->category.'%');
             }
             if(!empty($request->parent_id))
             {
