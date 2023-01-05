@@ -35,6 +35,11 @@ class CustomerAccountManageController extends Controller
             {
                 $query->where('account_status', $request->account_status);
             }
+            if(!empty($request->name))
+            {
+                // $query->where('name', $request->name);
+                $query->where('customers.name', 'LIKE', '%'.$request->name.'%');
+            }
 
             // date wise filter from here
              if(!empty($request->from_date) && !empty($request->end_date))

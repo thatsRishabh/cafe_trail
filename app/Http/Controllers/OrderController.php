@@ -9,7 +9,8 @@ use App\Models\ProductMenu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Barryvdh\DomPDF\Facade\PDF;
+// use Barryvdh\DomPDF\Facade\PDF;
+use PDF;
 use App\Models\Recipe;
 use App\Models\RecipeContains;
 
@@ -98,6 +99,33 @@ class OrderController extends Controller
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
+
+        if($request->order_status == "2"){
+
+            foreach ($request->order_contains as $key => $recipe1) {
+                
+                $recipeID = Recipe::where('product_menu_id', $recipe1['product_menu_id'])->get('id')->first();
+
+                // return  recipeDeductionValidation($recipeID->id, $recipe1['quantity']);
+                $validation = Validator::make($request->all(),[     
+
+
+                    "order_contains.*.product_menu_id"  =>$recipeID ? recipeDeductionValidation($recipeID->id, $recipe1['quantity']) : 'required', 
+                    
+                 ],
+                 [
+                     'order_contains.*.product_menu_id.declined' => 'Less value left in stock',
+                 ]
+             );
+
+             
+            if ($validation->fails()) {
+                return response(prepareResult(false, $validation->errors(), trans('Less value left in stock')), 500,  ['Result'=>'Your data has not been saved']);
+            } 
+            }
+
+        }
+
         DB::beginTransaction();
         try {
             $info = new Order;
@@ -140,18 +168,14 @@ class OrderController extends Controller
                 // this will delete quantity from stock as per reicpe
                 // $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
                 // recipeDeduction($recipeID->id);
+
+                 // this will delete quantity from stock as per reicpe only when order is approved
+                 if($request->order_status == "2"){
+                 $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
+                 $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
+                 }
             }
  
-                // database sum querry
-            // $quantitySum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('quantity');
-            // $amountSum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('netPrice');
-
-            // $info = Order::find( $info->id);
-            // $info->cartTotalQuantity = $quantitySum;
-            // $info->cartTotalAmount = $amountSum;
-            // $info->taxes = $request->taxes;
-            // $info->netAmount = $amountSum + $request->taxes;
-            // $info->save();
 
              DB::commit();
              $info['order_contains'] = $info->orderContains;
@@ -178,6 +202,33 @@ class OrderController extends Controller
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
+
+        if($request->order_status == "2"){
+
+            foreach ($request->order_contains as $key => $recipe1) {
+                
+                $recipeID = Recipe::where('product_menu_id', $recipe1['product_menu_id'])->get('id')->first();
+
+                // return  recipeDeductionValidation($recipeID->id, $recipe1['quantity']);
+                $validation = Validator::make($request->all(),[     
+
+
+                    "order_contains.*.product_menu_id"  =>$recipeID ? recipeDeductionValidation($recipeID->id, $recipe1['quantity']) : 'required', 
+                    
+                 ],
+                 [
+                     'order_contains.*.product_menu_id.declined' => 'Less value left in stock',
+                 ]
+             );
+
+             
+            if ($validation->fails()) {
+                return response(prepareResult(false, $validation->errors(), trans('Less value left in stock')), 500,  ['Result'=>'Your data has not been saved']);
+            } 
+            }
+
+        }
+
 
         DB::beginTransaction();
         try {
@@ -220,10 +271,13 @@ class OrderController extends Controller
                $addorder->save();
 
                  // this will delete quantity from stock as per reicpe only when order is approved
-                $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
-                $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
-                // recipeDeduction($recipeID->id);
-                
+                // $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
+                // $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
+            
+                if($request->order_status == "2"){
+                    $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
+                    $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
+                    }
             }
  
             //     // database sum querry

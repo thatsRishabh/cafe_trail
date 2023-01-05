@@ -17,10 +17,20 @@ class EmployeeController extends Controller
     {
         try {
             $query = Employee::select('*')
+                    ->with('roleid:id,role_id')
+                    // ->with('roleID:attendence_id,employee_id,attendence')
                     ->orderBy('id', 'desc');
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
+            }
+            if(!empty($request->email))
+            {
+                $query->where('email', $request->email);
+            }
+            if(!empty($request->mobile))
+            {
+                $query->where('mobile', $request->mobile);
             }
             if(!empty($request->name))
             {
@@ -76,6 +86,7 @@ class EmployeeController extends Controller
             'gender'                      => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
             'salary'                      => 'required|numeric',
+            'role_id'                      => 'required|numeric',
            
         ]);
 
@@ -89,6 +100,7 @@ class EmployeeController extends Controller
             $infoUser = new User;
             $infoUser->name = $request->name;
             $infoUser->email = $request->email;
+            $infoUser->role_id = $request->role_id;
             $infoUser->password = Hash::make($request->password);
          
             $infoUser->save();
@@ -150,6 +162,7 @@ class EmployeeController extends Controller
             'gender'                       => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
             'salary'                      => 'required|numeric',
+            'role_id'                      => 'required|numeric',
            
         ]);
 
@@ -209,15 +222,23 @@ class EmployeeController extends Controller
             // $filename=time().'.'.$file->getClientOriginalExtension();
             // $info->image=imageBaseURL().$request->image->move('assets',$filename);
             }
-            
-  
               $info->save();
 
-            $infoUser = User::find($info->user_id);
-            $infoUser->name = $request->name;
-            $infoUser->email = $request->email;
-            $infoUser->password = Hash::make($request->password);
-            $infoUser->save();
+              $infoUser = User::find($info->user_id);
+              $infoUser->name = $request->name;
+              $infoUser->email = $request->email;
+              $infoUser->role_id = $request->role_id;
+            //   $infoUser->password = Hash::make($request->password);
+              $infoUser->save();
+
+              if(!empty($request->password))
+              {
+                $infoUser = User::find($info->user_id);
+                $infoUser->password = Hash::make($request->password);
+                $infoUser->save();
+              }
+
+            
 
             DB::commit();
             return response()->json(prepareResult(true, $info, trans('Your data has been Updated successfully')), 200 , ['Result'=>'Your data has been saved successfully']);

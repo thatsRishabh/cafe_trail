@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('attendence_lists', function (Blueprint $table) {
             $table->id();
+            $table->date('date')->comment('This will be in yyyy-mm-dd')->nullable();
             $table->unsignedBigInteger('attendence_id')->nullable();
             $table->foreign('attendence_id')->references('id')->on('employee_attendences')->onDelete('cascade');
             $table->unsignedBigInteger('employee_id')->nullable();

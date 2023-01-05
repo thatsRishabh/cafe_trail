@@ -20,16 +20,24 @@ class UserLoginController extends Controller
 {
     public function login(Request $request)
     {
+        $userRoleID = User::where('email',$request->email)->get('role_id')->first();
+
         $validation = Validator::make($request->all(),  [
            
             'email'                      => 'required|email',
             'password'                  => 'required',
+            'entry_mode'                  => ($request->entry_mode =="web-0.0.1" && $userRoleID->role_id =="1 ") || ($request->entry_mode =="mobile" && ($userRoleID->role_id =="1" ||$userRoleID->role_id =="2") )  ? 'required' : 'declined:false', 
+
            
+        ],
+        [
+            'entry_mode.declined' => 'Login not allowed to this user'
         ]);
 
         if ($validation->fails()) {
             return response(prepareResult(false, $validation->errors(), trans('validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         }
+
 
        
         try {

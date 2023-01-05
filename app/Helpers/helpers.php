@@ -248,6 +248,231 @@ use Illuminate\Support\Facades\Auth;
 			return $totalSale;
 		}
 
+		function getLast30TotalOnlineSale($day, $startDate , $endDate, $subcategory)
+		{
+			if(!empty($day))
+            {
+
+				$today     = new \DateTime();
+				// $begin     = $today->sub(new \DateInterval('P30D'));
+	
+				if(($day == 1 ))
+				{
+					$begin = $today->sub(new \DateInterval('P0D'));
+				}
+				elseif (($day == 7)) 
+				{
+					$begin= $today->sub(new \DateInterval('P7D'));
+				}
+				elseif (($day == 30 )) 
+				{
+					$begin= $today->sub(new \DateInterval('P30D'));
+				}
+	
+				$end       = new \DateTime();
+				$end       = $end->modify('+1 day');
+				$interval  = new \DateInterval('P1D');
+				$daterange = new \DatePeriod($begin, $interval, $end);
+				$totalSale =[];
+				foreach ($daterange as $date) {
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					$totalSale[] = $salesSum;
+				}
+			}
+
+		
+			if(!empty( $startDate))
+            {
+
+				$rangArray = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+					
+					for ($currentDate = $startDate; $currentDate <= $endDate; 
+													$currentDate += (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
+				$totalSale =[];
+				foreach ($rangArray as $date) {
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					$totalSale[] = $salesSum;
+				}
+		
+			}
+		
+		
+
+			// $data = implode(', ', $totalSale);
+			return $totalSale;
+		}
+
+		function getLast30TotalCashSale($day, $startDate , $endDate, $subcategory)
+		{
+			if(!empty($day))
+            {
+
+				$today     = new \DateTime();
+				// $begin     = $today->sub(new \DateInterval('P30D'));
+	
+				if(($day == 1 ))
+				{
+					$begin = $today->sub(new \DateInterval('P0D'));
+				}
+				elseif (($day == 7)) 
+				{
+					$begin= $today->sub(new \DateInterval('P7D'));
+				}
+				elseif (($day == 30 )) 
+				{
+					$begin= $today->sub(new \DateInterval('P30D'));
+				}
+	
+				$end       = new \DateTime();
+				$end       = $end->modify('+1 day');
+				$interval  = new \DateInterval('P1D');
+				$daterange = new \DatePeriod($begin, $interval, $end);
+				$totalSale =[];
+				foreach ($daterange as $date) {
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					$totalSale[] = $salesSum;
+				}
+			}
+
+		
+			if(!empty( $startDate))
+            {
+
+				$rangArray = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+					
+					for ($currentDate = $startDate; $currentDate <= $endDate; 
+													$currentDate += (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
+				$totalSale =[];
+				foreach ($rangArray as $date) {
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					$totalSale[] = $salesSum;
+				}
+		
+			}
+		
+		
+
+			// $data = implode(', ', $totalSale);
+			return $totalSale;
+		}
+
+		function getLast30TotalRecurringSale($day, $startDate , $endDate, $subcategory)
+		{
+			if(!empty($day))
+            {
+
+				$today     = new \DateTime();
+				// $begin     = $today->sub(new \DateInterval('P30D'));
+	
+				if(($day == 1 ))
+				{
+					$begin = $today->sub(new \DateInterval('P0D'));
+				}
+				elseif (($day == 7)) 
+				{
+					$begin= $today->sub(new \DateInterval('P7D'));
+				}
+				elseif (($day == 30 )) 
+				{
+					$begin= $today->sub(new \DateInterval('P30D'));
+				}
+	
+				$end       = new \DateTime();
+				$end       = $end->modify('+1 day');
+				$interval  = new \DateInterval('P1D');
+				$daterange = new \DatePeriod($begin, $interval, $end);
+				$totalSale =[];
+				foreach ($daterange as $date) {
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
+				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					$totalSale[] = $salesSum;
+				}
+			}
+
+		
+			if(!empty( $startDate))
+            {
+
+				$rangArray = []; 
+				$startDate = strtotime($startDate);
+				$endDate = strtotime($endDate);
+					
+					for ($currentDate = $startDate; $currentDate <= $endDate; 
+													$currentDate += (86400)) {
+															
+						$date = date('Y-m-d', $currentDate);
+						$rangArray[] = $date;
+					}
+  			
+				$totalSale =[];
+				foreach ($rangArray as $date) {
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
+					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					else{
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
+						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					}
+					$totalSale[] = $salesSum;
+				}
+		
+			}
+		
+		
+
+			// $data = implode(', ', $totalSale);
+			return $totalSale;
+		}
+
 	// function getLast30TotalCustomer($day)
 	// 	{
 	// 		$today     = new \DateTime();
@@ -722,8 +947,14 @@ use Illuminate\Support\Facades\Auth;
 				// $orderDetails =[];
 				foreach ($rangArray as $date) {
 					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+					$orderidCash = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+					$orderidOnline = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+					$orderidrecurring = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
 
 					$orders['date']= $date;
+					$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					$orders['sales_cash']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
+					$orders['sales_recurring']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['expense']= Expense::whereDate('expense_date',$date)->sum('totalExpense');
@@ -752,8 +983,14 @@ use Illuminate\Support\Facades\Auth;
 				// $orderDetails =[];
 				foreach ($rangArray as $date) {
 					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+					$orderidCash = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+					$orderidOnline = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+					$orderidrecurring = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
 
 					$orders['date']= $date;
+					$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					$orders['sales_cash']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
+					$orders['sales_recurring']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['expense']= Expense::whereDate('expense_date',$date)->sum('totalExpense');
@@ -789,8 +1026,14 @@ use Illuminate\Support\Facades\Auth;
 				// $orderDetails =[];
 				foreach ($rangArray as $date) {
 					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+					$orderidCash = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
+					$orderidOnline = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
+					$orderidrecurring = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
 
 					$orders['date']= $date;
+					$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					$orders['sales_cash']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
+					$orders['sales_recurring']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['revenue']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
@@ -823,6 +1066,33 @@ use Illuminate\Support\Facades\Auth;
 			
 		// 	// return $recipeStock;
 		// }
+
+		function recipeDeductionValidation($productID, $quantity)
+		{
+			
+			$deletOld  = RecipeContains::where('recipe_id', $productID)->get();
+			// return $deletOld;
+			$recipeStock = []; 
+			foreach ($deletOld as $key => $value) {
+					
+				
+				$updateStock = ProductInfo::find($value->product_info_stock_id);
+
+				   $lessQuantity=  $updateStock->current_quanitity - (unitConversion($value->unit_id, $value->quantity) * $quantity );
+
+					// return $lessQuantity;
+				   if($lessQuantity < 0)
+				   {
+					return 'required|declined:false';
+				   }
+				   else
+				   {
+					return 'required';
+				   }
+			}
+			
+			// return "hello";
+		}
 
 		function recipeDeduction($productID, $quantity)
 		{
