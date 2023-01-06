@@ -69,7 +69,7 @@ class CustomerController extends Controller
             'address'                  => 'required',
             'gender'                   => 'required',
             // 'email'                    => 'required|email|unique:App\Models\Customer,email',
-            'mobile'                   => 'required|numeric|digits_between:10,10',
+            'mobile'                   => 'required|numeric|digits_between:10,10|unique:App\Models\Customer,mobile',
            
         ]);
 
@@ -98,7 +98,7 @@ class CustomerController extends Controller
 
     public function update(Request $request, $id)
     {
-        $emailCheck = Customer::where('id',  $id)->get('email')->first();
+        $mobileCheck = Customer::where('id',  $id)->get('mobile')->first();
 
         $validation = Validator::make($request->all(), [
             'name'                       => 'required',
@@ -106,7 +106,8 @@ class CustomerController extends Controller
             'gender'                     => 'required',
           // 'email'                     => 'required|email|unique:App\Models\Customer,email',
             //  'email'                     => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Customer,email',
-            'mobile'                     => 'required|numeric|digits_between:10,10',
+            // 'mobile'                     => 'required|numeric|digits_between:10,10',
+            'mobile'                     => $mobileCheck->mobile == $request->mobile ? 'required' : 'required|mobile|unique:App\Models\Customer,mobile',
            
         ]);
 

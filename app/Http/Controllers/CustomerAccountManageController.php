@@ -29,7 +29,7 @@ class CustomerAccountManageController extends Controller
             }
             if(!empty($request->customer_id))
             {
-                $query->where('customer_id', $request->customer_id);
+                $query->where('customers.id', $request->customer_id);
             }
             if(!empty($request->account_status))
             {

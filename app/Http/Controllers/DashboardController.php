@@ -23,6 +23,7 @@ class DashboardController extends Controller
           
             $data['todaySale'] = DB::table('orders')->whereDate('orders.created_at', '=', date("Y-m-d"))->sum('netAmount');
             $data['employeePresentToday'] = AttendenceList::where('attendence',2)->whereDate('created_at', '=', date("Y-m-d"))->count();
+            $data['employeeHalfDayToday'] = AttendenceList::where('attendence',3)->whereDate('created_at', '=', date("Y-m-d"))->count();
             $data['totalEmployee'] = Employee::count();
 
            

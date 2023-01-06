@@ -84,7 +84,7 @@ class EmployeeController extends Controller
             'joining_date'                => 'required',
             'address'                     => 'required',
             'gender'                      => 'required',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
+            'mobile'                      => 'required|numeric|digits_between:10,10|unique:App\Models\Employee,mobile',
             'salary'                      => 'required|numeric',
             'role_id'                      => 'required|numeric',
            
@@ -147,6 +147,7 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id)
     {
+        $mobileCheck = Employee::where('id',  $id)->get('mobile')->first();
         $emailCheck = Employee::where('id',  $id)->get('email')->first();
 
         $validation = Validator::make($request->all(), [
@@ -160,7 +161,8 @@ class EmployeeController extends Controller
             'joining_date'                => 'required',
             'address'                      => 'required',
             'gender'                       => 'required',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
+            // 'mobile'                      => 'required|numeric|digits_between:10,10',
+            'mobile'                     => $mobileCheck->mobile == $request->mobile ? 'required' : 'required|mobile|unique:App\Models\Employee,mobile',
             'salary'                      => 'required|numeric',
             'role_id'                      => 'required|numeric',
            
