@@ -31,6 +31,7 @@ return new class extends Migration
             // $table->boolean('is_parent')->nullable();
             $table->string('image')->nullable();
             $table->integer('order_duration')->nullable();
+            $table->integer('priority_rank')->nullable();
             // $table->text('image_url')->nullable();
             $table->integer('price') ->comment('This will be used to subtract from Expense')->nullable();
             $table->timestamps();

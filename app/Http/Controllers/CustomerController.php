@@ -107,7 +107,7 @@ class CustomerController extends Controller
           // 'email'                     => 'required|email|unique:App\Models\Customer,email',
             //  'email'                     => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\Customer,email',
             // 'mobile'                     => 'required|numeric|digits_between:10,10',
-            'mobile'                     => $mobileCheck->mobile == $request->mobile ? 'required' : 'required|mobile|unique:App\Models\Customer,mobile',
+            'mobile'                     => $mobileCheck->mobile == $request->mobile ? 'required' : 'required|numeric|unique:App\Models\Customer,mobile',
            
         ]);
 

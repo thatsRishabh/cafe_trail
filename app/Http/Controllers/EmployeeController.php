@@ -162,7 +162,7 @@ class EmployeeController extends Controller
             'address'                      => 'required',
             'gender'                       => 'required',
             // 'mobile'                      => 'required|numeric|digits_between:10,10',
-            'mobile'                     => $mobileCheck->mobile == $request->mobile ? 'required' : 'required|mobile|unique:App\Models\Employee,mobile',
+            'mobile'                     => $mobileCheck->mobile == $request->mobile ? 'required' : 'required|numeric|unique:App\Models\Employee,mobile',
             'salary'                      => 'required|numeric',
             'role_id'                      => 'required|numeric',
            

@@ -17,9 +17,9 @@ class RecipeContains extends Model
     ];
     // working perfectly even after commenting above code
 
-    public function recipes()
-    {
-        return $this->belongsTo(Recipe::class, 'recipe_id', 'id');
-    }
+    // public function recipes()
+    // {
+    //     return $this->belongsTo(Recipe::class, 'recipe_id', 'id');
+    // }
     
 }
